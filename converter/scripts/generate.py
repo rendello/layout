@@ -1,3 +1,8 @@
+
+
+# Table adapted from Wikipedia article: "Inuktitut syllabics".
+# [https://en.wikipedia.org/wiki/Inuktitut_syllabics]
+
 from pprint import pprint
 
 def Series(t):
@@ -105,11 +110,53 @@ def enum(series_table):
                 line_s += " "*7
             else:
                 line_s += (res +",").ljust(7)
+        s += (" "*4)+line_s+ "/* " + syllabic_peek(series) + " */\n"
+    return f"enum Ident {{\n{s}\n}}"
+
+
+def syllabic_peek(series):
+    return "".join([series[n] for n in ["a", "i", "u", "ai", "final"] if series[n] != None])
+
+
+def branches(series):
+    line_s = ""
+    for key in ["ai", "u", "uu", "i", "ii", "a", "aa", "final"]:
+        res = series["latin_"+key+"_ident"]
+        if res != None:
+            line_s += f'{res} => "{series["latin_"+key]}", '
+    return line_s
+
+def gen_match(series_table, complex_series):
+    s = ""
+    for series in series_table:
+        if series["latin_final_ident"] in complex_series:
+            line_s = ("/* "+series["latin_final_ident"]
+            +" (" + syllabic_peek(series)
+            +") series below */")
+        else:
+            line_s = branches(series)
+
         s += (" "*4)+line_s.rstrip()+"\n"
     s = s[:-2] # remove last comma and newline
-    return f"enum Idents {{\n{s}\n}}"
+    return f"match ident {{\n{s}\n}};"
 
 
+def complex_series(series):
+    s = ""
+    idents = []
+    for key in ["ai", "u", "uu", "i", "ii", "a", "aa", "final"]:
+        res = series["latin_"+key+"_ident"]
+        if res != None:
+            idents.append(res)
+    return (
+        "|".join(idents)
+        +f" => match (ENUM) {{\n    B1 => {{ {branches(series)} }},\n    B2 => {{}}\n}}"
+    )
 
+full_series = series_idents_add(add_longs(table))
 
-print(enum(series_idents_add(add_longs(table))))
+for s in full_series:
+    print(complex_series(s))
+
+# print(enum(full_series))
+# print(gen_match(full_series, ["H2"]))
