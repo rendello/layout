@@ -155,8 +155,28 @@ def complex_series(series):
 
 full_series = series_idents_add(add_longs(table))
 
-for s in full_series:
-    print(complex_series(s))
+# for s in full_series:
+#     print(complex_series(s))
 
 # print(enum(full_series))
 # print(gen_match(full_series, ["H2"]))
+
+def branches2(series):
+    line_s = ""
+    for key in ["ai", "u", "uu", "i", "ii", "a", "aa", "final"]:
+        res = series["latin_"+key+"_ident"]
+        if res != None:
+            line_s += f'{res} => "{series["latin_"+key]}", '
+    return line_s
+
+
+def gen_match2(series_table):
+    s = ""
+    for series in series_table:
+        line_s = branches2(series)
+
+        s += (" "*4)+line_s.rstrip()+"\n"
+    s = s[:-2] # remove last comma and newline
+    return f"match ident {{\n{s}\n}};"
+
+print(gen_match2(full_series))
