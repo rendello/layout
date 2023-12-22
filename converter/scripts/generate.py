@@ -1,182 +1,80 @@
 
-
-# Table adapted from Wikipedia article: "Inuktitut syllabics".
-# [https://en.wikipedia.org/wiki/Inuktitut_syllabics]
+"""
+Table adapted from Wikipedia article: "Inuktitut syllabics".
+See: https://en.wikipedia.org/wiki/Inuktitut_syllabics
+"""
 
 from pprint import pprint
+import re
 
-def Series(t):
-    d = {}
-    for i, key in enumerate((
-        "ai", "latin_ai",
-        "i", "ii", "latin_i",
-        "u", "uu", "latin_u",
-        "a", "aa", "latin_a",
-        "final", "latin_final",
-        "ipa"
-    )):
-        d[key] = t[i]
-    return d
 
 table = [
-    Series(row) for row in [
-        ("ᐁ","ai","ᐃ","ᐄ","i","ᐅ","ᐆ","u","ᐊ","ᐋ","a",None,None,None),
-        ("ᐯ","pai","ᐱ","ᐲ","pi","ᐳ","ᐴ","pu","ᐸ","ᐹ","pa","ᑉ","p","p"),
-        ("ᑌ","tai","ᑎ","ᑏ","ti","ᑐ","ᑑ","tu","ᑕ","ᑖ","ta","ᑦ","t","t"),
-        ("ᑫ","kai","ᑭ","ᑮ","ki","ᑯ","ᑰ","ku","ᑲ","ᑳ","ka","ᒃ","k","k"),
-        ("ᕴ","hai","ᕵ","ᕶ","hi","ᕷ","ᕸ","hu","ᕹ","ᕺ","ha","ᕻ","h","h"),
-        ("ᒉ","gai","ᒋ","ᒌ","gi","ᒍ","ᒎ","gu","ᒐ","ᒑ","ga","ᒡ","g","ɡ"),
-        ("ᒣ","mai","ᒥ","ᒦ","mi","ᒧ","ᒨ","mu","ᒪ","ᒫ","ma","ᒻ","m","m"),
-        ("ᓀ","nai","ᓂ","ᓃ","ni","ᓄ","ᓅ","nu","ᓇ","ᓈ","na","ᓐ","n","n"),
-        ("ᓭ","sai","ᓯ","ᓰ","si","ᓱ","ᓲ","su","ᓴ","ᓵ","sa","ᔅ","s","s"),
-        (None,None,"𑪶","𑪷","ši","𑪸","𑪹","šu","𑪺","𑪻","ša",None,"š","ʂ"),
-        (None,None,"𑪰","𑪱","hi","𑪲","𑪳","hu","𑪴","𑪵","ha",None,"h","h"),
-        ("ᓓ","lai","ᓕ","ᓖ","li","ᓗ","ᓘ","lu","ᓚ","ᓛ","la","ᓪ","l","l"),
-        ("ᔦ","jai","ᔨ","ᔩ","ji","ᔪ","ᔫ","ju","ᔭ","ᔮ","ja","ᔾ","j","j"),
-        ("ᑦᔦ","jjai","ᑦᔨ","ᑦᔩ","jji","ᑦᔪ","ᑦᔫ","jju","ᑦᔭ","ᑦᔮ","jja","ᑦᔾ","jj","jː"),
-        (None,None,"ᖨ","ᖩ","ři","ᖪ","ᖫ","řu","ᖬ","ᖭ","řa","ᖮ","ř","ɟ"),
-        ("ᕓ","vai","ᕕ","ᕖ","vi","ᕗ","ᕘ","vu","ᕙ","ᕚ","va","ᕝ","v","v"),
-        ("ᕂ","rai","ᕆ","ᕇ","ri","ᕈ","ᕉ","ru","ᕋ","ᕌ","ra","ᕐ","r","ʁ"),
-        ("ᙯ","qai","ᕿ","ᖀ","qi","ᖁ","ᖂ","qu","ᖃ","ᖄ","qa","ᖅ","q","q"),
-        ("ᖅᑫ","qqai","ᖅᑭ","ᖅᑮ","qqi","ᖅᑯ","ᖅᑰ","qqu","ᖅᑲ","ᖅᑳ","qqa","ᖅᒃ","qq","qː"),
-        ("ᙰ","ngai","ᖏ","ᖐ","ngi","ᖑ","ᖒ","ngu","ᖓ","ᖔ","nga","ᖕ","ng","ŋ"),
-        (None,None,"ᙱ","ᙲ","nngi","ᙳ","ᙴ","nngu","ᙵ","ᙶ","nnga","ᖖ","nng","ŋː"),
-        (None,None,"ᖠ","ᖡ","łi","ᖢ","ᖣ","łu","ᖤ","ᖥ","ła","ᖦ","ł","ɬ"),
-        (None,None,None,None,None,None,None,None,None,None,None,"ᖯ","b","b"),
-        (None,None,None,None,None,None,None,None,None,None,None,"ᕼ","h","h"),
-        (None,None,None,None,None,None,None,None,None,None,None,"ᑊ","ʼ","ʔ")
-    ]
+    "	ᐁ	ᐃ	ᐄ	ᐅ	ᐆ	ᐊ	ᐋ	",
+    "p	ᐯ	ᐱ	ᐲ	ᐳ	ᐴ	ᐸ	ᐹ	ᑉ",
+    "t	ᑌ	ᑎ	ᑏ	ᑐ	ᑑ	ᑕ	ᑖ	ᑦ",
+    "k	ᑫ	ᑭ	ᑮ	ᑯ	ᑰ	ᑲ	ᑳ	ᒃ",
+    "h	ᕴ	ᕵ	ᕶ	ᕷ	ᕸ	ᕹ	ᕺ	ᕻ",
+    "g	ᒉ	ᒋ	ᒌ	ᒍ	ᒎ	ᒐ	ᒑ	ᒡ",
+    "m	ᒣ	ᒥ	ᒦ	ᒧ	ᒨ	ᒪ	ᒫ	ᒻ",
+    "n	ᓀ	ᓂ	ᓃ	ᓄ	ᓅ	ᓇ	ᓈ	ᓐ",
+    "s	ᓭ	ᓯ	ᓰ	ᓱ	ᓲ	ᓴ	ᓵ	ᔅ",
+    "š		𑪶	𑪷	𑪸	𑪹	𑪺	𑪻	",
+    "h		𑪰	𑪱	𑪲	𑪳	𑪴	𑪵	",
+    "l	ᓓ	ᓕ	ᓖ	ᓗ	ᓘ	ᓚ	ᓛ	ᓪ",
+    "j	ᔦ	ᔨ	ᔩ	ᔪ	ᔫ	ᔭ	ᔮ	ᔾ",
+    "jj	ᑦᔦ	ᑦᔨ	ᑦᔩ	ᑦᔪ	ᑦᔫ	ᑦᔭ	ᑦᔮ	ᑦᔾ",
+    "ř		ᖨ	ᖩ	ᖪ	ᖫ	ᖬ	ᖭ	ᖮ",
+    "v	ᕓ	ᕕ	ᕖ	ᕗ	ᕘ	ᕙ	ᕚ	ᕝ",
+    "r	ᕂ	ᕆ	ᕇ	ᕈ	ᕉ	ᕋ	ᕌ	ᕐ",
+    "q	ᙯ	ᕿ	ᖀ	ᖁ	ᖂ	ᖃ	ᖄ	ᖅ",
+    "qq	ᖅᑫ	ᖅᑭ	ᖅᑮ	ᖅᑯ	ᖅᑰ	ᖅᑲ	ᖅᑳ	ᖅᒃ",
+    "ng	ᙰ	ᖏ	ᖐ	ᖑ	ᖒ	ᖓ	ᖔ	ᖕ",
+    "nng		ᙱ	ᙲ	ᙳ	ᙴ	ᙵ	ᙶ	ᖖ",
+    "ł		ᖠ	ᖡ	ᖢ	ᖣ	ᖤ	ᖥ	ᖦ",
+    "b								ᖯ",
+    "h								ᕼ",
+    "ʼ								ᑊ",
 ]
 
 
-def lengthen(s):
-    if s != None:
-        return s + s[-1]
+def escape_empty(s):
+    if s == "":
+        return None
+    else:
+        return s
 
 
-def add_longs(series_table):
-    new_series_table = []
+def extract_series(table):
+    col_ids = ["latin", "ai", "i", "ii", "u", "uu", "a", "aa", "final"]
+
+    series = []
+    for row in table:
+        cols = row.split("\t")
+        series.append({key: escape_empty(cols[i]) for i, key in enumerate(col_ids)})
+    return series
+
+
+def to_match(series_table):
+    vowels = ["ai", "i", "ii", "u", "uu", "a", "aa"]
+
+    to_latin_str = str()
+    to_syllabic_str = str()
 
     for series in series_table:
-        new_series = series.copy()
-        for key in ["latin_i", "latin_u", "latin_a"]:
-            new_series[lengthen(key)] = lengthen(series[key])
-
-        new_series_table.append(new_series)
-    return new_series_table
-
-
-
-def series_idents_add(series_table):
-    previously_seen_idents = set()
-
-    new_series_table = []
-    for series in series_table:
-        new_series = series.copy()
-
-        for key in [
-            "latin_ai",
-            "latin_i", "latin_ii",
-            "latin_u", "latin_uu",
-            "latin_a", "latin_aa",
-            "latin_final"
-        ]:
-            if series[key] != None:
-                base_s = series[key].upper()
-                s = base_s
-                if base_s == "ʼ":
-                    s = "STOP"
-                for i in range(2, 10):
-                    if s in previously_seen_idents:
-                        s = base_s + str(i)
+        latin = series["latin"]
+        for vowel in vowels:
+            match series[vowel]:
+                case str(syllabic):
+                    if latin == None:
+                        enum_s = f'\n{vowel.upper()} => '
+                        to_syllabic_str += enum_s + f'"{vowel}",'
                     else:
-                        break
-                previously_seen_idents.add(s)
-                new_series[key+"_ident"] = s
-            else:
-                new_series[key+"_ident"] = None
+                        enum_s = f'\n({latin.upper()}, {vowel.upper()}) => '
+                        to_syllabic_str += enum_s + f'"{latin}{vowel}",'
+                    to_latin_str += enum_s + f'"{syllabic}",'
 
-        new_series_table.append(new_series)
-    return new_series_table
+    return to_latin_str + "\n" + to_syllabic_str
 
 
-def enum(series_table):
-    s = ""
-    for series in series_table:
-        line_s = ""
-        for key in ["ai", "u", "uu", "i", "ii", "a", "aa", "final"]:
-            res = series["latin_"+key+"_ident"]
-            if res == None:
-                line_s += " "*7
-            else:
-                line_s += (res +",").ljust(7)
-        s += (" "*4)+line_s+ "/* " + syllabic_peek(series) + " */\n"
-    return f"enum Ident {{\n{s}\n}}"
-
-
-def syllabic_peek(series):
-    return "".join([series[n] for n in ["a", "i", "u", "ai", "final"] if series[n] != None])
-
-
-def branches(series):
-    line_s = ""
-    for key in ["ai", "u", "uu", "i", "ii", "a", "aa", "final"]:
-        res = series["latin_"+key+"_ident"]
-        if res != None:
-            line_s += f'{res} => "{series["latin_"+key]}", '
-    return line_s
-
-def gen_match(series_table, complex_series):
-    s = ""
-    for series in series_table:
-        if series["latin_final_ident"] in complex_series:
-            line_s = ("/* "+series["latin_final_ident"]
-            +" (" + syllabic_peek(series)
-            +") series below */")
-        else:
-            line_s = branches(series)
-
-        s += (" "*4)+line_s.rstrip()+"\n"
-    s = s[:-2] # remove last comma and newline
-    return f"match ident {{\n{s}\n}};"
-
-
-def complex_series(series):
-    s = ""
-    idents = []
-    for key in ["ai", "u", "uu", "i", "ii", "a", "aa", "final"]:
-        res = series["latin_"+key+"_ident"]
-        if res != None:
-            idents.append(res)
-    return (
-        "|".join(idents)
-        +f" => match (ENUM) {{\n    B1 => {{ {branches(series)} }},\n    B2 => {{}}\n}}"
-    )
-
-full_series = series_idents_add(add_longs(table))
-
-# for s in full_series:
-#     print(complex_series(s))
-
-# print(enum(full_series))
-# print(gen_match(full_series, ["H2"]))
-
-def branches2(series):
-    line_s = ""
-    for key in ["ai", "u", "uu", "i", "ii", "a", "aa", "final"]:
-        res = series["latin_"+key+"_ident"]
-        if res != None:
-            line_s += f'{res} => "{series["latin_"+key]}", '
-    return line_s
-
-
-def gen_match2(series_table):
-    s = ""
-    for series in series_table:
-        line_s = branches2(series)
-
-        s += (" "*4)+line_s.rstrip()+"\n"
-    s = s[:-2] # remove last comma and newline
-    return f"match ident {{\n{s}\n}};"
-
-print(gen_match2(full_series))
+series_table = extract_series(table)
+print(to_match(series_table))

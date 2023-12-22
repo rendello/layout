@@ -6,13 +6,6 @@ enum InuktutMorpheme {
     AI, A, AA, I, II, U, UU
 }
 
-impl InuktutMorpheme {
-    fn to_latin(self) -> String {
-        case self {
-
-        }
-    }
-}
 
 enum TokenType {
     InuktutMorpheme(InuktutMorpheme),
