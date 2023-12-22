@@ -21,10 +21,10 @@ Non goals:
 
 Syllabics are widely used by Inuktitut speakers.
 
-Nunavik 			→ ᓄᓇᕕᒃ
-Natsilingmiutut 	→ ᓇᑦᓯᖕᒥᐅᑐᑦ
-Inuktitut 			→ ᐃᓄᒃᑎᑐᑦ
-Nunatsiavummiutut	→ ᓄᓇᑦᓯᐊᕗᒻᒥᐅᑐᑦ
+Nunavik            → ᓄᓇᕕᒃ
+Natsilingmiutut    → ᓇᑦᓯᖕᒥᐅᑐᑦ
+Inuktitut          → ᐃᓄᒃᑎᑐᑦ
+Nunatsiavummiutut  → ᓄᓇᑦᓯᐊᕗᒻᒥᐅᑐᑦ
 
 Latin scripts are also used for all Inuit languages, but tend to produce words
 that are long and unwieldy. The effectiveness of syllabics can be debated, but
