@@ -1,0 +1,9 @@
+
+.mode tabs
+.import          headers.TAB                                          canada_census_2021
+.import --skip 1 98-401-X2021006_English_TAB_data_Atlantic.TAB        canada_census_2021
+.import --skip 1 98-401-X2021006_English_TAB_data_BritishColumbia.TAB canada_census_2021
+.import --skip 1 98-401-X2021006_English_TAB_data_Ontario.TAB         canada_census_2021
+.import --skip 1 98-401-X2021006_English_TAB_data_Prairies.TAB        canada_census_2021
+.import --skip 1 98-401-X2021006_English_TAB_data_Quebec.TAB          canada_census_2021
+.import --skip 1 98-401-X2021006_English_TAB_data_Territories.TAB     canada_census_2021
