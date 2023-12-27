@@ -81,3 +81,39 @@ mockup of the keyboard, though it's not functional. Once this is done, I can
 combine the two and see how things work.
 
 Eventually, I could add the suggestions bar, etc.
+
+
+𐫱 Constraints 𐫱
+
+It's very difficult for me not to over-optimize.
+
+For the parsing code, I must use a regex-based tokenization system for the
+lexing, and the regex library must be the standard one.
+
+The lexer will determine if a given word is likely Inuktut, using some very
+basic heuristics that can be coded into regex tokenizer itself. Ie. email
+adresses and Zip codes should be left as is, perhaps even all all-caps
+abbreviations. There's a desire to make this functionality very clever, but a
+user is going to be using the converter on small selections of text most of the
+time, and will expect simple, predictable behaviour.
+
+Only words comprised of only Latin Inuktuk characters can go on to the parsing
+stage, and the parser should not fail to produce output at that point (as in,
+the conversion function *can* fail, but given the filtered input, that should
+not be expected).
+
+The regex to determine if a word is Inuktut will not pass any additional
+information to the conversion function, that function can do it's own parsing.
+
+
+Today, I will write this lexer. (December 26th, 2023)
+
+
+
+𐫱 Misc. ideas 𐫱
+
+Backspace deletes one character, always. But backspace+swipe left means you
+delete the previous word/suggestion that was placed.
+
+Look at this project to allow for morpheme-level suggestions:
+https://github.com/LowResourceLanguages/InuktitutComputing
