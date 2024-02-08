@@ -59,8 +59,18 @@ def extract_series(table):
     return series
 
 
+def encode(s):
+    return repr(s.encode("utf8"))[2:][:-1]
+
+
 def line(consonant, vowel, syllabic):
-    return f'''b"{consonant or ""}{vowel or ""}" => "{syllabic}",\n'''
+    line = f'''b"{encode(consonant) or ""}{vowel or ""}" => "{syllabic}",'''
+    if "\\x" in line:
+        line += f'''\t/* {consonant}{vowel or ""} */\n'''
+    else:
+        line += "\n"
+    return line
+
 
 def latin_to_syl(series_table):
     s = str()
