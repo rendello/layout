@@ -68,7 +68,17 @@ def to_syl_line(consonant, vowel, syllabic):
     return line
 
 
-def to_syl(series_table):
+def to_lat_line(consonant, vowel, syllabic):
+    line = f'''    b"{encode(syllabic)}" => "{consonant or ""}{vowel or ""}",'''
+    if "\\x" in line:
+        line += f'''\t/* {syllabic} */\n'''
+    else:
+        line += "\n"
+    return line
+
+
+
+def generate_hashtables(series_table, line_function):
     s = str()
 
     for series in series_table:
@@ -76,13 +86,21 @@ def to_syl(series_table):
 
         match series["final"]:
             case str(syllabic):
-                s += to_syl_line(consonant, None, syllabic) 
+                s += line_function(consonant, None, syllabic) 
 
         for vowel in ["ai", "i", "ii", "u", "uu", "a", "aa"]:
             match series[vowel]:
                 case str(syllabic):
-                    s += to_syl_line(consonant, vowel, syllabic) 
+                    s += line_function(consonant, vowel, syllabic) 
     return s
+
+
+def to_syl(series_table):
+    return generate_hashtables(series_table, to_syl_line)
+
+def to_lat(series_table):
+    return generate_hashtables(series_table, to_lat_line)
+
 
 # TODO: Count max bytes for syllabics and latin letters for max key lengths.
 
@@ -124,14 +142,17 @@ def generate():
         '''type PMap = phf::Map<&'static [u8], &'static str>;\n\n'''
     )
 
-    for (dialect, table) in dialects:
-        series_table = extract_series(table)
+    for (suffix, function) in ("_TO_SYL", to_syl), ("_TO_LAT", to_lat):
+        local_buffer = ""
+        for (dialect, table) in dialects:
+            series_table = extract_series(table)
 
-        buffer += "pub static " + dialect + "_TO_SYL: PMap = phf_map! {\n"
-        buffer += to_syl(series_table)
-        buffer += "};\n\n"
+            local_buffer += "pub static " + dialect + suffix + ": PMap = phf_map! {\n"
+            local_buffer += function(series_table)
+            local_buffer += "};\n\n"
 
-    buffer = realign_comments(buffer)
+        buffer += realign_comments(local_buffer)
+
     return buffer
 
 

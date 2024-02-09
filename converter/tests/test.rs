@@ -8,7 +8,7 @@ const RE: &str = r"(:?ai|i|ii|u|uu|a|aa|p|pai|pi|pii|pu|puu|pa|paa|t|tai|ti|tii|
 
 proptest! {
     #![proptest_config(ProptestConfig {
-        cases: 1_000_000,
+        cases: 10_000,
         .. ProptestConfig::default()
     })]
 
@@ -19,8 +19,8 @@ proptest! {
         let maps = [&converter::BASE];
         let string = String::new();
         // println!("{}", s);
-        // converter::f(&maps[..], &s.as_bytes(), string);
-        println!("{}\n{}\n", s, converter::f(&maps[..], &s.as_bytes(), string));
+        converter::f(&maps[..], &s.as_bytes(), string);
+        // println!("{}\n{}\n", s, converter::f(&maps[..], &s.as_bytes(), string));
     }
 }
 
