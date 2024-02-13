@@ -1,4 +1,6 @@
 
+use converter::maps;
+
 use converter;
 
 use proptest::prelude::*;
@@ -16,7 +18,7 @@ proptest! {
     #[test]
     // fn doesnt_crash(s in r"[\w[a-z] ]*") {
     fn doesnt_crash(s in RE) {
-        let maps = [&converter::BASE];
+        let maps = [&maps::BASE_TO_LAT];
         let string = String::new();
         // println!("{}", s);
         converter::f(&maps[..], &s.as_bytes(), string);
@@ -24,9 +26,16 @@ proptest! {
     }
 }
 
+const TEST_S: &str = r##"
+ᐃᖃᓗᐃᑦ
+ᐃᖃᓗᓐᓅᕕᑦᓴᖅ ᖃᖓᑕᓲᒃᑯᑦ ᐊᒻᒪᓗ ᐅᒥᐊᒃᑯᑦ ᑭᓯᐊᓂ.  ᖃᖓᑕᓲᒃᑯᑦ ᐊᖅᑯᑎᐅᔪᒍᑦ ᕿᑭᖅᑖᓗᒻᒥ ᓄᓇᓕᓕᒫᓄᑦ ᐊᒻᒪᓗ ᑲᖥᖦᓕᑦ ᓄᓈᓄᑦ ᐊᐅᔭᐅᓂᖓ, ᐊᒻᒪᓗ ᑯᔾᔪᐊᕐᒧᑦ, ᑕᕐᕋᒥᐅᑦ ᐊᒻᒪᓗ ᐱᖓᖕᓇᒥ ᓄᓇᓕᓐᓄᑦ ᓲᕐᓗ ᑲᖏᖦᖠᓂᕐᒧᑦ ᐊᒻᒪᓗ ᔨᐊᓗᓇᐃᕝᒧᑦ. ᕿᑎᓪᓗᐊᖓᓃᑦᑐᖅ ᐅᑭᐅᖅᑕᖅᑐᒧᑦ ᐊᒻᒪᓗ ᖁᑦᓯᓂᕐᓴᒧᑦ ᖃᖓᑕᓲᒃᑯᑦ ᐊᖅᑯᑏᑦ, ᓇᑭᑐᐃᓐᓇᖅ ᓄᓇᕐᔪᐊᕐᒦᖔᖅᑐᓂᑦ ᒥᕝᕕᐅᒍᓐᓇᖅᑐᒧᑦ ᖃᓄᐃᑦᑐᑐᐃᓐᓇᑦᓯᐊᒧᑦ ᖃᖓᑕᓲᒧᑦ. ᐱᒡᒐᓇᖏᓂᖅᐹᖑᔪᖅ ᐃᖃᓗᓐᓅᕆᐊᖅ ᐃᓚᖓᓂ ᑎᒻᒥᔫᓂ ᐃᑭᒪᓗᓂ ᖃᐅᑕᒫᑦ ᐃᖃᓗᓐᓅᐸᑦᑐᓂ ᐋᑐᕚᒥ ᒪᓐᑐᕆᐊᒥᓪᓘᓐᓃᑦ.
+
+ᑕᒪᒃᑮᒃ ᑲᓇᐃᑎᐊᓐ ᓄᐊᕐ (Canadian North) ᐊᒻᒪᓗ ᕘᕐᔅ ᐃᐅᒃᑯᑦ (First Air) ᖃᖓᑕᓲᓕᕆᓂᒃᑯᑦ ᐱᔨᑦᓯᕋᖅᐸᑦᑑᒃ.
+"##;
+
 #[test]
 fn test_main() {
-    let maps = [&converter::BASE, &converter::WESTERN];
+    let maps = [&maps::BASE_TO_LAT];
     let string = String::new();
-    println!("{:?}", converter::f(&maps[..], "inuktitut".as_bytes(), string));
+    println!("{:?}", converter::f(&maps[..], TEST_S.as_bytes(), string));
 }

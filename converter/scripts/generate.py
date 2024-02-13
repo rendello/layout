@@ -4,6 +4,72 @@ Table adapted from Wikipedia article: "Inuktitut syllabics".
 See: https://en.wikipedia.org/wiki/Inuktitut_syllabics
 """
 
+"""
+TODO:
+Decide the strategy: should all series be included in the base table, given
+the series is not equivocal to another (ie, different versions of the
+H-series), or should the base table truly be the base, and the special
+characters be in their own groups?
+
+Ie. The "łii → ᖡ" conversion only applies to certain dialects technically,
+but the conversion should be included (in both directions) for any dialect,
+because neither the latin consonant nor the syllabic symbol are ambiguous.
+The characters may be used in names, for example, and there's no point
+leaving them out.
+
+With the "cascading hashtables" idea, the "ł" series should be applied on
+top of the base table, casting its shadow onto it. But the base table could
+easily have this character, and that would allow it to exist in all dialects.
+Another idea is to always have the base table not be the true root, and have
+additional dialect tables trailing it. This seems wasteful.
+
+Indeed, the idea of having multiple, cascading hashtables may be wasteful.
+I'd like to consider having one table per dialect, and perhaps even two, one
+with the ai column using the restored syllabics like ᐁ, and one version with
+the ᐊᐃ. Having the cascading effect is tempting in this case, but I'd be
+forced to create a ᐊᐃ or ᐁ for every version of the table, which just adds
+work, confusion, and CPU cycles.
+
+Really, the differentiation in dialects comes down to, as I understand it, the
+H series (plural).
+
+ᕼᐊ → Nunavut
+𑪴 → Natsilik
+ᓴ → Eastern Nunavut (but S in Western Nunavut)
+ᕹ → Nunavik
+
+I'd like to look at webscrapes and see which of these characters are commonly
+used.
+
+In any case, the cascading hashtable, if necessary, is simple and elegant.
+I have my doubts that it's needed, however.
+
+Perhaps the "patching" can just be user preferences? They don't have to be
+perfect hashing, just a regular hashtable. For example, latin-izing the ᖓ
+series as "ng" vs "ŋ".
+
+TODO: Figure out what "ᐂ" is and add it, probably. 
+
+===
+
+Have tables of symbols that are converted from, but not too. For example,
+𑪶 is preferred to ᓯ̵, the latter should be converted from, but not to. Likewise,
+ł is preferred to ɫ in latin text. 
+
+Number of bytes for keys? Just count the number of [backslash]x per line.
+
+Reverse shadowing: have the basic table contain all unambiguous Inuktitut
+mappings, then just have a hole for the ambiguous mappings (ie. H-series),
+and place the appropriate table pointer behind. Then the happy path maps
+to the most used operations (non-h series). Of course, in this case, the
+non-syllabic stuff still goes through the two tables per char.
+
+Or, instead of returning a simple Option<str> from the tables, I could
+also return a "h-series" variant, then use the current dialect to
+deal with that. Same with the h-s series. I'm matching anyways on the
+Some/None case, it'd just be another case or two.
+"""
+
 BASE_TABLE = [
     "	ᐁ	ᐃ	ᐄ	ᐅ	ᐆ	ᐊ	ᐋ	",
     "p	ᐯ	ᐱ	ᐲ	ᐳ	ᐴ	ᐸ	ᐹ	ᑉ",

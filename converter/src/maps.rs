@@ -366,7 +366,3 @@ pub static NATSILIK_TO_LAT: PMap = phf_map! {
     b"\xe1\x96\xac" => "řa",                /* ᖬ */
     b"\xe1\x96\xad" => "řaa",               /* ᖭ */
 };
-
-
-
-
