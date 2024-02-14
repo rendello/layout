@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from pprint import pprint
 
-dialects = [
+DIALECTS = [
     {
         "name": "Base",
         "reciprocal": [
@@ -132,14 +132,14 @@ def realign_comments(s):
 def generate_key_lengths(direction, key_lengths):
     lengths_s = sorted(list(key_lengths), reverse=True)
     count = len(key_lengths)
-    return f'''const KEY_LENGTHS_{direction.upper()}: [usize; {count}] = {lengths_s};\n'''
+    return f'''pub const KEY_LENGTHS_{direction.upper()}: [usize; {count}] = {lengths_s};\n'''
 
 
 def do(direction):
     buffer = ""
     key_lengths = set()
 
-    for dialect in dialects:
+    for dialect in DIALECTS:
         buffer += "\npub static " + (dialect["name"] + "_" + direction).upper() + ": PMap = phf_map! {\n"
 
         for table, comment in [

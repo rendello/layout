@@ -6,8 +6,8 @@ use phf::phf_map;
 
 type PMap = phf::Map<&'static [u8], &'static str>;
 
-const KEY_LENGTHS_TO_SYL: [usize; 5] = [5, 4, 3, 2, 1];
-const KEY_LENGTHS_TO_LAT: [usize; 3] = [6, 5, 3];
+pub const KEY_LENGTHS_TO_SYL: [usize; 5] = [5, 4, 3, 2, 1];
+pub const KEY_LENGTHS_TO_LAT: [usize; 3] = [6, 5, 3];
 
 pub static BASE_TO_SYL: PMap = phf_map! {
     b"ai" => "ᐁ",
