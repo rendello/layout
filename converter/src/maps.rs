@@ -154,6 +154,15 @@ pub static BASE_TO_SYL: PMap = phf_map! {
     b"b" => "ᖯ",
     b"h" => "ᕼ",
     b"\xca\xbc" => "ᑊ",     /* ʼ */
+
+    /* UNIDIRECTIONAL NORMALIZATIONS */
+    b"\xc9\xabi" => "ᖠ",    /* ɫi */
+    b"\xc9\xabii" => "ᖡ",   /* ɫii */
+    b"\xc9\xabu" => "ᖢ",    /* ɫu */
+    b"\xc9\xabuu" => "ᖣ",   /* ɫuu */
+    b"\xc9\xaba" => "ᖤ",    /* ɫa */
+    b"\xc9\xabaa" => "ᖥ",   /* ɫaa */
+    b"\xc9\xab" => "ᖦ",     /* ɫ */
 };
 
 pub static NUNAVIK_TO_SYL: PMap = phf_map! {

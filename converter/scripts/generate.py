@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from pprint import pprint
+
+# TODO: Change KEY_LENGTHS to static from const?
 
 DIALECTS = [
     {
@@ -30,6 +31,9 @@ DIALECTS = [
         "to_lat": [
             "sh		ᓯ̵	ᓰ̵	ᓱ̵	ᓲ̵	ᓴ̵	ᓵ̵	ᔅ̵",
             "h		ᓯˋ	ᓰˋ	ˎᓱ	ˎᓲ	ᓴˏ	ᓵˏ	ᔅ̷",
+        ],
+        "to_syl": [
+            "ɫ		ᖠ	ᖡ	ᖢ	ᖣ	ᖤ	ᖥ	ᖦ",
         ]
     },
     {

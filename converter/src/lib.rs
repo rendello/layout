@@ -7,7 +7,7 @@ pub mod maps;
 
 type PMap = phf::Map<&'static [u8], &'static str>;
 
-const MAX_KEY_LENGTH: usize = 5;
+const MAX_KEY_LENGTH: usize = 7;
 
 
 
