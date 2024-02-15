@@ -44,3 +44,12 @@ proptest! {
 //     let string = String::new();
 //     println!("{:?}", converter::f(&maps[..], TEST_S.as_bytes(), string));
 // }
+
+const TEST_S: &str = "
+qilaut angmaluqɫuni tigumiarviqaqɫuni tuktuup aminganik miqquijaqsimajumik ittasimalluni, avaluqaqɫuni qijungmik, tamauna qijuktangagut kasukpakɫugu iktuktaqɫuni imiaɫɫunilu tusarniqtuq. ajaajaaqtunik quviasuktuniglu atuqtauqattaqtuq qilautauvuq.
+";
+
+#[test]
+fn test_normalize() {
+    println!("{}", converter::normalize_lat(TEST_S));
+}

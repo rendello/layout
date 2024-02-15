@@ -54,6 +54,16 @@ pub fn to_syl(text: &str) -> String {
 }
 
 
+pub fn normalize_syl(text: &str) -> String {
+    to_syl(&to_lat(&text))
+}
+
+
+pub fn normalize_lat(text: &str) -> String {
+    to_lat(&to_syl(&text))
+}
+
+
 fn next_jump(byte: u8) -> usize {
     if byte & 0b1000_0000 == 0 {
         1
