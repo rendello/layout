@@ -7,3 +7,5 @@
 cc 23326f5d2300bb0c279df76a1ac510309fc80addca4b1b644d436eca2cb494c1 # shrinks to s = "¡"
 cc a9611a64441e586780adfb79b5544091cf610f08b88e4babd419f3a4435821da # shrinks to s = "tj"
 cc 744d06f93c5b1661aa6dde64430923a5c395e01e791e0c05777d8b68beca2dd4 # shrinks to s = "qk"
+cc cd58616ed77b9f2dfacd429ad9352a8efdd81d7c13eb68f9ffec31003303b586 # shrinks to s = " "
+cc a2eae78a200fa4c7af090c4c11639f96509f28270a2fbce832fdbaccc3d39d91 # shrinks to s = ""

@@ -1,14 +1,8 @@
-
-use std::cmp;
-
 use phf;
 
 pub mod maps;
 
 type PMap = phf::Map<&'static [u8], &'static str>;
-
-const MAX_KEY_LENGTH: usize = 7;
-
 
 
 fn get(maps: &[&PMap], key: &[u8]) -> Option<&'static str> {
@@ -20,19 +14,43 @@ fn get(maps: &[&PMap], key: &[u8]) -> Option<&'static str> {
     None
 }
 
-pub fn f(maps: &[&PMap], text: &[u8], mut buffer: String) -> String {
+fn bind_key_lengths(key_lengths: &[usize], max: usize) -> &[usize] {
+    for (i, &length) in key_lengths.iter().enumerate() {
+        if length < max { return &key_lengths[i..]; }
+    };
+    &key_lengths[key_lengths.len()..]
+}
+
+
+pub fn f(maps: &[&PMap], key_lengths: &[usize], text: &[u8], mut buffer: String) -> String {
     if text.is_empty() { return buffer }
 
-    let max_key_length = cmp::min(MAX_KEY_LENGTH, text.len());
-    for length in (1..(max_key_length+1)).rev() {
+    let bounded_key_lengths = bind_key_lengths(key_lengths, text.len()+1);
+    for &length in bounded_key_lengths {
         if let Some(v) = get(maps, &text[..length]) {
             buffer.push_str(&v);
-            return f(maps, &text[length..], buffer);
+            return f(maps, key_lengths, &text[length..], buffer);
         }
     }
     let jump = next_jump(text[0]);
     buffer.push_str(std::str::from_utf8(&text[..jump]).unwrap());
-    return f(maps, &text[jump..], buffer);
+    return f(maps, key_lengths, &text[jump..], buffer);
+}
+
+
+pub fn to_lat(text: &str) -> String {
+    let key_lengths = maps::KEY_LENGTHS_TO_LAT;
+    let maps = [&maps::BASE_TO_LAT];
+    let string = String::new();
+    f(&maps[..], &key_lengths, &text.as_bytes(), string)
+}
+
+
+pub fn to_syl(text: &str) -> String {
+    let key_lengths = maps::KEY_LENGTHS_TO_SYL;
+    let maps = [&maps::BASE_TO_SYL];
+    let string = String::new();
+    f(&maps[..], &key_lengths, &text.as_bytes(), string)
 }
 
 
