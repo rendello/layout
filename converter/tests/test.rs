@@ -51,5 +51,5 @@ qilaut angmaluqɫuni tigumiarviqaqɫuni tuktuup aminganik miqquijaqsimajumik itt
 
 #[test]
 fn test_normalize() {
-    println!("{}", converter::normalize_lat(TEST_S));
+    println!("{}", converter::to_syl(TEST_S));
 }
