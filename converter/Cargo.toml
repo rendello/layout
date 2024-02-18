@@ -3,12 +3,34 @@ name = "converter"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
-phf = { version = "0.11.2", features = ["macros"] }
-proptest = "1.4.0"
-rustler = { version = "0.31.0", optional = true }
 
 [features]
-nif = ["dep:rustler"]
+wasm = ["dep:wasm-bindgen", "dep:web-sys"]
+
+[dependencies]
+getrandom = { version = "0.2", features = ["js"] }
+
+phf = { version = "0.11.2", features = ["macros"] }
+
+wasm-bindgen = { version = "0.2.91", optional = true }
+
+[dependencies.web-sys]
+optional = true
+version = "0.3.4"
+features = [
+  'Document',
+  'Element',
+  'HtmlElement',
+  'Node',
+  'Window',
+]
+
+
+[dev-dependencies]
+proptest = { version = "1.4.0" }
+
+
+# TODO: Seperate these.
+[lib]
+crate-type = ["cdylib", "rlib"] 
+

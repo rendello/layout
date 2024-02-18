@@ -2,9 +2,8 @@ use phf;
 
 pub mod maps;
 
-#[cfg(feature = "nif")]
-pub mod nif;
-
+#[cfg(feature = "wasm")]
+pub mod wasm;
 
 type PMap = phf::Map<&'static [u8], &'static str>;
 
