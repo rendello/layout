@@ -1,6 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML Form Update Event</title>
   <link data-trunk rel="rust" href="Cargo.toml" data-cargo-features="wasm">
+
+  <style>
+    .output {
+      display: block;
+      width: 95%;
+      margin: 10px auto;
+      background: #f2f2f2;
+    }
+  </style>
+
 </head>
+<body>
+  <form id="myForm">
+    <label for="textInput"></label>
+    <textarea id="textInput" name="textInput" spellcheck="false"></textarea>
+    <button type="submit" disabled style="display: none" aria-hidden="true"></button>
+  </form>
+
+  <div class="output">
+    <p id="output"></p>
+  </div>
+
+  <script>
+    const inputField = document.getElementById('textInput');
+    const outputDiv = document.getElementById('output');
+
+    function handleFormUpdate() {
+      const inputValue = inputField.value;
+      outputDiv.innerText = wasmBindings.convert_to_syl(inputValue);
+    }
+
+    inputField.addEventListener('input', handleFormUpdate);
+
+    handleFormUpdate();
+  </script>
+</body>
 </html>

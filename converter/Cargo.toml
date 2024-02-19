@@ -5,32 +5,18 @@ edition = "2021"
 
 
 [features]
-wasm = ["dep:wasm-bindgen", "dep:web-sys"]
+wasm = ["dep:wasm-bindgen"]
 
 [dependencies]
-getrandom = { version = "0.2", features = ["js"] }
-
 phf = { version = "0.11.2", features = ["macros"] }
 
 wasm-bindgen = { version = "0.2.91", optional = true }
-
-[dependencies.web-sys]
-optional = true
-version = "0.3.4"
-features = [
-  'Document',
-  'Element',
-  'HtmlElement',
-  'Node',
-  'Window',
-]
 
 
 [dev-dependencies]
 proptest = { version = "1.4.0" }
 
 
-# TODO: Seperate these.
 [lib]
 crate-type = ["cdylib", "rlib"] 
 

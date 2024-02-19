@@ -73,3 +73,30 @@ ng → ŋ, etc. That way the rules can be easily visualized, plus the tables
 for nattilik, etc.
 
 The 𑪶 series is sometimes "shr", sometimes "sh", sometimes "š".
+
+
+===
+
+HTML:
+
+Add field button
+
+Each field has a selector with:
+["to_syl", "to_lat", "normalize_syl", "normalize_lat"]
+
+Also, a selector at to of page to select layout:
+[ A ]
+[ B ]
+[ C ]
+
+Or
+
+[A][B]
+[C]
+
+Maybe wrap the outputs in folds so they can be minimized.
+
+Default:
+
+[ to_syl ]
+[ to_lat ]

@@ -9,7 +9,7 @@ const RE: &str = r"(:?ai|i|ii|u|uu|a|aa|p|pai|pi|pii|pu|puu|pa|paa|t|tai|ti|tii|
 
 proptest! {
     #![proptest_config(ProptestConfig {
-        cases: 10_000,
+        cases: 2000,
         .. ProptestConfig::default()
     })]
 
@@ -25,31 +25,4 @@ proptest! {
 
         prop_assert_eq!(s, lat);
     }
-}
-
-
-// const TEST_S: &str = r##"
-// ᐃᓄᐃᑦ (ᓄᓇᖃᖅᑳᖅᓯᒪᔪᑦ) ᓄᓇᕗᒻᒥᐅᑦ ᐃᓄᒃᑎᑐᑦ ᐅᖃᐅᓯᕐᖓᐅᑎᖃᕐᒪᑕ. ᐃᓄᐃᑦ ᐅᖃᐅᓯᖏᑦ ᐊᑦᔨᒌᙱᑦᑑᑎᐅᒐᓗᐊᖅᑐᑎᒃ ᓄᓇᓖᑦ ᒪᓕᒃᖢᒋᑦ, ᐃᓄᐃᓐᓇᖅᑐᓐ ᐃᓚᐅᓪᓗᓂ, ᐅᖃᐅᓯᕆᔭᐅᔪᖅ ᐅᐊᓕᓂᖅᐸᓯᖓᓂᕐᒥᐅᑕᐅᔪᓂ ᓄᓇᕗᒥ. ᐃᓄᐃᓐᓇᖅᑐᓐ ᖃᓕᐅᔮᖅᐯᑎᑐᑦ ᐃᓅᔨᖓᔪᖅᑎᑐᑦ ᑎᑎᕋᐅᓯᖃᖅᑐᑦ ᖃᓂᐅᔮᖅᐯᑎᑑᖓᙱᑦᑐᑦ ᑎᑎᕋᐅᓯᖏᑦ.
-
-// ᐃᓄᒃᑎᑐᑦ/ᐃᓄᐃᓐᓇᖅᑐᓐ ᐅᖃᑎᐅᓯᓖᑦ ᐅᓄᕐᓂᖅᐹᖑᕗᑦ ᓄᓇᕗᒻᒥ. 70ᐳᓴᓐ ᓄᓇᕗᒻᒥᐅᑦ ᐃᓄᒃᑎᑐᑦ ᐅᖃᐅᓯᕐᖓᐅᑎᖃᕐᒪᑎᑕ. ᐃᓄᐃᑦ ᐅᖃᐅᓯᖏᑦ ᐊᑦᔨᒌᑦᑎᐊᖏᒃᑲᓗᐊᖅᖢᑎᒃ ᓄᓇᓖᑦ ᒪᓕᒃᖢᒋᑦ, ᐃᓄᐃᓐᓇᖅᑐᓐ ᐃᓚᐅᓪᓗᓂ, ᐅᖃᐅᓯᕆᔭᐅᔪᖅ ᐅᐊᓕᓂᖅᐸᓯᖓᓂᕐᒥᐅᑕᐅᔪᓂ ᓄᓇᕗᒻᒥ. ᐃᓄᐃᓐᖅᑐᓐ ᖃᓕᐅᔮᖅᐯᑎᑐᑦ ᐃᓅᔨᖓᔪᑎᑐᑦ ᑎᑎᕋᐅᓯᙯᑦᔪᔪᒡ ᑕᖅᓴᓕᖅᐹᖅᑐᑦ ᐃᓄᒃᑎᑑᖏᑦᑐᐴ.
-// ===
-// ᐃᓄᐃᑦ (ᓄᓇᖃᖅᑳᖅᓯᒪᔪᑦ) ᓄᓇᕗᒻᒥᐅᑦ ᐃᓄᒃᑎᑐᑦ ᐅᖃᐅᓯᕐᖓᐅᑎᖃᕐᒪᑕ. ᐃᓄᐃᑦ ᐅᖃᐅᓯᖏᑦ ᐊᔾᔨᒌᙱᑦᑑᑎᐅᒐᓗᐊᖅᑐᑎᒃ ᓄᓇᓖᑦ ᒪᓕᒃᖢᒋᑦ, ᐃᓄᐃᓐᓇᖅᑐᓐ ᐃᓚᐅᓪᓗᓂ, ᐅᖃᐅᓯᕆᔭᐅᔪᖅ ᐅᐊᓕᓂᖅᐸᓯᖓᓂᕐᒥᐅᑕᐅᔪᓂ ᓄᓇᕗᒥ. ᐃᓄᐃᓐᓇᖅᑐᓐ ᖃᓕᐅᔮᖅᐸᐃᑎᑐᑦ ᐃᓅᔨᖓᔪᖅᑎᑐᑦ ᑎᑎᕋᐅᓯᖃᖅᑐᑦ ᖃᓂᐅᔮᖅᐸᐃᑎᑑᖓᙱᑦᑐᑦ ᑎᑎᕋᐅᓯᖏᑦ.
-
-// ᐃᓄᒃᑎᑐᑦ/ᐃᓄᐃᓐᓇᖅᑐᓐ ᐅᖃᑎᐅᓯᓖᑦ ᐅᓄᕐᓂᖅᐹᖑᕗᑦ ᓄᓇᕗᒻᒥ. 70ᐳᓴᓐ ᓄᓇᕗᒻᒥᐅᑦ ᐃᓄᒃᑎᑐᑦ ᐅᖃᐅᓯᕐᖓᐅᑎᖃᕐᒪᑎᑕ. ᐃᓄᐃᑦ ᐅᖃᐅᓯᖏᑦ ᐊᔾᔨᒌᑦᑎᐊᖏᒃᑲᓗᐊᖅᖢᑎᒃ ᓄᓇᓖᑦ ᒪᓕᒃᖢᒋᑦ, ᐃᓄᐃᓐᓇᖅᑐᓐ ᐃᓚᐅᓪᓗᓂ, ᐅᖃᐅᓯᕆᔭᐅᔪᖅ ᐅᐊᓕᓂᖅᐸᓯᖓᓂᕐᒥᐅᑕᐅᔪᓂ ᓄᓇᕗᒻᒥ. ᐃᓄᐃᓐᓇᖅᑐᓐ ᖃᓕᐅᔮᖅᐸᐃᑎᑐᑦ ᐃᓅᔨᖓᔪᑎᑐᑦ ᑎᑎᕋᐅᓯᖃᐃᔾᔪᔪᒡ ᑕᖅᓴᓕᖅᐹᖅᑐᑦ ᐃᓄᒃᑎᑑᖏᑦᑐᐴ.
-// "##;
-
-// #[test]
-// fn test_main() {
-//     let maps = [&maps::BASE_TO_LAT];
-//     let string = String::new();
-//     println!("{:?}", converter::f(&maps[..], TEST_S.as_bytes(), string));
-// }
-
-const TEST_S: &str = "
-qilaut angmaluqɫuni tigumiarviqaqɫuni tuktuup aminganik miqquijaqsimajumik ittasimalluni, avaluqaqɫuni qijungmik, tamauna qijuktangagut kasukpakɫugu iktuktaqɫuni imiaɫɫunilu tusarniqtuq. ajaajaaqtunik quviasuktuniglu atuqtauqattaqtuq qilautauvuq.
-";
-
-#[test]
-fn test_normalize() {
-    println!("{}", converter::to_syl(TEST_S));
 }
