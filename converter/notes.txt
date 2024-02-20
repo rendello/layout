@@ -100,3 +100,8 @@ Default:
 
 [ to_syl ]
 [ to_lat ]
+
+===
+
+Eliminate recursive function in converter (WASM doesn't do
+TCO really)

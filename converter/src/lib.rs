@@ -40,6 +40,33 @@ pub fn f(maps: &[&PMap], key_lengths: &[usize], text: &[u8], mut buffer: String)
     return f(maps, key_lengths, &text[jump..], buffer);
 }
 
+pub struct Dialect {
+    maps: &'static [&'static PMap],
+    key_lengths: &'static [usize],
+}
+
+pub fn f2(dialect: Dialect, text_: &str) -> String {
+    let text = text_.as_bytes();
+    let text_len = text.len();
+
+    let mut buffer = String::with_capacity(text_len*2);
+    let mut index = 0;
+
+    'main: loop {
+        if index == text_len { break buffer }
+
+        for &length in bind_key_lengths(dialect.key_lengths, text_len-index+1) {
+            if let Some(v) = get(dialect.maps, &text[index..index+length]) {
+                buffer.push_str(&v);
+                index += length;
+                continue 'main;
+            }
+        }
+        let jump = next_jump(text[index]);
+        buffer.push_str(std::str::from_utf8(&text[index..index+jump]).unwrap());
+        index += jump;
+    }
+}
 
 pub fn to_lat(text: &str) -> String {
     let key_lengths = maps::KEY_LENGTHS_TO_LAT;
@@ -49,12 +76,23 @@ pub fn to_lat(text: &str) -> String {
 }
 
 
+static M: [&'static PMap; 1]  = [&maps::BASE_TO_SYL];
+
 pub fn to_syl(text: &str) -> String {
-    let key_lengths = maps::KEY_LENGTHS_TO_SYL;
-    let maps = [&maps::BASE_TO_SYL];
-    let string = String::new();
-    f(&maps[..], &key_lengths, &text.as_bytes(), string)
+    let d = Dialect {
+        maps: &M,
+        key_lengths: &maps::KEY_LENGTHS_TO_SYL,
+    };
+    f2(d, text)
 }
+
+
+// pub fn to_syl(text: &str) -> String {
+//     let key_lengths = maps::KEY_LENGTHS_TO_SYL;
+//     let maps = [&maps::BASE_TO_SYL];
+//     let string = String::new();
+//     f(&maps[..], &key_lengths, &text.as_bytes(), string)
+// }
 
 
 pub fn normalize_syl(text: &str) -> String {
