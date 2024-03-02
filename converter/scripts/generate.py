@@ -24,6 +24,8 @@ DIALECTS = [
             "ng	ᙰ	ᖏ	ᖐ	ᖑ	ᖒ	ᖓ	ᖔ	ᖕ",
             "nng		ᙱ	ᙲ	ᙳ	ᙴ	ᙵ	ᙶ	ᖖ",
             "ł		ᖠ	ᖡ	ᖢ	ᖣ	ᖤ	ᖥ	ᖦ",
+            "ř		ᖨ	ᖩ	ᖪ	ᖫ	ᖬ	ᖭ	ᖮ",
+            "š		𑪶	𑪷	𑪸	𑪹	𑪺	𑪻	",
             "b								ᖯ",
             "h								ᕼ",
             "ʼ								ᑊ",
@@ -34,6 +36,7 @@ DIALECTS = [
         ],
         "to_syl": [
             "ɫ		ᖠ	ᖡ	ᖢ	ᖣ	ᖤ	ᖥ	ᖦ",
+            "&		ᖠ	ᖡ	ᖢ	ᖣ	ᖤ	ᖥ	ᖦ",
         ]
     },
     {
@@ -166,6 +169,25 @@ def do(direction):
     buffer = realign_comments(buffer)
     key_lengths_str = generate_key_lengths(direction, key_lengths)
     return buffer, key_lengths_str
+
+
+
+
+'''
+pub struct Dialect {
+    maps: &'static [&'static PMap],
+    key_lengths: &'static [usize],
+}
+
+static NUNAVUT: [&'static PMap; 2]  = [&BASE_TO_SYL, &IQALUIT_TO_SYL];
+static NUNAVIK: [&'static PMap; 2]  = [&BASE_TO_SYL, &NUNAVIK_TO_SYL];
+static NETSILIK: [&'static PMap; 2] = [&BASE_TO_SYL, &NETSILIK_TO_SYL];
+
+let d = Dialect {
+    maps: &M,
+    key_lengths: &maps::KEY_LENGTHS_TO_SYL,
+};
+'''
 
 
 def generate():

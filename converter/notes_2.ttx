@@ -1,0 +1,79 @@
+
+I like using PHF for its efficiency, it allows me to load a hashmap at runtime without hashing and compiling all the entries. As it stands now, however, there are some pitfalls. Namely, I'm using a system of "cascading hashmaps", which feels inefficient. I would like to avoid this.
+
+Why? The original idea for this hashmap system was TempleOS' symbol structure. In TempleOS, every single symbol in the entire OS is hashed (as I understand it), and if I saught symbol isn't found in the processes' hashmap, the parent is checked, and so on. If this works for every symbol on an OS, why can't it work for a textual system, converting tiny amounts of text, with the only speed requirement being "the user doesn't notice"?
+
+There's really no reason to do it like this. Surely, CSS uses a similar datastructure for its "cascading" rules?
+
+Besides, in reality, I'm going to be allocating and copying a fair bit. Like, I have to lowercase the text I'm processing, which is a whole other issue in itself.
+
+I believe my frustration is with the "impurity" of it all.
+
+If I were to use a regular hashmap, I would update it dynamically based on the ruleset I wanted. For example, replacing the H syllabic, or loading/unloading the "ai" series.
+
+I have an idea that would combine that last idea with the efficiency of PHF, though I'm not sure if it's possible, or even a good idea.
+
+I would create perfect hashes for all the entries at once, ensuring no collisions, and then I'd selectively create rulesets from that big map. For example, I would have the "ai" series hashed, but not include that in the final loaded hashmap if the dialect didn't use the series.
+
+Of course, the duplicate keys thing is an issue. The H series could have multiple results based on dialect. One idea could be to keep the compiled hash, but swap out the returned value. Not sure if that's possible or even practical.
+
+What's Rust actually doing when loading a PHF hashmap? What would my "dynamic but not" hashmaps even look like, how would compiling them work?
+
+It's clear that creating this system would add a lot of complexity with no little upside, so how is that "more pure"? I believe the reason I'm obsessing over this is that I'm anxious about what to do next in the project, particularly how to deal with dialects in the code, and how advanced I want the WASM interface to be.
+
+I think I need to look at the exceptions listed on the Wikipedia chart, and decide what I need to do with each.
+
+---
+
+[o] Nunavik -- "ai" column -- Option
+[o] Nunavik -- ᕹ/h series -- H Option
+[ ] Nunavut -- ᖅᑲ -> qqa (qq series) -- Unambiguous (I think)
+[ ] Nunavik -- ᖓ, ᙵ look different -- Font issue, ignore.
+
+[o] Nunavut -- ᕼ -> H -- H Option
+[o] Nunavut (East) -- ᓴ -> s -- *
+[o] Nunavut (West) -- ᓴ -> h -- *
+
+[ ] Nattilik -- 𑪺 -> ša -- Unambiguous
+[o] Nattilik -- 𑪴 -> ha -- H Option **
+[ ] Nattilik -- ᖬ -> řa -- Unambiguous
+[o] Nattilik -- ᖓ, ᙵ -> ŋ, ŋŋ -- Option
+
+[ ] Many dialects -- ᖤ -> ła -- Unambiguous
+[ ] Aivilik -- ᖯ -> b -- Unambiguous (probably safe enough)
+
+* I don't know what to make of ᓴ, I think I'll have to do some research.
+
+** Is this used differently than the standard Nunavut and Nunavik "H" options?
+I want to look into the use of H syllabics, how commona are they.
+
+Added with the Kevin King proposal, will look into it.
+
+For š series, I think shr should be an unambiguous normalization, since it seems common, but less preferred to š.
+
+---
+
+left hand corner could be doubled consonant
+
+qaa qi  qii
+qa  q   qu
+qq  qai quu
+↑↑
+
+ᖄ ᕿ ᖀ
+ᖃ ᖅ  ᖁ
+ᖅᒃ ᙯ ᖂ
+↑↑
+
+Might make more sense, since doubled consonants are often different
+than just putting the consonant twice, ie. ᖅ
+
+---
+
+Add & as ł normalization(?) Maybe overzealous.
+
+
+https://www.itk.ca/projects/inuktut-qaliujaaqpait-converter/
+Converts "ᖬ, 𑪴, 𑪺, ᖤ" to "rha, ha, shra, hla". Should there be an option for this? Should this just be a normalization? I think this is the new "standard" for latin letters, but I'm not sure if it's really preferred.
+
+This is the "Qaliujaaqpait", the unified system. I think it should be an option, but perhaps not the primary one.

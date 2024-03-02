@@ -3,28 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HTML Form Update Event</title>
+  <title>This ←←←</title>
+
   <link data-trunk rel="rust" href="Cargo.toml" data-cargo-features="wasm">
 
   <style>
+    * {
+      font-family: "Noto Sans Canadian Aboriginal";
+      word-spacing: 0.5em;
+    }
+
     .output {
-      display: block;
-      width: 95%;
+
+    }
+
+    #box {
+      display: grid;
+      grid-template-areas:
+        "input"
+        "output";
+      grid-gap: 10px;
+
+      box-sizing: border-box;
+      padding: 10px;
+      width: 80%;
       margin: 10px auto;
       background: #f2f2f2;
+    }
+
+    #form {
+      grid-area: input;
+    }
+
+    #form textarea {
+      width: 100%;
+      box-sizing: border-box;
+      resize: vertical;
+    } 
+
+    #panel {
+     grid-area: panel;
+     background: #e6e6e6;
     }
   </style>
 
 </head>
 <body>
-  <form id="myForm">
-    <label for="textInput"></label>
-    <textarea id="textInput" name="textInput" spellcheck="false"></textarea>
-    <button type="submit" disabled style="display: none" aria-hidden="true"></button>
-  </form>
 
-  <div class="output">
-    <p id="output"></p>
+  <div id="box">
+    <form id="form">
+      <label for="textInput"></label>
+      <textarea id="textInput" name="textInput" spellcheck="false"></textarea>
+      <button type="submit" disabled style="display: none" aria-hidden="true"></button>
+    </form>
+    <div class="output">
+      <p id="output"></p>
+    </div>
   </div>
 
   <script>

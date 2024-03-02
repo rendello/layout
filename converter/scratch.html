@@ -1,0 +1,57 @@
+
+<label for="formLayout">Layout:</label>
+<select id="formLayout">
+  <option value="1">
+    [ A ]<br>
+    [ B ]<br>
+    [ C ]
+  </option>
+  <option value="2">
+    [A][B]<br>
+    [C]
+  </option>
+</select>
+
+<script>
+
+</script>
+  for (var i=1; i <= 2; i++) {
+    
+  }
+<script>
+    function createForms() {
+      var numberOfForms = parseInt(document.getElementById('numberOfForms').value);
+      var formsContainer = document.getElementById('formsContainer');
+      formsContainer.innerHTML = ''; // Clear previous forms
+
+      for (var i = 1; i <= numberOfForms; i++) {
+        var formId = 'form-' + i;
+
+        var form = document.createElement('form');
+        form.id = formId;
+
+        var label = document.createElement('label');
+        label.htmlFor = 'textInput-' + i;
+
+        var textarea = document.createElement('textarea');
+        textarea.id = 'textInput-' + i;
+        textarea.name = 'textInput';
+        textarea.spellcheck = false;
+
+        var button = document.createElement('button');
+        button.type = 'submit';
+        button.disabled = true;
+        button.style.display = 'none';
+        button.setAttribute('aria-hidden', 'true');
+
+        form.appendChild(label);
+        form.appendChild(textarea);
+        form.appendChild(button);
+
+        formsContainer.appendChild(form);
+      }
+    }
+
+    document.getElementById('numberOfForms').addEventListener('change', createForms);
+    createForms(); // Initial form creation
+  </script>
