@@ -1,3 +1,127 @@
+🙟 The Syllabic Keyboard Project 🙝
+
+
+𐫱 Goal 𐫱
+
+Develop an iOS application that lets Inuktitut speakers frictionlessly type in
+syllabics.
+
+Additional goals:
+– Let users write Inuktitut in latin text, using the same system as syllabics.
+– Let users convert syllabic ⇋ latin text quickly in the suggestions bar.
+– Let users pick suggestions from the aforementioned bar.
+
+Non goals:
+– 🗙 Facilitate writing in English, French, or any other latin-based language.
+– 🗙 Facilitate writing in Cree, Ojibwe, or any other syllabic-based language.
+– 🗙 Facilitate use of emojis, other characters not found on standard keyboards.
+
+
+𐫱 Motive 𐫱
+
+Syllabics are widely used by Inuktitut speakers.
+
+Nunavik            → ᓄᓇᕕᒃ
+Natsilingmiutut    → ᓇᑦᓯᖕᒥᐅᑐᑦ
+Inuktitut          → ᐃᓄᒃᑎᑐᑦ
+Nunatsiavummiutut  → ᓄᓇᑦᓯᐊᕗᒻᒥᐅᑐᑦ
+
+Latin scripts are also used for all Inuit languages, but tend to produce words
+that are long and unwieldy. The effectiveness of syllabics can be debated, but
+the fact remains that they are highly popular today.
+
+Unfortunately, despite good Unicode support, there exist no high-tier syllabic
+keyboards for mobile devices.
+
+I believe that by taking inspiration from other keyboards, particularly the
+Japanese keyboard on iOS, writing in Inuktitut can go from being a slow and
+painful process to a fast and enjoyable one. Furthermore, the same keyboard
+design could be easily adapted to write the latin script at a much faster rate
+than using a standard English keyboard.
+
+𐫱 𐫱 𐫱 𐫱 𐫱
+
+I currently lack the hardware to develop an iOS app, and as such I have to
+consider my current capabilities. Concepts for two seperate systems arise:
+
+1. A Rust-based system that will serve as the core logic for my iOS application,
+as well as a future Android application; and
+
+2. An HTML/CSS based system, which will serve as my rapid protoype.
+
+
+For the web application, I have apprehensions. Namely, the type of code, and the
+way everything is fit together, is unlikely to resemble, in any form, any sort
+of Swift UI code on iOS. That being said, I'm well acquainted with these
+technologies, and I think it would be a great opportunity for rapid prototyping
+and experimentation.
+
+For the Rust-based system, things have been going very slowly. I believe this is
+due to their not being too much logical code, and my fear that once I'm finished
+the internals, I'll be unable to work on the external code any time soon, due to
+lack of hardware. I would very much like to finish my Rust-based syllabic
+converter, but I think it might be more worth it to focus on the web app for
+now.
+
+Perhaps I should try and create a greenfield project to isolate the behaviour of
+individual keys. Namely, the pressing of the keys and the sliding motion. This
+could be achieved fairly easily with JS.
+
+a: The single key, unpressed.
+b: The dialogue that appears around the key when held.
+
+a)    b)
+    → ABC
+ E  → DEF
+    → GHI
+
+The behaviour should be fairly simple, and less prine to scope creep than the
+syllabic converter, so it could be a good start. I already have an HTML/CSS
+mockup of the keyboard, though it's not functional. Once this is done, I can
+combine the two and see how things work.
+
+Eventually, I could add the suggestions bar, etc.
+
+
+𐫱 Constraints 𐫱
+
+It's very difficult for me not to over-optimize.
+
+For the parsing code, I must use a regex-based tokenization system for the
+lexing, and the regex library must be the standard one.
+
+The lexer will determine if a given word is likely Inuktut, using some very
+basic heuristics that can be coded into regex tokenizer itself. Ie. email
+adresses and Zip codes should be left as is, perhaps even all all-caps
+abbreviations. There's a desire to make this functionality very clever, but a
+user is going to be using the converter on small selections of text most of the
+time, and will expect simple, predictable behaviour.
+
+Only words comprised of only Latin Inuktuk characters can go on to the parsing
+stage, and the parser should not fail to produce output at that point (as in,
+the conversion function *can* fail, but given the filtered input, that should
+not be expected).
+
+The regex to determine if a word is Inuktut will not pass any additional
+information to the conversion function, that function can do it's own parsing.
+
+
+Today, I will write this lexer. (December 26th, 2023)
+
+
+
+𐫱 Misc. ideas 𐫱
+
+Backspace deletes one character, always. But backspace+swipe left means you
+delete the previous word/suggestion that was placed.
+
+Look at this project to allow for morpheme-level suggestions:
+https://github.com/LowResourceLanguages/InuktitutComputing
+
+
+===
+
+
 TODO:
 Decide the strategy: should all series be included in the base table, given
 the series is not equivocal to another (ie, different versions of the
@@ -105,3 +229,318 @@ Default:
 
 Eliminate recursive function in converter (WASM doesn't do
 TCO really)
+
+===
+
+I like using PHF for its efficiency, it allows me to load a hashmap at runtime without hashing and compiling all the entries. As it stands now, however, there are some pitfalls. Namely, I'm using a system of "cascading hashmaps" which feels inefficient. I would like to avoid this.
+
+Why? The original idea for this hashmap system was TempleOS' symbol structure. In TempleOS, every single symbol in the entire OS is hashed (as I understand it), and if a saught symbol isn't found in the processes' hashmap, the parent is checked, and so on. If this works for every symbol on an OS, why can't it work for a textual system, converting tiny amounts of text, with the only speed requirement being "the user doesn't notice"?
+
+There's really no reason to do it like this. Surely, CSS uses a similar datastructure for its "cascading" rules?
+
+Besides, in reality, I'm going to be allocating and copying a fair bit. Like, I have to lowercase the text I'm processing, which is a whole other issue in itself.
+
+I believe my frustration is with the "impurity" of it all.
+
+If I were to use a regular hashmap, I would update it dynamically based on the ruleset I wanted. For example, replacing the H syllabic, or loading/unloading the "ai" series.
+
+I have an idea that would combine that last idea with the efficiency of PHF, though I'm not sure if it's possible, or even a good idea.
+
+I would create perfect hashes for all the entries at once, ensuring no collisions, and then I'd selectively create rulesets from that big map. For example, I would have the "ai" series hashed, but not include that in the final loaded hashmap if the dialect didn't use the series.
+
+Of course, the duplicate keys thing is an issue. The H series could have multiple results based on dialect. One idea could be to keep the compiled hash, but swap out the returned value. Not sure if that's possible or even practical.
+
+What's Rust actually doing when loading a PHF hashmap? What would my "dynamic but not" hashmaps even look like, how would compiling them work?
+
+It's clear that creating this system would add a lot of complexity with no little upside, so how is that "more pure"? I believe the reason I'm obsessing over this is that I'm anxious about what to do next in the project, particularly how to deal with dialects in the code, and how advanced I want the WASM interface to be.
+
+I think I need to look at the exceptions listed on the Wikipedia chart, and decide what I need to do with each.
+
+---
+
+[o] Nunavik -- "ai" column -- Option
+[o] Nunavik -- ᕹ/h series -- H Option
+[ ] Nunavut -- ᖅᑲ -> qqa (qq series) -- Unambiguous (I think)
+[ ] Nunavik -- ᖓ, ᙵ look different -- Font issue, ignore.
+
+[o] Nunavut -- ᕼ -> H -- H Option
+[o] Nunavut (East) -- ᓴ -> s -- *
+[o] Nunavut (West) -- ᓴ -> h -- *
+
+[ ] Nattilik -- 𑪺 -> ša -- Unambiguous
+[o] Nattilik -- 𑪴 -> ha -- H Option **
+[ ] Nattilik -- ᖬ -> řa -- Unambiguous
+[o] Nattilik -- ᖓ, ᙵ -> ŋ, ŋŋ -- Option
+
+[ ] Many dialects -- ᖤ -> ła -- Unambiguous
+[ ] Aivilik -- ᖯ -> b -- Unambiguous (probably safe enough)
+
+* I don't know what to make of ᓴ, I think I'll have to do some research.
+
+** Is this used differently than the standard Nunavut and Nunavik "H" options?
+I want to look into the use of H syllabics, how commona are they.
+
+Added with the Kevin King proposal, will look into it.
+
+For š series, I think shr should be an unambiguous normalization, since it seems common, but less preferred to š.
+
+---
+
+left hand corner could be doubled consonant
+
+qaa qi  qii
+qa  q   qu
+qq  qai quu
+↑↑
+
+ᖄ ᕿ ᖀ
+ᖃ ᖅ  ᖁ
+ᖅᒃ ᙯ ᖂ
+↑↑
+
+Might make more sense, since doubled consonants are often different
+than just putting the consonant twice, ie. ᖅ
+
+---
+
+Add & as ł normalization(?) Maybe overzealous.
+
+
+https://www.itk.ca/projects/inuktut-qaliujaaqpait-converter/
+Converts "ᖬ, 𑪴, 𑪺, ᖤ" to "rha, ha, shra, hla". Should there be an option for this? Should this just be a normalization? I think this is the new "standard" for latin letters, but I'm not sure if it's really preferred.
+
+This is the "Qaliujaaqpait the unified system. I think it should be an option, but perhaps not the primary one.
+
+---
+
+As for the normalization (lowercasing) of latin text before conversion:
+
+A naive approach would be to lowercase all the text first, then run the conversions. I don't love this as it requires reallocation, but also, any unconverted characters lose their case, which is not ideal. In reality, I suppose I don't hope a whole lot of latin characters will go through, as I hope to automatically detect Inuktitut words and only convert those, in most cases.
+
+But still, it should keep the case.
+
+What I think I should do is re-engineer the hashmap stuff, so instead of operating on bytes, it operates on characters. If my max byte count is 5, for example, I can check if the characters fit inside those bounds (with my next_jump function), and if they don't, then skip. Actually, I can look at the bounds of the characters, then union those two arrays, ie. If my KEY_LENGTHS are [6, 5, 4, 2], and the bounds of the chars are only [4, 2], then I can skip 5 and 6. Hell, if the next char is 1, I can skip all checks!
+
+If the bounds are ok, I should probably just load those bytes into a register / temp var, then go through and lowercase the chars in place. Caveat: lowercasing in place is not usually done, since there can be different byte lengths. However, for the chars I'm looking for, I don't *think* that's the case. Therefore, I should write my own little lowecasing function, and use tests / prop tests to make SURE the lengths won't change.
+
+That way I can skip a lot more checks, and I don't have to reallocate to do the lowercasing. On the other hand, I'll be doing a lot more lowercasing, and it will probably not be great for cache locality. I don't think this will matter though, the speed will not be noticable, and the main thing is that case is preserved for non-inuk letters.
+
+Speaking of, of course, I will not be using my register loaded values if the non-conversion path is taken, just standard skip and add to str buff.
+
+I mean, I could probably use some soft of intelligent copying to make sure I don't relower the same letters over and over. I guess I should, it will probably just be a little bit of logic.
+
+
+Should I just use a u64 to put the bytes in? For now, my biggest KEY_LENGTH is 6. I don't think there will be much more added, maybe some normalizations. I can see the byte number reaching 8, possibly with the "Qaliujaaqpait" normalizations. Well no, they're all ascii, and none are 8 long. I think we're safe for now, anyway. I guess in that case, I could make the hashmap work un u64s, instead of u8s. It would make maps.rs less pretty, but more efficient since we'd no longer be pointer chasing. Again, not that it matters.
+
+Ok, Ɫ and ɫ have different byte lengths. I don't think this should matter, just as long as I can fit the normalized stuff in the buffer. I'm not married to a u64, I just don't want to allocate a string. I'll have to keep the original and the buffer's indices separately.
+
+I mean Rust has a u128, I could use that if the u64 doesn't work out. I should just prop test it.
+
+---
+
+First things first, I should separate the dialect options out, as I listed above. I should also have `generate.py` do the "ai" series separately for each map. Might require a lot of refactoring. Perhaps I should investigate this first, before the busywork of making the separate options.
+
+Converting the ai series from syl -> lat should always work, so that could be considered a unidirectional normalization, but the other way around, only if enabled.
+
+Right now, maps.rs looks like:
+
+BASE_TO_SYL
+NUNAVIK_TO_SYL
+BASE_TO_LAT
+NUNAVIK_TO_LAT
+
+I want it to be like:
+
+BASE_TO_SYL
+BASE_TO_SYL_AI
+BASE_TO_LAT
+
+NUNAVIK_H_TO_SYL
+NUNAVIK_H_TO_SYL_AI
+NUNAVIK_H_TO_LAT
+
+This makes me think. The Nunavik H series in ambiguous from lat -> syl, because there are multiple H series, but unambiguous in the other direction. Maybe I need a DSL to map out these relationships.
+
+There's also the fact that ideally, I could have a scanning pass that would try and detect the variety, then convert based on that. Ehhhhh.
+
+Maybe like:
+
+
+	ᐁ	ᐃ	ᐄ	ᐅ	ᐆ	ᐊ	ᐋ	
+p	ᐯ	ᐱ	ᐲ	ᐳ	ᐴ	ᐸ	ᐹ	ᑉ
+t	ᑌ	ᑎ	ᑏ	ᑐ	ᑑ	ᑕ	ᑖ	ᑦ
+k	ᑫ	ᑭ	ᑮ	ᑯ	ᑰ	ᑲ	ᑳ	ᒃ
+g	ᒉ	ᒋ	ᒌ	ᒍ	ᒎ	ᒐ	ᒑ	ᒡ
+m	ᒣ	ᒥ	ᒦ	ᒧ	ᒨ	ᒪ	ᒫ	ᒻ
+n	ᓀ	ᓂ	ᓃ	ᓄ	ᓅ	ᓇ	ᓈ	ᓐ
+s	ᓭ	ᓯ	ᓰ	ᓱ	ᓲ	ᓴ	ᓵ	ᔅ
+l	ᓓ	ᓕ	ᓖ	ᓗ	ᓘ	ᓚ	ᓛ	ᓪ
+j	ᔦ	ᔨ	ᔩ	ᔪ	ᔫ	ᔭ	ᔮ	ᔾ
+jj	ᑦᔦ	ᑦᔨ	ᑦᔩ	ᑦᔪ	ᑦᔫ	ᑦᔭ	ᑦᔮ	ᑦᔾ
+v	ᕓ	ᕕ	ᕖ	ᕗ	ᕘ	ᕙ	ᕚ	ᕝ
+r	ᕂ	ᕆ	ᕇ	ᕈ	ᕉ	ᕋ	ᕌ	ᕐ
+q	ᙯ	ᕿ	ᖀ	ᖁ	ᖂ	ᖃ	ᖄ	ᖅ
+qq	ᖅᑫ	ᖅᑭ	ᖅᑮ	ᖅᑯ	ᖅᑰ	ᖅᑲ	ᖅᑳ	ᖅᒃ	NUNAVUT
+ng	ᙰ	ᖏ	ᖐ	ᖑ	ᖒ	ᖓ	ᖔ	ᖕ	....	AMBIGUOUS_SYL
+nng		ᙱ	ᙲ	ᙳ	ᙴ	ᙵ	ᙶ	ᖖ	....	AMBIGUOUS_SYL
+ŋ	ᙰ	ᖏ	ᖐ	ᖑ	ᖒ	ᖓ	ᖔ	ᖕ	NATTILIK	AMBIGUOUS_SYL
+ŋŋ		ᙱ	ᙲ	ᙳ	ᙴ	ᙵ	ᙶ	ᖖ	NATTILIK	AMBIGUOUS_SYL
+ł		ᖠ	ᖡ	ᖢ	ᖣ	ᖤ	ᖥ	ᖦ
+b								ᖯ
+h								ᕼ	NUNAVUT	AMBIGUOUS_LAT	H
+ʼ								ᑊ
+ř		ᖨ	ᖩ	ᖪ	ᖫ	ᖬ	ᖭ	ᖮ	NATTILIK
+š		𑪶	𑪷	𑪸	𑪹	𑪺	𑪻		NATTILIK
+š		ᓯ̵	ᓰ̵	ᓱ̵	ᓲ̵	ᓴ̵	ᓵ̵	ᔅ̵	NATTILIK	NORMALIZE_TO_LAT
+h		ᓯˋ	ᓰˋ	ˎᓱ	ˎᓲ	ᓴˏ	ᓵˏ	ᔅ̷	NATTILIK	NORMALIZE_TO_LAT	H
+ɫ		ᖠ	ᖡ	ᖢ	ᖣ	ᖤ	ᖥ	ᖦ	NATTILIK	NORMALIZE_TO_LAT
+&		ᖠ	ᖡ	ᖢ	ᖣ	ᖤ	ᖥ	ᖦ	NATTILIK
+h	ᕴ	ᕵ	ᕶ	ᕷ	ᕸ	ᕹ	ᕺ	ᕻ	NUNAVIK	AMBIGUOUS_LAT	H
+
+
+What do I really want?
+
+Well, I'd like to be able to generate some cascading hashtables that don't go too deep (3 levels at most, ideally), that convert text into other text directly. I'd like to keep that logic simple, with the possible exception of the aforementioned normalization (ie. lowercasing) code.
+
+For the table, I would love to have one source of truth, from which I can generate all those tables with no other input, as well as some other tables or sets that would allow me to write a function to analyze some text and determine the dialect, the vowels and consonants used, etc. I would love to be able to put some text into an input box on the web, and have it show me the characters used in a table, in a heatmap like display with subscript numbers showing the count of each character, and perhaps a number on each row (series) showing the count of the series in total.
+
+If the text used Nattilik characters, I'd love for it to automatically put the Nattilik table down below it, and show the same heatmap. If it also used Nunavik characters (for some reason), it should do the same.
+
+Why? Well, I want to analyze text from the web, to get a better understanding of what and how characters are actually used. Plus, I want the converter to have some basic heuristics on what latin or syllabic symbols to use, if there's ambiguity.
+
+---
+
+How does directly converting from text to text limit my ability to analyze?
+
+Converting without analyzing and converting while analyzing remove the main benefits of analysis. In both situations, we'd be ignoring hints about analysis (ie. this text is from Nunavik). So analysis should come beforehand.
+
+Should unambiguous text always be converted, or only converted if that specific dialect is being converted from? The former, all unambiguous text (lat to syl or vice versa) should be converted, with the possible exception of b → ᖯ.
+
+Should text be passed over multiple times to settle options? This is a tricky one, consider the case of ᐁ vs ᐊᐃ. It's tempting to always convert to the ↓ai column, then go through and reconvert to the a+i ᐊᐃ variants, because on the second run through, we can just use a table with all the ↓ai variants and convert those, where if we did it in the original run through, we'd have to make certain that the ↓ai variants we're putting in front of each table correspond to those values.
+
+For example, "hai" should be "ᕼᐁ" if we're using standard Nunavut syllabics and the ai column (an odd choice nowadays, but common pre 1970s if I'm not mistaken). So we can't convert it to "ᕴ", because that's a Nunavik thing, and we're not using the Nunivik table. So, if we did want the Nunavik table and the ai column, we'd need to do:
+
+Nunavik_ai → Nunavik → Base_ai → Base
+
+Or something like that.
+
+But, I think it's worth it. There's no need to reallocate and rerun over all the entries every time, plus there'd still be that big "ai" series table.
+
+It would be nice to have an in-place normalization function, too, that doesn't to syl -> lat -> syl, since that could lose some info. Ie. convert ᓰ̵ to its proper Unicode equivelent, 𑪷, without going through latin.
+
+---
+
+	ᐁ	ᐃ	ᐄ	ᐅ	ᐆ	ᐊ	ᐋ	
+p	ᐯ	ᐱ	ᐲ	ᐳ	ᐴ	ᐸ	ᐹ	ᑉ
+t	ᑌ	ᑎ	ᑏ	ᑐ	ᑑ	ᑕ	ᑖ	ᑦ
+k	ᑫ	ᑭ	ᑮ	ᑯ	ᑰ	ᑲ	ᑳ	ᒃ
+g	ᒉ	ᒋ	ᒌ	ᒍ	ᒎ	ᒐ	ᒑ	ᒡ
+m	ᒣ	ᒥ	ᒦ	ᒧ	ᒨ	ᒪ	ᒫ	ᒻ
+n	ᓀ	ᓂ	ᓃ	ᓄ	ᓅ	ᓇ	ᓈ	ᓐ
+s	ᓭ	ᓯ	ᓰ	ᓱ	ᓲ	ᓴ	ᓵ	ᔅ
+l	ᓓ	ᓕ	ᓖ	ᓗ	ᓘ	ᓚ	ᓛ	ᓪ
+j	ᔦ	ᔨ	ᔩ	ᔪ	ᔫ	ᔭ	ᔮ	ᔾ
+jj	ᑦᔦ	ᑦᔨ	ᑦᔩ	ᑦᔪ	ᑦᔫ	ᑦᔭ	ᑦᔮ	ᑦᔾ
+v	ᕓ	ᕕ	ᕖ	ᕗ	ᕘ	ᕙ	ᕚ	ᕝ
+r	ᕂ	ᕆ	ᕇ	ᕈ	ᕉ	ᕋ	ᕌ	ᕐ
+q	ᙯ	ᕿ	ᖀ	ᖁ	ᖂ	ᖃ	ᖄ	ᖅ
+qq	ᖅᑫ	ᖅᑭ	ᖅᑮ	ᖅᑯ	ᖅᑰ	ᖅᑲ	ᖅᑳ	ᖅᒃ	NUNAVUT
+ng	ᙰ	ᖏ	ᖐ	ᖑ	ᖒ	ᖓ	ᖔ	ᖕ	
+nng		ᙱ	ᙲ	ᙳ	ᙴ	ᙵ	ᙶ	ᖖ	
+ŋ	ᙰ	ᖏ	ᖐ	ᖑ	ᖒ	ᖓ	ᖔ	ᖕ	NATTILIK
+ŋŋ		ᙱ	ᙲ	ᙳ	ᙴ	ᙵ	ᙶ	ᖖ	NATTILIK
+ł		ᖠ	ᖡ	ᖢ	ᖣ	ᖤ	ᖥ	ᖦ
+b								ᖯ	AIVILIK
+h								ᕼ	NUNAVUT
+ʼ								ᑊ
+ř		ᖨ	ᖩ	ᖪ	ᖫ	ᖬ	ᖭ	ᖮ	NATTILIK
+š		𑪶	𑪷	𑪸	𑪹	𑪺	𑪻		NATTILIK
+š		ᓯ̵	ᓰ̵	ᓱ̵	ᓲ̵	ᓴ̵	ᓵ̵	ᔅ̵	NATTILIK
+h		ᓯˋ	ᓰˋ	ˎᓱ	ˎᓲ	ᓴˏ	ᓵˏ	ᔅ̷	NATTILIK	NORMALIZE_SYL
+ɫ		ᖠ	ᖡ	ᖢ	ᖣ	ᖤ	ᖥ	ᖦ	NATTILIK	NORMALIZE_LAT
+&		ᖠ	ᖡ	ᖢ	ᖣ	ᖤ	ᖥ	ᖦ	NATTILIK	NORMALIZE_LAT
+h	ᕴ	ᕵ	ᕶ	ᕷ	ᕸ	ᕹ	ᕺ	ᕻ	NUNAVIK
+
+^^^ Add Nattilik 𑪴 ha series
+Also the chart entry for ᓴ is wrong.
+
+===
+
+May 10th, 2024
+
+I now like the idea of a small DSL for the syllabics stuff, especially because it could aid greatly in the autogenerating in other tooling. For example, I'd like to be able to simply detect the language used on a webpage. Ideally, I will be downloading a huge dataset of all Inuktitut websites and categorizing them into different dialects, and possibly analyzing the characters they use such as non-standard (non-normalized) forms of characters, etc.
+
+I would be analyzing Syllabic and Latin text and considering them mostly equivalent.
+
+This tool should probably be written in Python since I have no need for performance and it would be nice to integrate more tightly with the webscraping tooling. For example, this could open up the possibility of following links and continuing to download pages if they contain a lot of Inuktitut (as determined by the code).
+
+I'd like the Rust code to be able to detect dialect as well, though it doesn't have to analyze the characters as much as the Python would, just normalize and detect language. Perhaps these two systems should be integrated after all, since they're so similar. That's yet to be seen.
+
+---
+
+So, should there be an intermediate representation in the Rust code? For direct conversion it hardly seems necessary, but for dialect analysis it seems natural, right? Let's think.
+
+If we encounter 𑪶 in the code, is it different than the Latin "shi"? Yes, it's in syllabics. Does that matter for our purposes? Well, we want to:
+
+1. Detect the dialect, and
+2. Convert it to syllabics or vice versa
+
+If we store the intermediate representation (either as a string, "shi", or some token format, [S, H, I]), but we don't store whether it was in Latin or Syllabics in the first place, that's useless for goal 2.
+
+We could say that both 𑪶 and "shi" are associated with Nattilik. This duplication will not happen really that often, and it's all in pre-generated tables, so we could be a fraction more efficient and have less logic in the code.
+
+Another issue is normalization. Should we normalize, say, syllabics by going:
+syl → lat → syl, or could we go
+syl → syl
+
+The latter would require more tables to be generated. The real question is whether these two would produce the same results. Logically I think so but my intuition is skeptical. I think this would be a good area for some property tests.
+
+---
+
+Back to the original question, should there be an intermediate representation? I'm leaning towards yes (maybe), but I don't think it has to be in some odd token format, I think it can just be a string. If it's a Latin string with what I'll call the "de-fato" Latin alphabet (ie. with š and ł), then there should be no amiguity except the s/h thing.
+
+As far as I know, dialects that use H in syllabics only are going to use one type. Nattilik uses 𑪴, Nunavut uses ᕼᐊ, and Nunavik uses ᕵ (ostensibly, I don't believe it's ever used in practice). So that's not an issue for conversion to or from Syllabics, as there's no ambiguity in practice.
+
+The only ambiguity in Latin, as far as I can tell, is that ᓯ means "sa" in some dialects and "ha" in others. Since the dialects that use it for "ha" don't use "sa" (it's shifted phonologically), we could represent it in Latin as "sa" always and convert when required for the "ha" dialects. So our "intermediate representation" could, I believe, be a regular Latin string with the ha-sa ambiguity eliminated by way of always using sa. If I ever extend this to Ojibwe and Cree, I might want a better system, but chances are I'd have to gut most of the logic anyway, so that shouldn't be a concern.
+
+---
+
+Let's examine the analysis requirements for a complex part of this project: the web analyzer. Ideally, I'd like to create a program that I can point at a webpage with Inuktitut on it, and it will find and analyze all the text on that page. It shouldn't be operating on the raw HTML, but rather what's actually presented on the page. Perhaps Selenium will be required if there's a lot of JS happenings, plus Selenium looks good on a resume.
+
+Regardless, the tool should find all the Inuktitut text. It can then report on the percentantage of the page is in Inuktitut. It should go through the text and find the dialect, based primarily on what characters are present in each word. It should be able to report normalizations.
+
+
+[ WORD | NORMALIZED_WORD | PRESUMED_DIALECT | URL ]
+[ ᐃᒪᒃ  | imak            | Nunavik          | https://nunavik-ice.com/iu/c/tag/%E1%91%95%E1%95%86%E1]
+
+I would also like something like above in SQLite, if I have the space for it.
+
+[ URL | INUKTITUT_PERCENTAGE | PRIMARY_PRESUMED_DIALECT | PRIMARY_SCRIPT ]
+[ https://iu.wikipedia.org | 90 | Nunavik | syllabic ]
+
+Perhaps that too.
+
+---
+
+Another thing I'd like is some property-based tests that compare the output of my tool with the output of other tools. Perhaps I would require Selenium, but I think I could also download the JS client-side in most cases and test against that (without checking it into the source tree).
+
+---
+
+Back to scraping. I think I should be able to point it at a page and have it do some magic. Namely, it should see if the Inuktitut level on the page is above ±5%, and if so, follow the links on the page that haven't been seen before. Then, it keeps doing that. That way, non-Inuktitut pages don't get exponentially scraped, while the entire Inuktitut web should be fairly easy to cover. Saved pages need to be cached. I think I'll only focus on HTML pages, though PDFs are tempting for sure.
+
+
+WORD(str)
+WORD_COUNT(int)
+NORMALIZED_WORD(str)
+PRESUMED_DIALECT(enum)
+RESOURCE_TYPE(enum) WEB | PDF
+URL(str)
+
+---
+
+If possible, I'd like to be able to look at things like consonant clusters and such for the language classifications.
+
+---
+
+Maybe for the English detection stuff, I'll do it all in Rust instead of two implementations in Rust and Python. I can add a list of all English words and subtract Inuktitut words from a dictionary or something from the list (I've done this before). Since I don't want to use all English words in my app, I can just put that part behind a feature flag. If I want accurate, I can use the word list to help, if I want fast, I use no- or fewer words. Same with French.
+
