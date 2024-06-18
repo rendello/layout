@@ -544,3 +544,349 @@ If possible, I'd like to be able to look at things like consonant clusters and s
 
 Maybe for the English detection stuff, I'll do it all in Rust instead of two implementations in Rust and Python. I can add a list of all English words and subtract Inuktitut words from a dictionary or something from the list (I've done this before). Since I don't want to use all English words in my app, I can just put that part behind a feature flag. If I want accurate, I can use the word list to help, if I want fast, I use no- or fewer words. Same with French.
 
+
+=== June 13th, 2024 ===
+
+
+Getting back into things, I think a really important step is creating a program that can run through given text and analyze it. Firstly, it needs to be able to detect (likely) Inuktitut text, be in it latin or syllabic form. Inuktitut meaning all Canadian Inuit dialects aside from Labridormiut. It doesn't need to copy the text per se, it can point to it, but it should store some attributes about it (right?). If text is syllabic, that should be known, and if text beside it is in latin script, that should be known as well, separately.
+
+>> The [Nunavik] dialect ([Nunavimmiutitut], [ᓄᓇᕕᒻᒥᐅᑎᑐᑦ]) is relatively close to the South Baffin dialect, but not identical. Because of the political and physical boundary between [Nunavik] and [Nunavut, Nunavik] has separate government and educational institutions from those in the rest of the [Inuktitut]-speaking world, resulting in a growing standardization of the local dialect as something separate from other forms of Inuktitut. In the [Nunavik] dialect, [Inuktitut] is called ` ([ᐃᓄᑦᑎᑐᑦ]). This dialect is also sometimes called [Tarramiutut] or [Taqramiutut] ([ᑕᕐᕋᒥᐅᑐᑦ] or [ᑕᖅᕐᕋᒥᐅᑐᑦ]).
+
+Nunavik
+Nunavimmiutitut
+ᓄᓇᕕᒻᒥᐅᑎᑐᑦ
+Nunavik
+Nunavut, Nunavik
+Inuktitut
+Nunavik
+Inuktitut
+ᐃᓄᑦᑎᑐᑦ
+Tarramiutut
+Taqramiutut
+ᑕᕐᕋᒥᐅᑐᑦ
+ᑕᖅᕐᕋᒥᐅᑐᑦ
+
+Must I presume I dialect before normalizing the word? I don't think so. As discussed above, I can boil everything down to a base latin, and the only ambiguity is whether the 's' remains an 's' or transforms into an 'h'. That is irrelevant in the normalization step. I can analyze all the strings later, as their original will be saved. That being said, there's no point in putting it off. The tokens being matched will have been generated from the Table of Truth (as I'll dub it), and so characters that are associated with a specific dialect can be reported. But what to do if a word contains characters from multiple dialects? Let's consider the following:
+
+Text is split into 'chunks'. These chunks can contain other chunks recursively. Let's assume for now that the chunking only applies to text seen to be likely Inuktitut:
+
+>> The [Nunavik] dialect ([Nunavimmiutitut, ᓄᓇᕕᒻᒥᐅᑎᑐᑦ])
+A: Nunavik
+B: Nunavimmiutitut, ᓄᓇᕕᒻᒥᐅᑎᑐᑦ
+
+A.chunks:
+>> [Nu][na][vi][k]
+
+A.A:
+>> [Nu]
+
+A.A.script
+>> [latin]
+
+A.script
+>> [latin]
+
+
+B.script
+>> [latin, syllabic]
+
+B.chunks:
+>> [Nunavimmiutitut][ᓄᓇᕕᒻᒥᐅᑎᑐᑦ]
+
+B.A.script
+>> [latin]
+
+B.B.dialect
+>> [standard]
+
+
+[ᓄᖅᑲᕆᑦ] (nuqqarit)
+
+A.script
+>> [syllabics]
+
+A.dialect
+>> [standard, nunavut]
+
+A.A.dialect (ᓄ)
+>> [standard]
+
+A.B.dialect (ᖅᑲ)
+>> [nunavut]
+
+Technically, in the last example, the Nunavut sequence ᖅᑲ can be divided into 'ᖅ' and 'ᑲ' (it's two characters). But consider this, the sequence "qqa" which it represents could techncially be split into 'q', 'q', and 'a'. This is useless. When dealing with both the syllabics and the latin letters, we're dividing the tokens into their longest possible counterparts.
+
+In any case, the point of this "chunking" is not that we need the finest possible granularity on everything, but the opposite. Getting this granularity should make it simpler to group larger segments of text together. For example, if there's a paragraph where many of the words contain some sequences that are associated with Nattilik and no other dialects, and there exist no other dialectal sequences except the standard ones, the Nattilik can be bubbled up to the larger chunk.
+
+Furthermore, this system could potentially help with differentiating non-Inuktitut words. Many English and French words fit the Inuktitut spelling system well, but are not Inuktitut. These can be filtered out by way of dictionaries (or hashtables). In most cases, I think these hashtables could be quite small and fit into the tokenization process quite well. Larger tables could potentially be used and toggled between with a compile-time feature, if needed.
+
+In any case, when these filtered words are encountered, they can be made a chunk in themselves, marker as English or French or whatever. This could also be used for names. Many names have Inuktitut spellings, but the latin spellings resemble the English names. For example, a search for ᒐᕕᓐ (Gavin) returns results on the Internet, but my spelling of "Gaven" wouldn't work.
+
+
+On Wikipedia, there's a:
+
+>> ᔮᓐ ᒦᐆᕐ -- jaan miiuur -- John Muir
+
+Of course not all names are going to be easily transliteratable or even consistantly spelled in Inuktitut, but I think it's worth having a list of such names and their transliterations and chunking them differently.
+
+The idea is, of course, that we're already working from the smallest atoms. In the case of Inuktitut words, it's the things that can be chunked into syllabic characters, like "i" and "nngaa". In the case of English words, it's the whole words, as there's no need to go further. Same with names. In this way, working from the ground up, tokenizing in the smallest required chunks as we go, we can build up a series of granular chunks that can be combined in another pass. 1000 English words can be combined into one English chunk, 1000 syllabic inuktitut words can be combined in another. Neutral chunks containing punctutation and numbers can be combined with their neighbours (if need be).
+
+In the practical sense, we're tokenizing these things by way of grabbing the largest possible tokens from the beginning of the string and consuming it. This will require a bit of work, namely, we're likely to have to copy the start of the string up to the largest possible token size, then lowercase it. Ok. That presents another issue, namely that the numbers of bytes and potentially(?) even the number of characters have chnaged, so that presents an issue. Say we want to keep the English word "London", but now it's lowercased as "london", so we must keep track of where we are in the original string. 'L' and 'l' are the same byte length in upper and lowercase, but this isn't the case for all, like Ɫ and ɫ (see above).
+
+So that's a pain. Another pain: What if we don't find a filtered word from English or French, and we start tokenizing it. What do we do if the end of the word isn't Inuktitut, do we un-tokenize it? Like, "makademashkikiwaaboo", the [maka-] could be Inuktitut, but clearly the rest isn't. Do we really only want to operate on tokens?
+
+Perhaps we have a main buffer for all the bottom-level chunks, then a temporary buffer for things that are not yet certain. So:
+
+>> John is an Inuk, he speaks ᐃᓄᒃᑎᑐᑦ and drinks makademashkikiwaaboo
+
+name, [John]
+english, [ is an ]
+inuktitut, [I][nu][k]
+english, [, he speaks ]
+inuktitut, [ᐃ][ᓄ][ᒃ][ᑎ][ᑐ][ᑦ]
+english, [ and drinks ]
+non_inuktitut, [makademashkikiwaaboo]
+
+But when tokenizing the last word, the temporary buffer is:
+inuk [ma]
+inuk [ka]
+non_inuk (restart tokenization)
+
+What is a word boundary for Inuktitut? I would say whitespace, end of string, punctuation. Not numbers, a lot of times numbers can be directly attached to the syllabics, and sometimes dashes are used like "55-ᖓᓂ" or "55ᖓᓂ". Dashes are weird, because I believe they can be used inside Inuktitut words (rarely), but can also connect Inuktitut words to English in an English context. Consider the example that I took from above:
+
+>> The Inuktitut-speaking world
+
+This is clearly English, but who cares? The word "Inuktitut" is in Inuktitut for our purposes. As such, I think dashes should also be considered neutreal. If there's two Inuktitut words on either side of it, the chunks can be chunked together as Inuktitut text. If not, then we can do wheatever else we need.
+
+So, who owns punctuation? I feel that English and non-Inuktitut text should have a stronger "bond" to it. If there's a lot of English and a few Inuk words, then the punctuation can belong to the English chunks on a higher level. For the most part, it shouldn't matter, since the punctuation and neutral characters are never going to converted anyways. If I want to use the tool to count the percentage of Inuktitut on the page, I think it should count internal punctuation for sure, but if there's other languages surrounding it, it can probably belong to those other languages. We'll see.
+
+Numbers can be considered neutral. Perhaps they'll require their own category.
+
+I think it could work well with:
+
+inuktitut
+non_inuktitut
+neutral
+name
+
+I suppose whitespace too. Perhaps that's "neutral".
+
+The Inuktitut wikipedia could be good for testing. The transliteration is automatic (and flawed), but generally, it would be good to test that each page in both forms normalized to the same thing in my tool.
+
+The automatic transliteration gives such nightmares as the following:
+
+>> ᑦᐦe ᐦᐃᒡᐦ ᐊᕐcᑎc ᕐeᓪocᐊᑎoᓐ: ᐊ ᕐeᑉoᕐᑦ oᓐ ᑦᐦe 1953–55 ᕐeᓪocᐊᑎoᓐ
+
+What am I supposed to do with that? I suppose my tool would just ignore most of it as non_inuktitut by default, which might not be the worst option.
+
+So!
+
+I want a few TSVs.
+
+- The Table of Truth (ToT), which has all the syllabics, syllables, and information for different tooling.
+
+- The name table, which has English and French names and their equivelents, perhaps a column for sources.
+
+- A list of all English words.
+
+- A list of all French words.
+
+These will all be combined at runtime. In practice, we don't need *all* English and French words in the hashtable. It could be useful for analysis on the web, but on iOS, we could have a compile flag that only takes the first 1000 or so. Actually, we only need the words that could be construed as Inuktitut by the system but are uniquivically not. I've basically created this filter before, it was quite simple. So no need to store all words. Maybe could help with analysis though for the webpages and whatnot.
+
+Let's look at tokenizing this paragraph:
+
+>> Canadian Inuit live throughout most of Northern Canada in the territory of Nunavut, Nunavik in the northern third of Quebec, the Nunatsiavut in Labrador, and in various parts of the Northwest Territories and Yukon (traditionally), particularly around the Arctic Ocean, in the Inuvialuit Settlement Region.
+
+Let's say the longest word in our hashtable is "incomprehensibilities", an English word. In practice it would likely be shorter because we might only include words that match potential Inuktitut words (not sure yet, as discussed above).
+
+It's 21 characters, but we don't need to run the tokenizer against the first 21 bytes. We have to do some processing first anyway. The first word in the string is "Canadian", 8 bytes. We're not going to tokenize things with spaces in them, so we only have to tokenize that far. Also, we don't want to tokenize on bytes, but on characters.
+
+**Sidenote: as I write this, the tokenizer for the converter does work on bytes, not characters. The input string comes from a str, so with a clever "next" function, I ensure that we never land inside a byte and crash things. But I will remove this soon, which will clean up the Rust file with the maps considerably. More importantly, we're already operating on characters and have to do string work anyway, so there's no reason to operate on bytes.
+
+Also, we need to copy the string "Canadian" to a new buffer (unfortunately) in order to decapitalize it.
+
+**Sidenote on lowercasing: So the lowercasing shouldn't be as bad as I thought. We actually don't really care about the ability to lowercase every script's letters on Earth, we just care about a small subset of letters. So, all of A-Z, as well as the few letters like Ɫ and ɫ. They have different byte lengths, sure, but they are the same number of characters. There's only a few of these (ł, ŋ, š, ř), so we can guarantee the number of chars will always be the same. We'll just write our own tiny lowercasing function.
+
+>> [Canadian][ ][I][nu][i][t][ ][live][ ][throughout][ ][most][ ][of][ ][Northern][ ][Canada][ ][in][ ][the][ ][territory][ ][of][ ][Nu][na][vu][t][, ][Nu][na][vi][k][ ][in][ ][the][ ][northern][ ][third][ ][of][ ][Quebec][, ][the][ ][Nu][na][t][s][i][a][vu][t][ ][in][ ][Labrador][, ][and][ ][in][ ][various][ ][parts][ ][of][ ][the][ ][Northwest][ ][Territories][ ][and][ ][Yukon][ (][traditionally][), ][particularly][ ][around][ ][the][ ][Arctic][ ][Ocean][, ][in][ ][the][ ][I][nu][vi][a][lu][i][t][ ][Settlement][ ][Region][.]
+
+The above would be the initial tokanization (chunking), without tagging. It should be obvious what each chunk is here. Realistically, the neutral elements between the English words might be combined even before a second pass to save space and clean up output, as they don't contain anything meaningful. A second layer of chunking would be:
+
+>> [Canadian ][Inuit][ live throughout most of Northern Canada in the territory of ][Nunavut, Nunavik][ in the northern third of Quebec, the ][Nunatsiavut][ in Labrador, and in various parts of the Northwest Territories and Yukon (traditionally), particularly around the Arctic Ocean, in the ][Inuvialuit][ Settlement Region.]
+
+The higher level chunking won't really combine the lower chunks as they contain useful information (see chunk justification above). This will be true for Inuktitut, but should it be true for English, French, and other non-inuktitut? I think so, because it would be nice to be able to see the language of the words, or if the language is unclear, why they were tokenized as non Inuktitut.
+
+My example tokenization is wrong as 2nd-order though. For Inuktitut, the second-order chunks should definitely be on word boundaries.
+
+So, English words are tokenized as-is in the 1st order chunking. This would be true, I suppose, whether they existed in the dictionary or not. If a word doesn't match any of the tokenization patterns in the list, it's considered non-inuktitut.
+
+We've been treating the nth-orders as if they mean nothing, but they do. 1st order, for Inuktitut, are the individual atoms that can be represented as syllabics. Second order are the words. Third order are the connected phrases. Fourth? What is there are two sentences in Inuktitut beside each other in different dialects, or different scripts? What then? Script boundaries are easy, but dialect boundaries are not, as most words in most dialects share most of the same characters. Looking up individual words and morphemes in a dictionary is beyond the abstraction of this tool. Perhaps we just add them together:
+
+"This paragraph contains both Nunavut and Nunavik dialect", or simply
+
+[nunavut, nunavik]
+
+It's likely to happen. For example, a sentence that says "In Nunavut we say X but in Nunavik they say Y".
+
+But we're not operating on the paragraph level, right? So what if an entire page is in Nunavik dialect, but includes a single character of Nunavut dialect? The whole page is considered both? I suppose if I'm storing words in a database, I can look at the chunk attributes and store only the known dialect, but still.
+
+Also, this makes me think. If we're chunking and not caring about the paragraphs and whatnot, this is going to make integration with HTML a huge pain. You can't start a <div> in one <p> and end it in another.
+
+Well, for working with the Internet, I'm going to be grabbing the text from <p> and <h1>, etc. tags anyway, so the content will arrive like that and potentially be pushed out in that format too. So no issue.
+
+Pseudocode:
+
+
+struct Chunk {
+    text: &str,    
+    children: Vec<Chunk>,
+    token: Token,
+}
+
+struct Inuktitut {
+    normalized: String,
+    dialects: Vec<Dialects>,
+    scripts: Vec<Scripts>
+}
+
+enum OtherLanguage {
+    English,
+    French,
+    Unknown
+}
+
+struct Other {
+    language: OtherLanguage,
+}
+
+struct Name {
+    normalized: String,
+}
+
+enum Token {
+    Inuktitut(Inuktitut),
+    Other(Other),
+    Neutral,
+}
+
+
+--- ChatGPT made it like this: ---
+
+
+#[derive(Debug, Clone)]
+struct Chunk {
+    text: String,    
+    children: Vec<Chunk>,
+    token: Token,
+}
+
+#[derive(Debug, Clone)]
+struct Inuktitut {
+    normalized: String,
+    dialects: Vec<Dialect>,
+    scripts: Vec<Script>,
+}
+
+#[derive(Debug, Clone)]
+enum OtherLanguage {
+    English,
+    French,
+    Unknown,
+}
+
+#[derive(Debug, Clone)]
+struct Other {
+    language: OtherLanguage,
+}
+
+#[derive(Debug, Clone)]
+struct Name {
+    normalized: String,
+}
+
+#[derive(Debug, Clone)]
+enum Token {
+    Inuktitut(Inuktitut),
+    Other(Other),
+    Neutral,
+}
+
+It converted my &strs to Strings, which really is fair. I would love to avoid all this allocation. In reality though, I do want to save the original words, right? If I save them in a DB, then I'm going to have to copy them. If I want to plop them back on the original page as-is, like the English words that would remain unchanged, I don't really need to save them though, especially each word inidividually. I can just copy them when I'm rewriting the string. Let's think about this.
+
+If I never copied the original string (except for the tokenization search stuff), how would that affect my design? It would do a hell of a lot less allocation for one. I'd have to make sure to keep the original string around. Is that an issue? I mean this is all fairly functional, straight-forward code. I don't think that'd be an issue.
+
+
+[I][nu][i][t]
+
+I, i, standard, latin, []
+nu, nu, standard, latin, []
+i, i, standard, latin, []
+t, t, standard, latin, []
+
+[Inuit]
+Inuit, inuit, standard, latin, [I, nu, i, t] <- list of child nodes.
+^^^^^     ^^
+Original  Should be stored as String or list of enums? Probably string.
+
+
+Should Chunk include more information like Inuktitut percentage? Seems wasteful for lower-order chunks, but useful for the higher order ones. Perhaps each chunk should have the number of characters included in it, and the percentages can be worked out by looking at the nodes near the top of the tree. Of course, should neutral chaarcters be counted? I think so, if they're internal to a given language, they're part of that count. Still, it seems imperfect. But for proactical purposes it should work.
+
+Actually, I can just count the characters of the chunk. I could even just count bytes if I'm lazy. The counts don't give a lot of information anyway, since syllabics have less characters than latin, for example.
+
+** Names category can include Inuit names that were written in a different system. I think the spreadsheet should have a comments / sources column.
+
+So how do I really want to do this tree? Will it be a true tree with one parent node? Thinking of a web page, I'm going to probably be grabbing all the disparate pieces of text from the various tags. In the case where I want to analyse the text to see if the page contains any Inuktitut (or like more than 5%), then having a root node that has the language info would be useful. That's not really reflected in my current design though.
+
+In the case where I want to convert all the text on the page to syllabics or latin, I don't need a whole tree, just the inuktitut and non-inuktut text so I can convert and copy respectively.
+
+In the case where I'm analyzing the code and showing the analysis in a web browser interactively, that's where I really want a tree. But my tree and the DOM's tree are different. I want to plop the old text back into the DOM all marked up with my annotations and background colours and hover tooltips. How do I track what goes where? Does my root node do anything for me? Should I keep the DOM info in my tree even if the end goal is not to use this primarily for HTML inspection?
+
+I suppose I don't have to put the whole web page in my tool in that case, the top of the tree could be the text in the <p> tag or whatever.
+
+Sure. Then if I want, I can collect all those disparate processed groups of text together in a vec (ie. a vec of chunks) and I have exactly what I need to make a root node. -Ish. I mean, <p> tags can contain <a> tags and whatnot, I have to think of how I'm going to do this. Strip them? I suppose I could recursively follow the HTML tree and work that way. This Regex extension calls certain elements "prose elements", maybe I could study it.
+
+https://github.com/Mohd-PH/RegexSearch/blob/master/src/content_scripts/page_search.js
+
+Then I'm dealing with two trees. Let's think about this:
+
+h1
+p
+p {text} a a
+
+Here, the h1 and two p tags are siblings. One p tag contains two a tags. So, I can simply work with the chunks as normal for each, replacing the text in each element as need be, and recurse lower if needed. There can be text beside the a tags, or parallel elemtents, so I convert it and don't recurse.
+
+So what do the chunks look like? Normally, the tree of chunks is based off of the recursive nature of the parsing. Here, they'd also be working off the recursive nature of the DOM.
+
+      / <h1>chunk</h1>
+root +- <p>chunk</p>
+      \ <p>chunk<a>chunk</a><a>chunk</a>
+
+For the DOM stuff, we just process it before making the root node. If we still want a root node, we can just treat these as normal chunks that are parallel to each other or contain each other. We just care about the text in the chunks, and the tags are irrelevant to us. Some parallel chunks therefore will be beside each other when they would've been merged before ona. higher order, so we can merge them if we wish, though it won't really matter since we'll now be on word boundaries and whatnot. Probably would be fore the best so we can get the text from things like <a> tags beside the text like if we were reading it.
+
+This is important, I think. And I think I worked it out pretty well. But this is not the most important thing. The most important thing is to get this working for a paragraph so I can copy and paste some code in and see it working. All this DOM stuff can come later.
+
+
+** Test: make sure all names in normalized Inuktitut are valid Inuktitut.
+
+** Thought: The new Qaliujaaqpait (latin) syllabics should be tagged perhaps, as well as other normalizations.
+
+Looks like Makivvik was one of the organizations behind the new latin syllabics. Perhaps I should consider using that as the default latin script.
+
+** Test: make sure the entire syllabic version of the Bible can be transliterated. Especially characters like ᑍ which are rare outside of religious texts.
+
+Some names can be found with the side-by-side Bible. I should keep in mind that these are in the religious form mentioned above. Perhaps I could have another column in the spreadsheet for potential religious names.
+ 
+https://www.bible.com/bible/455/1SA.20.ABM?parallel=1
+
+The DOM stuff bothers me because I'd be making a full tree functionally, but would be potentially editing the HTML imperatively. Why would I need a full tree? I suppose to get things like the Inuktitut percentage on the page.
+
+=== June 15th, 2024 ===
+
+** It looks like Nattilik uses 'ᕠ'? Wikipedia even says one of the names for the dialect is "Natchilingmiutut (ᓇᑦᕠᓕᖕᒥᐅᑐᑦ)". I first came across this on this page:
+
+https://nac-cna.ca/fr/stories/story/the-breathing-hole-an-unforgettable-journey-through-storytelling-and-puppet
+
+That's why it's important to me to have this analysis tool, to see which syllabics are used in practice and how.
+
+See this: https://hadlariconsulting.com/ikajuqtigiit-society
+
+^^ There's an open source (MacOS) keyboard too, perhaps I could get in contact with the authors and see if they have any useful knowledge.
