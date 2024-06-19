@@ -890,3 +890,152 @@ That's why it's important to me to have this analysis tool, to see which syllabi
 See this: https://hadlariconsulting.com/ikajuqtigiit-society
 
 ^^ There's an open source (MacOS) keyboard too, perhaps I could get in contact with the authors and see if they have any useful knowledge.
+
+
+===
+June 18th, 2024
+
+NAME        INUKTITUT  NOTES_AND_SOURCES
+Akeeagok    ᐊᕿᐊᕈᖅ     See English & Inuktitut versions of this article: https://nunatsiaq.com/stories/article/canada-post-does-not-provide-free-shipping-corporation-says-of-closed-amazon-loophole/
+
+I think this is a good format, though I might need another column for versions that use these ᑍ. Of course there might be multiple versions of a name in either direction, I'll have to think about that. I think it'd be nice to be able to add names in this format, then run a script to alphabetize the TSV/spreadsheet and convert the syllabics into normalized latin form ('aqiaruq', in this case).
+
+-
+
+So, what do I need from the analysis tool? I would like to be able to find all the Inuktitut text on a webpage. This would be helpful for a few things: Firstly, I'd like to be able to convert Inuktitut with very basic conversion tools, and knowing the dialect and script ahead of time would be a big help. I would also like to be able to analyze the text on the page.
+
+What percentage is Inuktitut, what percentage English, what percentage French? Moreover, I'd like to know the specific characters used in the Inuktitut text. Am I missing any? Are some characters very common, are some uncommon? Beyond that, I'd like to see patterns in the normalized forms. For example, are the N-series syllabics used more than the R-series, and how much more or less? What about the A-rotation? How common are long vowels?
+
+On the "breathing hole" article linked above, there's words like "ᐃᓄᒃᑑᓕᖅᑎᑦᕠ'ᓗᖓ", with apostrophes in the middle. I wasn't aware that was acceptable in Inuktitut. I'd like to store the Inuktitut words and a version of the words with all additional non-whitespace characters. So if we had:
+
+>> ᐃᓄᒃᑑᓕᖅᑎᑦᕠ'ᓗᖓ...
+
+[ᐃᓄᒃᑑᓕᖅᑎᑦᕠ]         Original word
+[ᐃᓄᒃᑑᓕᖅᑎᑦᕠ'ᓗᖓ...]  Original word with connected characters
+
+That way if there's something missing in my grabbing of words, I can figure out and tune the parser.
+
+One issue is that I previously didn't realize ᕠ was in any Inuktitut dialects. As it stands, my parser would hypothetically have skipped over this word as 'non-Inuktitut', which would mean I lost valuable information. What to do about this?
+
+I don't think this needs to be overly complex. Perhaps the latin case can be ignored completely. I'd like my analyzer to tell me if there are syllabics in my text that aren't in my table.
+
+I'd like to be able to use the tool to scrape pages with Inuktitut text and crawl additional pages.
+
+What's preventing me from moving forward?
+
+I'd like to understand the process and problems fully. So, the analysis tool will always be run when converting text, for example, to determine the correct dialect and, more importantly, for normalization. The normalization should be done in the analysis step.
+
+I'll ignore normalizations for now and start on table generation for the analysis tool.
+
+Possible funding sources from the website link above:
+
+>> The Ikajuqtigiit Society would like to thank the following organizations for their funding support that has made all this possible.
+- Department of Culture and Heritage, Government of Nunavut 
+- Kitikmeot Inuit Association
+- Department of Economic Development, Government of Nunavut, and the Canada Council for the Arts  (for funds to assist in production of the CD shown above, Songs from the Natchilingmiut)  
+- Nunavut Literacy Association
+
+
+(C, V, L)
+(Consonant, Vowel, Length)
+
+
+>> [By ][[ᑕ][ᐃ][ᕕ][ᑦ]] [ᓛ][ᕼ][ᐄ][ᑦ]]
+
+>> [For the English version of this story, please see ][[Pa][n][g][ni][r][tu][ng]]][ pilot lands at home for the first time.]
+
+>> [[ᐅᓇ] [ᔫᓴᕝ] [ᐋᑯᓗᔾᔪᒃ] [ᒥᓐᓂᐊᓕᕋᒥ] [ᐸᓐᓂᕐᑑᒧ] [ᐊᒻᒪ] [ᖃᖓᑕᓲᓂ] [ᐃᖏᕐᕋᑎᓕᕐᒪᒍ] [ᖃᖓᑕᓲᒃᑯᕕᒃᒧᑦ] [ᑕᑯᓚᐅᕐᓯᒪᔪᖅ] [ᐃᒪᓐᓇ]: [ᐃᒡᓘ ᐃᓗᐊ] [ᐊᒻᒪ] [ᓯᓚᑖ ᐃᓄᖕᓂ] [ᑕᑖᓚᐅᕐᓯᒪᔪᖅ] [ᑖᔅᓱᒥᖓ] [ᑐᙵᓱᒃᑎᑦᑎᔭᖅᑐᖅᑐᓂᒃ].]
+
+- Smallest unit: Syllabic unit
+- Larger unit: Word
+- Larger unit: Chunk (it might be a paragraph, sentence fragment, etc. Contains Inuktitut words and neutral characters like spaces, periods, numbers, etc.)
+
+
+enum SyllabicLength {
+    Short,
+    Long,
+};
+
+struct SyllabicUnit {
+    consonant: char,
+    vowel: char,
+    length: SyllabicLength,
+    original: String
+};
+
+
+There are large parts missing, but when I try to discover and fill the gaps, I feel like I fall through the large gaps in a rocky seawall, and I can't see much of anything at all.
+
+What do I want from this analysis? What can it give me? What is wastage to store? A word I suppose can be stored simply as the Syllabic units. The summation of the Consonant, Vowel, and Length fields will render a normalized value, either as a string or as-is, and the original fields can be summated to create the original string.
+
+But when do I analyze? In this case, I'm normalizing things on-the-fly, I suppose, and so that part is done. But what of the analysis of the syllabics? For example, "this syllabic is an H from Nattalik". I'm keeping the original string around to sort out later. Why? Can I not say it's Nattilik and be done with it, recreating it in the same way as the normalized value, but applying an extra layer of "this is how to interpret this normalized value" on top? Perhaps not, consider the case of ˎᓲ and 𑪹. The "normalization" process isn't just about turning syllabics and latin into a base form. I should store these values that are normalized so I know that they were used.
+
+But when? For the web, I would love to scrape and store the pages, but how? Do I store the HTML, or just the text, or just the Inuktitut text. And then, how do I store the text, as sentences? As words? As disconnected Syllabic Units?
+
+I suppose storing the HTML of the page is wise, as it's the usual thing to do when scraping. If the method is changed, re-scraping isn't necessary. The sentences? Well, on a first run, perhaps not needed. If the text is still there to scrape, it can be redone if needed to collect the sentence data, which could potentially be useful for something like text prediction. So the words then? I think that would be wise. But I must also store the Syllabic Units, seperately. I don't think I'll link them to the words, I'll just have them both there.
+
+But how?
+
+A previous writing, far above, proposed the following for words:
+
+WORD(str)
+WORD_COUNT(int)
+NORMALIZED_WORD(str)
+PRESUMED_DIALECT(enum)
+RESOURCE_TYPE(enum) WEB | PDF
+URL(str)
+
+WORD and NORMALIZED_WORD, yes. The others, perhaps not. Maybe WORD_COUNT.
+
+After some research, it looks like this won't be so bad after all. Just need to research some more DB fundamentals.
+
+-
+
+table.tsv
+generate.py
+
+Eventually, I hope these to be the keystones of the project. The eventual goal will be to have generate.py create, on demand, two sets of data:
+
+1. The normalization and analysis table. This will contain all possible (lowercase) syllabic units, ie. the minimal orthographic units that are represented by syllabics. So 'ᐯ' is a unit, and 'pai' is the same unit in latin form. 'ᖅᑮ' is a unit despite being multiple characters. These will be mapped to their normalizations.
+
+It will also contain all names and their normalizations.
+
+It will also contain all French and English words that contain only the characters that Inuktitut words also contain. So 'and' won't be in the list, as Inuktitut lacks a 'd'. But 'mum' will be on the list. Any English words that match Inuktitut words should be excluded (probably). There's probably a few small ones. French too.
+
+2. The conversion tables. These will be used to convert from the normalized form into syllabics (and in the case of West Nunavut, into their latin script as the h/s overlap).
+
+generate.py should also be able to paste the tables into the code directly, when called on to do so.
+
+===
+June 19th, 2024
+
+What might a user expect from my systems?
+
+A web interface user is likely to want to paste some syllabics or latin text and see the inverse.
+
+[ Convert to / from syllabics ]
+
+Convert [to latin], [Nunavik] spelling.
+
+---
+
+The 'h' strikes again. I thought I had this solved, with the normalization.
+
+ᕼ (syllabic) seems common in words like hockey (ᕼᐋᑭ, many search results)
+
+ᕴ and its counterparts appear to be unused in practice. I would like to be able to scan for them in case they appear.
+
+ᓭ and its counterparts are very common. In the East, they make up the "s" series, and in the West (Nattilik, for example), they make up the "h" series (words in one dialect will say 'h' in place of 's' phonetically, so the orthography remains the same).
+
+
+So, I thought that in the general case, a latin 'h' would transliterate to ᕼ, perhaps even in the Nunavik dialect, though I'd research ᕴ's use of course. In regions that use ᓭ, that would be used. Perhaps exceptions could be given for words like ᕼᐋᑭ, of English origin.
+
+The ᓭ series, when normalized to latin, could always be normalized as 's', since the dialects that use 'h' instead of 's' don't include an 's'. Therefore, their latin represntations can use the exact latin normalization with the s subbed for h. In fact I believe that would be the only latin normalization required, unless we're talking about the new latin format, which shouldn't be an issue in itself.
+
+The new issue is with the analysis of latin text in particular. The 'h' is always 'h' in Latin text, so it can be any one of these dialects (and, as mentioned, it's possible that words like ᕼᐋᑭ bleed into dialects like Nattilik, complicating things. This is one of the ideas behind "chunking". For another example, a news article written in Nunavut might have a Nattilik name with ᖨ in it. How to determine dialect boundaries, hard to say).
+
+In any case, I need a "this could be normalized in these three ways" data structure in the Rust code. How can I go about this? Well, no.
+
+In fact, the whole point of the normalization is that I don't need a lot of ways to represent the same thing. Hmm. So what was the issue again?
+
+Oh, so, when creating the analyzation map from the syllabic units, I must remember to not associate dialect with 'h'. Perhaps not with any latin letter with multiple entries, but I think h is the only exception for now. I suspect that even in dialects "without" h, words like ᕼᐋᑭ will be there.
