@@ -1,4 +1,4 @@
-consonant	ring	ai	i	long_i	u	long_u	a	long_a	final	dialect
+consonant	ai_ring	ai_classic	i	long_i	u	long_u	a	long_a	final	dialect
 	ᐂ	ᐁ	ᐃ	ᐄ	ᐅ	ᐆ	ᐊ	ᐋ	
 p	ᐰ	ᐯ	ᐱ	ᐲ	ᐳ	ᐴ	ᐸ	ᐹ	ᑉ
 t	ᑍ	ᑌ	ᑎ	ᑏ	ᑐ	ᑑ	ᑕ	ᑖ	ᑦ
@@ -18,8 +18,6 @@ nng			ᙱ	ᙲ	ᙳ	ᙴ	ᙵ	ᙶ	ᖖ
 ʼ									ᑊ
 qq		ᖅᑫ	ᖅᑭ	ᖅᑮ	ᖅᑯ	ᖅᑰ	ᖅᑲ	ᖅᑳ	ᖅᒃ	Nunavut
 h									ᕼ	Nunavut
-ŋ		ᙰ	ᖏ	ᖐ	ᖑ	ᖒ	ᖓ	ᖔ	ᖕ	Nattilik
-ŋŋ			ᙱ	ᙲ	ᙳ	ᙴ	ᙵ	ᙶ	ᖖ	Nattilik
 ř			ᖨ	ᖩ	ᖪ	ᖫ	ᖬ	ᖭ	ᖮ	Nattilik
 ł			ᖠ	ᖡ	ᖢ	ᖣ	ᖤ	ᖥ	ᖦ	Nattilik
 š			𑪶	𑪷	𑪸	𑪹	𑪺	𑪻		Nattilik

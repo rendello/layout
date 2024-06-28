@@ -2,9 +2,17 @@
 import csv
 from dataclasses import dataclass
 
-from typing import Union, List, Literal, Dict, TextIO
+from typing import Union, List, Literal, Dict
 
-AiRepresentation = Literal["ring", "classic", "split", "not_applicable"]
+
+def string_to_rust_optional(s: str) -> str:
+	if s == "":
+		return "None"
+	else:
+		return f'''Some("{s}")'''
+
+
+AiRepresentation = Literal["Ring", "Classic", "Split", "NotApplicable"]
 
 @dataclass
 class LatinSyllabicUnit:
@@ -12,7 +20,7 @@ class LatinSyllabicUnit:
 
 @dataclass
 class SyllabicSyllabicUnit:
-	syllabic: str
+	representation: str
 	ai_representation: AiRepresentation
 
 @dataclass
@@ -21,6 +29,23 @@ class SyllabicUnit:
 	consonant: str
 	vowel: str
 	original: Union[LatinSyllabicUnit, SyllabicSyllabicUnit]
+
+	def to_entry(self) -> str:
+
+		dialect_string = " | ".join([f"Dialect::{d}" for d in self.dialects])
+
+
+		return (
+			f'''"{self.original.representation}" => &SyllabicUnit {{\n'''
+			f'''    dialects: enum_set!({dialect_string}),\n'''
+			f'''    consonant: {string_to_rust_optional(self.consonant)},\n'''
+			f'''    vowel: {string_to_rust_optional(self.vowel)},\n'''
+			f'''    original: SyllabicUnitRepresentation::Syllabic(SyllabicSyllabicUnit {{\n'''
+			f'''        representation: "{self.original.representation}",\n'''
+			f'''        ai_representation: AiRepresentation::{self.original.ai_representation}\n'''
+			f'''    }})\n'''
+			f'''}},'''
+		)
 
 
 class SeriesData:
@@ -39,7 +64,15 @@ class SeriesData:
 
 	def __init__(self, table_tsv):
 		with open(table_tsv) as file:
-			self.series_list = list(csv.DictReader(file, delimiter="\t", restval=""))
+			series_list = list(csv.DictReader(file, delimiter="\t", restval=""))
+
+		for series in series_list:
+			if series["a"] == "":
+				series["ai_split"] = ""
+			else:
+				series["ai_split"] = series["a"] + "ᐃ" # In place.
+
+		self.series_list = series_list
 
 	def all_dialects(self) -> List[str]:
 		dialects = []
@@ -52,18 +85,6 @@ class SeriesData:
 	def to_syllabic_units(self) -> List[SyllabicUnit]:
 		syllabic_units = []
 		for series in self.series_list:
-			for vowel_name, vowel_value in VOWEL_NAMES_AND_VALUES:
-				latin = series["consonant"] + vowel_value
-				syllabic = series[vowel_name]
-
-				if syllabic != "":
-					syllabic_units.append(SyllabicUnit(latin, syllabic))
-
-		return syllabic_units
-
-	def to_syllabic_units(self) -> List[SyllabicUnit]:
-		syllabic_units = []
-		for series in self.series_list:
 			syllabic_units += self.series_to_syllabic_units(series)
 		return syllabic_units
 
@@ -71,8 +92,9 @@ class SeriesData:
 		syllabic_units = []
 
 		vowel_columns_and_values = [
-			("ring", "ai"),
-			("ai", "ai"),
+			("ai_ring", "ai"),
+			("ai_classic", "ai"),
+			("ai_split", "ai"),
 			("i", "i"),
 			("long_i", "ii"),
 			("u", "u"),
@@ -88,17 +110,21 @@ class SeriesData:
 			syllabic_representation = series[vowel_column]
 
 			ai: AiRepresentation
-			if vowel_column == "ring":
-				ai = "ring"
-			elif vowel_column == "ai":
-				ai = "classic"
+			if vowel_column == "ai_ring":
+				ai = "Ring"
+			elif vowel_column == "ai_classic":
+				ai = "Classic"
+			elif vowel_column == "ai_split":
+				ai = "Split"
 			else:
-				ai = "not_applicable"
+				ai = "NotApplicable"
 			# Add implicit ai split
 
-			dialects = series["dialect"]
-			if dialects == []:
+			dialect = series["dialect"]
+			if dialect == "":
 				dialects = self.all_dialects()
+			else:
+				dialects = [dialect]
 
 			if syllabic_representation != "":
 				su = SyllabicUnit(
@@ -116,33 +142,9 @@ class SeriesData:
 
 
 
-# def format_syllabic_entry(su: SyllabicUnit) -> str:
-
-# 	series_dialects = su.dialect if su.dialect != "" else
-
-# 	["Dialect::{dialect}" for dialect in ]
-# 	dialects_str = enum_set!(Dialect::Nunavut | Dialect::Quebec)
-
-# 	return (
-# 		"{0} => SyllabicUnit \{"
-# 		"dialects: "
-# 		"\}"
-# 	)
-
-
 if __name__ == "__main__":
 	series_data = SeriesData("table.tsv")
 
-	# for s in series_data.series_list:
-	# 	print(s)
-
 	for su in series_data.to_syllabic_units():
-		print(su)
-
-
-
-	# for s in series_list_to_syllabic_units(series_list):
-	# 	# print(l)
-
-	# 	print(f'''"{s.syllabic}" => "{s.latin}"''')
-	# print(all_dialects(series_list))
+		# print(su)
+		print(su.to_entry())

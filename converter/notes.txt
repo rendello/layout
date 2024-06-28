@@ -1039,3 +1039,81 @@ In any case, I need a "this could be normalized in these three ways" data struct
 In fact, the whole point of the normalization is that I don't need a lot of ways to represent the same thing. Hmm. So what was the issue again?
 
 Oh, so, when creating the analyzation map from the syllabic units, I must remember to not associate dialect with 'h'. Perhaps not with any latin letter with multiple entries, but I think h is the only exception for now. I suspect that even in dialects "without" h, words like ᕼᐋᑭ will be there.
+
+
+** Interesting resource: https://kiputtijjut.pirurvik.ca/?section=about
+
+Includes descriptions of all the transliterations, including the ᑍ series-es.
+
+Diff of East and West transliterations:
+https://www.diffchecker.com/1487oQbk/
+
+===
+June 20th, 2024
+
+I'm stuck. My notes end up being so detailed and broad that I often start writing code to get ahead of it all. There are too many details and ideas to do everything at once. But when writing code, I can't find the thread, and I don't even understand my goals. I keep returning here and trying to figure that out.
+
+I want to build a parser that starts at the beginning of a string and analyzes it.
+
+Let's say it does it like this: It finds the next whitespace, perhaps with SIMD.
+
+Check for postal code & skip (can be regex to start, sped up with SIMD later)
+
+Check for email & skip
+
+Check whole word against En / Fr map & skip
+
+--> Check for Inuktitut syllabic unit
+
+If yes, add normalized and original spelling to word buffer, goto -->
+
+If no and not end of word, reinterpret word as non-inuktitut
+
+If no and end of word, add word buffer to chunks
+
+-
+
+More simply
+
+skip email, url, postal code
+
+
+===
+June 26th, 2024
+
+Consider the following text:
+
+Inuitmyths.com ᕿᑭᖅᑕᓂ ᐃᓄᐃᑦ ᑲᑐᔾᔨᖃᑎᒌᒃᑯᑦ ᐱᓕᕆᐊᖃᐃᓐᓇᕐᓂᐊᖅᐳᑦ ᑲᑎᖅᓱᐃᓇᓱᖕᓂᕐᒥᒃ  ᐅᓂᒃᑳᑐᖃᕐᓂᒃ ᐊᑐᐃᓐᓇᐅᑎᓪᓗᒋᓪᓗ ᐃᓄᖕᓄᑦ.  ᐅᓂᒃᑳᖃᕈᕕᑦ ᑐᓴᖅᑕᐅᖁᔭᕐᓂᒃ ᖃᐅᔨᒪᒍᕕᓪᓘᓐᓃᑦ ᐅᓂᒃᑳᓕᖕᓂᒃ, ᐅᕙᑦᑎᓐᓄᑦ ᖃᐅᔨᒃᑲᐅᑎᒋᑦ ᐅᕗᖓ info@myths.com.  ᐱᓕᕆᖃᑎᒌᒃᑯᑦᑕ, ᖁᕕᐊᓲᑎᖃᕈᓐᓇᖅᐳᒍᑦ ᓴᙱᒃᑎᒋᐊᕐᓗᑎᒍᓪᓗ ᐅᓂᒃᑳᖅᑐᐊᕈᓯᖅᐳᑦ ᐱᒻᒪᕆᐅᒻᒪᑦ ᐃᓄᐃᑦ ᐃᓕᖅᑯᓯᖓᓐᓄᑦ.
+
+If the parser was structured like this
+
+email
+url
+postal code
+inuktitut
+  syllabic unit, repeat
+
+And the first four (or however many) token types were regexes, they would be run through for every word one after the other. To combine them into a tree like search structure would be to implement a full tokenizer and parser.
+
+Perhaps it would be worth it to do a fast SIMD search beforehand.
+
+dot_mask = [..................]
+at_mask = [@@@@@@@@@@@@@@@@@@]
+
+
+text = [test@example.com]
+
+text & dot =
+____________1___
+
+text & at =
+____1___________
+
+
+text & space_mask
+________________
+
+
+
+** NGrams list:
+https://github.com/soldierkam/langid/blob/master/src/main/resources/org/kamionowski/langid/impl/iu-3grams.txt
