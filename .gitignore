@@ -8,3 +8,5 @@ pip-delete-this-directory.txt
 scripts/census
 census/
 .DS_Store
+target/
+dist/

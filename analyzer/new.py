@@ -36,15 +36,15 @@ class SyllabicUnit:
 
 
 		return (
-			f'''"{self.original.representation}" => &SyllabicUnit {{\n'''
-			f'''    dialects: enum_set!({dialect_string}),\n'''
-			f'''    consonant: {string_to_rust_optional(self.consonant)},\n'''
-			f'''    vowel: {string_to_rust_optional(self.vowel)},\n'''
-			f'''    original: SyllabicUnitRepresentation::Syllabic(SyllabicSyllabicUnit {{\n'''
-			f'''        representation: "{self.original.representation}",\n'''
-			f'''        ai_representation: AiRepresentation::{self.original.ai_representation}\n'''
-			f'''    }})\n'''
-			f'''}},'''
+			f'''    "{self.original.representation}" => &SyllabicUnit {{\n'''
+			f'''        dialects: enum_set!({dialect_string}),\n'''
+			f'''        consonant: {string_to_rust_optional(self.consonant)},\n'''
+			f'''        vowel: {string_to_rust_optional(self.vowel)},\n'''
+			f'''        original: SyllabicUnitRepresentation::Syllabic(SyllabicSyllabicUnit {{\n'''
+			f'''            representation: "{self.original.representation}",\n'''
+			f'''            ai_representation: AiRepresentation::{self.original.ai_representation}\n'''
+			f'''        }})\n'''
+			f'''    }},'''
 		)
 
 
