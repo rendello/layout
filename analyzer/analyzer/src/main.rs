@@ -1,3 +1,8 @@
+// !!! GENERATED FILE, DO NOT EDIT !!!
+// See `template.rs` and `new.py`
+//
+// July 03 00:09
+
 #![allow(dead_code)]
 
 
@@ -17,15 +22,6 @@ enum Dialect {
 
 type DialectSet = EnumSet<Dialect>;
 
-// pub fn main() {
-// 	let mut dialects: DialectSet = EnumSet::new();
-
-// 	dialects.insert(Dialect::Nunavut);
-
-// 	let v: Vec<Dialect> = dialects.iter().collect();
-
-// 	println!("{:?}", v)
-// }
 
 #[derive(Debug, Clone)]
 pub struct SyllabicUnit {
@@ -36,6 +32,8 @@ pub struct SyllabicUnit {
 }
 
 impl SyllabicUnit {
+
+	/// Perhaps join to existing string?
 	fn normalized_string(&self) -> String {
 		self.consonant.unwrap_or_default().to_owned() 
 		+ self.vowel.unwrap_or_default()
@@ -71,7 +69,7 @@ enum AiRepresentation {
 pub fn main() {
 	// println!("{:?}", MAP.get("ᕦᐃ").expect(""));
 	// println!("{:?}", MAP.get("ᕦᐃ").expect("").normalized_string());
-	println!("{:?}", pop_syllabic_unit("Hello world!", &MAP));
+	println!("{:?}", pop_syllabic_unit("ᕦᐃᐃHello world!", &MAP));
 }
 
 
@@ -103,32 +101,9 @@ fn pop_syllabic_unit<'a>(text: &'a str, map: &Map) -> Option<(SyllabicUnit, &'a 
 	None
 }
 
-// pub fn f2(text: &str, map: Map) -> String {
-//     let text_len = text.len();
-
-//     let mut buffer = String::with_capacity(text_len*2);
-//     let mut index = 0;
-
-//     'main: loop {
-//         if index == text_len { break buffer }
-
-//         for &length in bind_key_lengths(&[10,9,8,7,6,5,4,3,2,1], text_len-index+1) {
-//             if let Some(v) = map.get(&text[index..index+length]) {
-//                 buffer.push_str(&v.normalized_string());
-//                 index += length;
-//                 continue 'main;
-//             }
-//         }
-//         let jump = next_jump(text[0]);
-//         buffer.push_str(std::str::from_utf8(&text[index..index+jump]).unwrap());
-//         index += jump;
-//     }
-// }
-
-
-
 
 // ============================================================================
+
 
 
 type Map = phf::Map<&'static str, &'static SyllabicUnit>;
@@ -141,8 +116,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᐂ",
             ai_representation: AiRepresentation::Ring
         })
-    },
-    "ᐁ" => &SyllabicUnit {
+    },    "ᐁ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: None,
         vowel: Some("ai"),
@@ -150,8 +124,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᐁ",
             ai_representation: AiRepresentation::Classic
         })
-    },
-    "ᐊᐃ" => &SyllabicUnit {
+    },    "ᐊᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: None,
         vowel: Some("ai"),
@@ -159,8 +132,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᐊᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᐃ" => &SyllabicUnit {
+    },    "ᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: None,
         vowel: Some("i"),
@@ -168,8 +140,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᐃ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᐄ" => &SyllabicUnit {
+    },    "ᐄ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: None,
         vowel: Some("ii"),
@@ -177,8 +148,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᐄ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᐅ" => &SyllabicUnit {
+    },    "ᐅ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: None,
         vowel: Some("u"),
@@ -186,8 +156,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᐅ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᐆ" => &SyllabicUnit {
+    },    "ᐆ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: None,
         vowel: Some("uu"),
@@ -195,8 +164,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᐆ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᐊ" => &SyllabicUnit {
+    },    "ᐊ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: None,
         vowel: Some("a"),
@@ -204,8 +172,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᐊ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᐋ" => &SyllabicUnit {
+    },    "ᐋ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: None,
         vowel: Some("aa"),
@@ -213,8 +180,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᐋ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᐰ" => &SyllabicUnit {
+    },    "ᐰ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("p"),
         vowel: Some("ai"),
@@ -222,8 +188,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᐰ",
             ai_representation: AiRepresentation::Ring
         })
-    },
-    "ᐯ" => &SyllabicUnit {
+    },    "ᐯ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("p"),
         vowel: Some("ai"),
@@ -231,8 +196,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᐯ",
             ai_representation: AiRepresentation::Classic
         })
-    },
-    "ᐸᐃ" => &SyllabicUnit {
+    },    "ᐸᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("p"),
         vowel: Some("ai"),
@@ -240,8 +204,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᐸᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᐱ" => &SyllabicUnit {
+    },    "ᐱ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("p"),
         vowel: Some("i"),
@@ -249,8 +212,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᐱ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᐲ" => &SyllabicUnit {
+    },    "ᐲ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("p"),
         vowel: Some("ii"),
@@ -258,8 +220,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᐲ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᐳ" => &SyllabicUnit {
+    },    "ᐳ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("p"),
         vowel: Some("u"),
@@ -267,8 +228,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᐳ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᐴ" => &SyllabicUnit {
+    },    "ᐴ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("p"),
         vowel: Some("uu"),
@@ -276,8 +236,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᐴ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᐸ" => &SyllabicUnit {
+    },    "ᐸ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("p"),
         vowel: Some("a"),
@@ -285,8 +244,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᐸ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᐹ" => &SyllabicUnit {
+    },    "ᐹ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("p"),
         vowel: Some("aa"),
@@ -294,8 +252,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᐹ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑉ" => &SyllabicUnit {
+    },    "ᑉ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("p"),
         vowel: None,
@@ -303,8 +260,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑉ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑍ" => &SyllabicUnit {
+    },    "ᑍ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("t"),
         vowel: Some("ai"),
@@ -312,8 +268,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑍ",
             ai_representation: AiRepresentation::Ring
         })
-    },
-    "ᑌ" => &SyllabicUnit {
+    },    "ᑌ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("t"),
         vowel: Some("ai"),
@@ -321,8 +276,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑌ",
             ai_representation: AiRepresentation::Classic
         })
-    },
-    "ᑕᐃ" => &SyllabicUnit {
+    },    "ᑕᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("t"),
         vowel: Some("ai"),
@@ -330,8 +284,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑕᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᑎ" => &SyllabicUnit {
+    },    "ᑎ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("t"),
         vowel: Some("i"),
@@ -339,8 +292,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑎ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑏ" => &SyllabicUnit {
+    },    "ᑏ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("t"),
         vowel: Some("ii"),
@@ -348,8 +300,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑏ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑐ" => &SyllabicUnit {
+    },    "ᑐ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("t"),
         vowel: Some("u"),
@@ -357,8 +308,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑐ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑑ" => &SyllabicUnit {
+    },    "ᑑ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("t"),
         vowel: Some("uu"),
@@ -366,8 +316,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑑ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑕ" => &SyllabicUnit {
+    },    "ᑕ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("t"),
         vowel: Some("a"),
@@ -375,8 +324,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑕ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑖ" => &SyllabicUnit {
+    },    "ᑖ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("t"),
         vowel: Some("aa"),
@@ -384,8 +332,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑖ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑦ" => &SyllabicUnit {
+    },    "ᑦ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("t"),
         vowel: None,
@@ -393,8 +340,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑦ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑬ" => &SyllabicUnit {
+    },    "ᑬ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("k"),
         vowel: Some("ai"),
@@ -402,8 +348,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑬ",
             ai_representation: AiRepresentation::Ring
         })
-    },
-    "ᑫ" => &SyllabicUnit {
+    },    "ᑫ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("k"),
         vowel: Some("ai"),
@@ -411,8 +356,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑫ",
             ai_representation: AiRepresentation::Classic
         })
-    },
-    "ᑲᐃ" => &SyllabicUnit {
+    },    "ᑲᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("k"),
         vowel: Some("ai"),
@@ -420,8 +364,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑲᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᑭ" => &SyllabicUnit {
+    },    "ᑭ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("k"),
         vowel: Some("i"),
@@ -429,8 +372,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑭ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑮ" => &SyllabicUnit {
+    },    "ᑮ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("k"),
         vowel: Some("ii"),
@@ -438,8 +380,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑮ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑯ" => &SyllabicUnit {
+    },    "ᑯ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("k"),
         vowel: Some("u"),
@@ -447,8 +388,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑯ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑰ" => &SyllabicUnit {
+    },    "ᑰ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("k"),
         vowel: Some("uu"),
@@ -456,8 +396,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑰ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑲ" => &SyllabicUnit {
+    },    "ᑲ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("k"),
         vowel: Some("a"),
@@ -465,8 +404,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑲ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑳ" => &SyllabicUnit {
+    },    "ᑳ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("k"),
         vowel: Some("aa"),
@@ -474,8 +412,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑳ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᒃ" => &SyllabicUnit {
+    },    "ᒃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("k"),
         vowel: None,
@@ -483,8 +420,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᒃ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᒊ" => &SyllabicUnit {
+    },    "ᒊ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("g"),
         vowel: Some("ai"),
@@ -492,8 +428,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᒊ",
             ai_representation: AiRepresentation::Ring
         })
-    },
-    "ᒉ" => &SyllabicUnit {
+    },    "ᒉ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("g"),
         vowel: Some("ai"),
@@ -501,8 +436,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᒉ",
             ai_representation: AiRepresentation::Classic
         })
-    },
-    "ᒐᐃ" => &SyllabicUnit {
+    },    "ᒐᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("g"),
         vowel: Some("ai"),
@@ -510,8 +444,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᒐᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᒋ" => &SyllabicUnit {
+    },    "ᒋ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("g"),
         vowel: Some("i"),
@@ -519,8 +452,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᒋ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᒌ" => &SyllabicUnit {
+    },    "ᒌ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("g"),
         vowel: Some("ii"),
@@ -528,8 +460,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᒌ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᒍ" => &SyllabicUnit {
+    },    "ᒍ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("g"),
         vowel: Some("u"),
@@ -537,8 +468,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᒍ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᒎ" => &SyllabicUnit {
+    },    "ᒎ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("g"),
         vowel: Some("uu"),
@@ -546,8 +476,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᒎ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᒐ" => &SyllabicUnit {
+    },    "ᒐ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("g"),
         vowel: Some("a"),
@@ -555,8 +484,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᒐ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᒑ" => &SyllabicUnit {
+    },    "ᒑ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("g"),
         vowel: Some("aa"),
@@ -564,8 +492,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᒑ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᒡ" => &SyllabicUnit {
+    },    "ᒡ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("g"),
         vowel: None,
@@ -573,8 +500,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᒡ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᒤ" => &SyllabicUnit {
+    },    "ᒤ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("m"),
         vowel: Some("ai"),
@@ -582,8 +508,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᒤ",
             ai_representation: AiRepresentation::Ring
         })
-    },
-    "ᒣ" => &SyllabicUnit {
+    },    "ᒣ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("m"),
         vowel: Some("ai"),
@@ -591,8 +516,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᒣ",
             ai_representation: AiRepresentation::Classic
         })
-    },
-    "ᒪᐃ" => &SyllabicUnit {
+    },    "ᒪᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("m"),
         vowel: Some("ai"),
@@ -600,8 +524,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᒪᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᒥ" => &SyllabicUnit {
+    },    "ᒥ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("m"),
         vowel: Some("i"),
@@ -609,8 +532,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᒥ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᒦ" => &SyllabicUnit {
+    },    "ᒦ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("m"),
         vowel: Some("ii"),
@@ -618,8 +540,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᒦ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᒧ" => &SyllabicUnit {
+    },    "ᒧ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("m"),
         vowel: Some("u"),
@@ -627,8 +548,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᒧ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᒨ" => &SyllabicUnit {
+    },    "ᒨ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("m"),
         vowel: Some("uu"),
@@ -636,8 +556,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᒨ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᒪ" => &SyllabicUnit {
+    },    "ᒪ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("m"),
         vowel: Some("a"),
@@ -645,8 +564,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᒪ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᒫ" => &SyllabicUnit {
+    },    "ᒫ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("m"),
         vowel: Some("aa"),
@@ -654,8 +572,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᒫ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᒻ" => &SyllabicUnit {
+    },    "ᒻ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("m"),
         vowel: None,
@@ -663,8 +580,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᒻ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓁ" => &SyllabicUnit {
+    },    "ᓁ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("n"),
         vowel: Some("ai"),
@@ -672,8 +588,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓁ",
             ai_representation: AiRepresentation::Ring
         })
-    },
-    "ᓀ" => &SyllabicUnit {
+    },    "ᓀ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("n"),
         vowel: Some("ai"),
@@ -681,8 +596,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓀ",
             ai_representation: AiRepresentation::Classic
         })
-    },
-    "ᓇᐃ" => &SyllabicUnit {
+    },    "ᓇᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("n"),
         vowel: Some("ai"),
@@ -690,8 +604,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓇᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᓂ" => &SyllabicUnit {
+    },    "ᓂ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("n"),
         vowel: Some("i"),
@@ -699,8 +612,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓂ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓃ" => &SyllabicUnit {
+    },    "ᓃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("n"),
         vowel: Some("ii"),
@@ -708,8 +620,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓃ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓄ" => &SyllabicUnit {
+    },    "ᓄ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("n"),
         vowel: Some("u"),
@@ -717,8 +628,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓄ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓅ" => &SyllabicUnit {
+    },    "ᓅ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("n"),
         vowel: Some("uu"),
@@ -726,8 +636,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓅ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓇ" => &SyllabicUnit {
+    },    "ᓇ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("n"),
         vowel: Some("a"),
@@ -735,8 +644,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓇ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓈ" => &SyllabicUnit {
+    },    "ᓈ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("n"),
         vowel: Some("aa"),
@@ -744,8 +652,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓈ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓐ" => &SyllabicUnit {
+    },    "ᓐ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("n"),
         vowel: None,
@@ -753,8 +660,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓐ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓮ" => &SyllabicUnit {
+    },    "ᓮ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("s"),
         vowel: Some("ai"),
@@ -762,8 +668,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓮ",
             ai_representation: AiRepresentation::Ring
         })
-    },
-    "ᓭ" => &SyllabicUnit {
+    },    "ᓭ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("s"),
         vowel: Some("ai"),
@@ -771,8 +676,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓭ",
             ai_representation: AiRepresentation::Classic
         })
-    },
-    "ᓴᐃ" => &SyllabicUnit {
+    },    "ᓴᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("s"),
         vowel: Some("ai"),
@@ -780,8 +684,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓴᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᓯ" => &SyllabicUnit {
+    },    "ᓯ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("s"),
         vowel: Some("i"),
@@ -789,8 +692,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓯ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓰ" => &SyllabicUnit {
+    },    "ᓰ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("s"),
         vowel: Some("ii"),
@@ -798,8 +700,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓰ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓱ" => &SyllabicUnit {
+    },    "ᓱ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("s"),
         vowel: Some("u"),
@@ -807,8 +708,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓱ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓲ" => &SyllabicUnit {
+    },    "ᓲ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("s"),
         vowel: Some("uu"),
@@ -816,8 +716,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓲ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓴ" => &SyllabicUnit {
+    },    "ᓴ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("s"),
         vowel: Some("a"),
@@ -825,8 +724,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓴ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓵ" => &SyllabicUnit {
+    },    "ᓵ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("s"),
         vowel: Some("aa"),
@@ -834,8 +732,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓵ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᔅ" => &SyllabicUnit {
+    },    "ᔅ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("s"),
         vowel: None,
@@ -843,8 +740,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᔅ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓔ" => &SyllabicUnit {
+    },    "ᓔ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("l"),
         vowel: Some("ai"),
@@ -852,8 +748,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓔ",
             ai_representation: AiRepresentation::Ring
         })
-    },
-    "ᓓ" => &SyllabicUnit {
+    },    "ᓓ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("l"),
         vowel: Some("ai"),
@@ -861,8 +756,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓓ",
             ai_representation: AiRepresentation::Classic
         })
-    },
-    "ᓚᐃ" => &SyllabicUnit {
+    },    "ᓚᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("l"),
         vowel: Some("ai"),
@@ -870,8 +764,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓚᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᓕ" => &SyllabicUnit {
+    },    "ᓕ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("l"),
         vowel: Some("i"),
@@ -879,8 +772,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓕ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓖ" => &SyllabicUnit {
+    },    "ᓖ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("l"),
         vowel: Some("ii"),
@@ -888,8 +780,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓖ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓗ" => &SyllabicUnit {
+    },    "ᓗ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("l"),
         vowel: Some("u"),
@@ -897,8 +788,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓗ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓘ" => &SyllabicUnit {
+    },    "ᓘ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("l"),
         vowel: Some("uu"),
@@ -906,8 +796,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓘ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓚ" => &SyllabicUnit {
+    },    "ᓚ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("l"),
         vowel: Some("a"),
@@ -915,8 +804,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓚ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓛ" => &SyllabicUnit {
+    },    "ᓛ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("l"),
         vowel: Some("aa"),
@@ -924,8 +812,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓛ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓪ" => &SyllabicUnit {
+    },    "ᓪ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("l"),
         vowel: None,
@@ -933,8 +820,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓪ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᔧ" => &SyllabicUnit {
+    },    "ᔧ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("j"),
         vowel: Some("ai"),
@@ -942,8 +828,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᔧ",
             ai_representation: AiRepresentation::Ring
         })
-    },
-    "ᔦ" => &SyllabicUnit {
+    },    "ᔦ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("j"),
         vowel: Some("ai"),
@@ -951,8 +836,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᔦ",
             ai_representation: AiRepresentation::Classic
         })
-    },
-    "ᔭᐃ" => &SyllabicUnit {
+    },    "ᔭᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("j"),
         vowel: Some("ai"),
@@ -960,8 +844,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᔭᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᔨ" => &SyllabicUnit {
+    },    "ᔨ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("j"),
         vowel: Some("i"),
@@ -969,8 +852,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᔨ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᔩ" => &SyllabicUnit {
+    },    "ᔩ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("j"),
         vowel: Some("ii"),
@@ -978,8 +860,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᔩ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᔪ" => &SyllabicUnit {
+    },    "ᔪ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("j"),
         vowel: Some("u"),
@@ -987,8 +868,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᔪ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᔫ" => &SyllabicUnit {
+    },    "ᔫ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("j"),
         vowel: Some("uu"),
@@ -996,8 +876,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᔫ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᔭ" => &SyllabicUnit {
+    },    "ᔭ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("j"),
         vowel: Some("a"),
@@ -1005,8 +884,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᔭ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᔮ" => &SyllabicUnit {
+    },    "ᔮ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("j"),
         vowel: Some("aa"),
@@ -1014,8 +892,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᔮ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᔾ" => &SyllabicUnit {
+    },    "ᔾ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("j"),
         vowel: None,
@@ -1023,8 +900,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᔾ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑦᔧ" => &SyllabicUnit {
+    },    "ᑦᔧ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("jj"),
         vowel: Some("ai"),
@@ -1032,8 +908,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑦᔧ",
             ai_representation: AiRepresentation::Ring
         })
-    },
-    "ᑦᔦ" => &SyllabicUnit {
+    },    "ᑦᔦ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("jj"),
         vowel: Some("ai"),
@@ -1041,8 +916,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑦᔦ",
             ai_representation: AiRepresentation::Classic
         })
-    },
-    "ᑦᔭᐃ" => &SyllabicUnit {
+    },    "ᑦᔭᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("jj"),
         vowel: Some("ai"),
@@ -1050,8 +924,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑦᔭᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᑦᔨ" => &SyllabicUnit {
+    },    "ᑦᔨ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("jj"),
         vowel: Some("i"),
@@ -1059,8 +932,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑦᔨ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑦᔩ" => &SyllabicUnit {
+    },    "ᑦᔩ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("jj"),
         vowel: Some("ii"),
@@ -1068,8 +940,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑦᔩ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑦᔪ" => &SyllabicUnit {
+    },    "ᑦᔪ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("jj"),
         vowel: Some("u"),
@@ -1077,8 +948,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑦᔪ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑦᔫ" => &SyllabicUnit {
+    },    "ᑦᔫ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("jj"),
         vowel: Some("uu"),
@@ -1086,8 +956,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑦᔫ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑦᔭ" => &SyllabicUnit {
+    },    "ᑦᔭ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("jj"),
         vowel: Some("a"),
@@ -1095,8 +964,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑦᔭ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑦᔮ" => &SyllabicUnit {
+    },    "ᑦᔮ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("jj"),
         vowel: Some("aa"),
@@ -1104,8 +972,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑦᔮ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑦᔾ" => &SyllabicUnit {
+    },    "ᑦᔾ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("jj"),
         vowel: None,
@@ -1113,8 +980,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑦᔾ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕔ" => &SyllabicUnit {
+    },    "ᕔ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("v"),
         vowel: Some("ai"),
@@ -1122,8 +988,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕔ",
             ai_representation: AiRepresentation::Ring
         })
-    },
-    "ᕓ" => &SyllabicUnit {
+    },    "ᕓ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("v"),
         vowel: Some("ai"),
@@ -1131,8 +996,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕓ",
             ai_representation: AiRepresentation::Classic
         })
-    },
-    "ᕙᐃ" => &SyllabicUnit {
+    },    "ᕙᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("v"),
         vowel: Some("ai"),
@@ -1140,8 +1004,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕙᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᕕ" => &SyllabicUnit {
+    },    "ᕕ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("v"),
         vowel: Some("i"),
@@ -1149,8 +1012,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕕ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕖ" => &SyllabicUnit {
+    },    "ᕖ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("v"),
         vowel: Some("ii"),
@@ -1158,8 +1020,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕖ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕗ" => &SyllabicUnit {
+    },    "ᕗ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("v"),
         vowel: Some("u"),
@@ -1167,8 +1028,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕗ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕘ" => &SyllabicUnit {
+    },    "ᕘ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("v"),
         vowel: Some("uu"),
@@ -1176,8 +1036,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕘ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕙ" => &SyllabicUnit {
+    },    "ᕙ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("v"),
         vowel: Some("a"),
@@ -1185,8 +1044,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕙ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕚ" => &SyllabicUnit {
+    },    "ᕚ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("v"),
         vowel: Some("aa"),
@@ -1194,8 +1052,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕚ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕝ" => &SyllabicUnit {
+    },    "ᕝ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("v"),
         vowel: None,
@@ -1203,8 +1060,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕝ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕅ" => &SyllabicUnit {
+    },    "ᕅ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("r"),
         vowel: Some("ai"),
@@ -1212,8 +1068,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕅ",
             ai_representation: AiRepresentation::Ring
         })
-    },
-    "ᕂ" => &SyllabicUnit {
+    },    "ᕂ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("r"),
         vowel: Some("ai"),
@@ -1221,8 +1076,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕂ",
             ai_representation: AiRepresentation::Classic
         })
-    },
-    "ᕋᐃ" => &SyllabicUnit {
+    },    "ᕋᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("r"),
         vowel: Some("ai"),
@@ -1230,8 +1084,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕋᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᕆ" => &SyllabicUnit {
+    },    "ᕆ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("r"),
         vowel: Some("i"),
@@ -1239,8 +1092,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕆ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕇ" => &SyllabicUnit {
+    },    "ᕇ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("r"),
         vowel: Some("ii"),
@@ -1248,8 +1100,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕇ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕈ" => &SyllabicUnit {
+    },    "ᕈ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("r"),
         vowel: Some("u"),
@@ -1257,8 +1108,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕈ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕉ" => &SyllabicUnit {
+    },    "ᕉ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("r"),
         vowel: Some("uu"),
@@ -1266,8 +1116,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕉ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕋ" => &SyllabicUnit {
+    },    "ᕋ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("r"),
         vowel: Some("a"),
@@ -1275,8 +1124,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕋ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕌ" => &SyllabicUnit {
+    },    "ᕌ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("r"),
         vowel: Some("aa"),
@@ -1284,8 +1132,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕌ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕐ" => &SyllabicUnit {
+    },    "ᕐ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("r"),
         vowel: None,
@@ -1293,8 +1140,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕐ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕾ" => &SyllabicUnit {
+    },    "ᕾ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("q"),
         vowel: Some("ai"),
@@ -1302,8 +1148,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕾ",
             ai_representation: AiRepresentation::Ring
         })
-    },
-    "ᙯ" => &SyllabicUnit {
+    },    "ᙯ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("q"),
         vowel: Some("ai"),
@@ -1311,8 +1156,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᙯ",
             ai_representation: AiRepresentation::Classic
         })
-    },
-    "ᖃᐃ" => &SyllabicUnit {
+    },    "ᖃᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("q"),
         vowel: Some("ai"),
@@ -1320,8 +1164,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖃᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᕿ" => &SyllabicUnit {
+    },    "ᕿ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("q"),
         vowel: Some("i"),
@@ -1329,8 +1172,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕿ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖀ" => &SyllabicUnit {
+    },    "ᖀ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("q"),
         vowel: Some("ii"),
@@ -1338,8 +1180,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖀ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖁ" => &SyllabicUnit {
+    },    "ᖁ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("q"),
         vowel: Some("u"),
@@ -1347,8 +1188,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖁ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖂ" => &SyllabicUnit {
+    },    "ᖂ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("q"),
         vowel: Some("uu"),
@@ -1356,8 +1196,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖂ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖃ" => &SyllabicUnit {
+    },    "ᖃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("q"),
         vowel: Some("a"),
@@ -1365,8 +1204,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖃ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖄ" => &SyllabicUnit {
+    },    "ᖄ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("q"),
         vowel: Some("aa"),
@@ -1374,8 +1212,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖄ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖅ" => &SyllabicUnit {
+    },    "ᖅ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("q"),
         vowel: None,
@@ -1383,8 +1220,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖅ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖎ" => &SyllabicUnit {
+    },    "ᖎ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("ng"),
         vowel: Some("ai"),
@@ -1392,8 +1228,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖎ",
             ai_representation: AiRepresentation::Ring
         })
-    },
-    "ᙰ" => &SyllabicUnit {
+    },    "ᙰ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("ng"),
         vowel: Some("ai"),
@@ -1401,8 +1236,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᙰ",
             ai_representation: AiRepresentation::Classic
         })
-    },
-    "ᖓᐃ" => &SyllabicUnit {
+    },    "ᖓᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("ng"),
         vowel: Some("ai"),
@@ -1410,8 +1244,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖓᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᖏ" => &SyllabicUnit {
+    },    "ᖏ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("ng"),
         vowel: Some("i"),
@@ -1419,8 +1252,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖏ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖐ" => &SyllabicUnit {
+    },    "ᖐ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("ng"),
         vowel: Some("ii"),
@@ -1428,8 +1260,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖐ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖑ" => &SyllabicUnit {
+    },    "ᖑ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("ng"),
         vowel: Some("u"),
@@ -1437,8 +1268,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖑ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖒ" => &SyllabicUnit {
+    },    "ᖒ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("ng"),
         vowel: Some("uu"),
@@ -1446,8 +1276,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖒ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖓ" => &SyllabicUnit {
+    },    "ᖓ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("ng"),
         vowel: Some("a"),
@@ -1455,8 +1284,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖓ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖔ" => &SyllabicUnit {
+    },    "ᖔ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("ng"),
         vowel: Some("aa"),
@@ -1464,8 +1292,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖔ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖕ" => &SyllabicUnit {
+    },    "ᖕ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("ng"),
         vowel: None,
@@ -1473,8 +1300,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖕ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᙵᐃ" => &SyllabicUnit {
+    },    "ᙵᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("nng"),
         vowel: Some("ai"),
@@ -1482,8 +1308,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᙵᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᙱ" => &SyllabicUnit {
+    },    "ᙱ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("nng"),
         vowel: Some("i"),
@@ -1491,8 +1316,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᙱ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᙲ" => &SyllabicUnit {
+    },    "ᙲ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("nng"),
         vowel: Some("ii"),
@@ -1500,8 +1324,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᙲ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᙳ" => &SyllabicUnit {
+    },    "ᙳ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("nng"),
         vowel: Some("u"),
@@ -1509,8 +1332,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᙳ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᙴ" => &SyllabicUnit {
+    },    "ᙴ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("nng"),
         vowel: Some("uu"),
@@ -1518,8 +1340,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᙴ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᙵ" => &SyllabicUnit {
+    },    "ᙵ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("nng"),
         vowel: Some("a"),
@@ -1527,8 +1348,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᙵ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᙶ" => &SyllabicUnit {
+    },    "ᙶ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("nng"),
         vowel: Some("aa"),
@@ -1536,8 +1356,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᙶ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖖ" => &SyllabicUnit {
+    },    "ᖖ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("nng"),
         vowel: None,
@@ -1545,8 +1364,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖖ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᑊ" => &SyllabicUnit {
+    },    "ᑊ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut | Dialect::Nattilik | Dialect::Aivilik | Dialect::Nunavik),
         consonant: Some("ʼ"),
         vowel: None,
@@ -1554,8 +1372,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᑊ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖅᑫ" => &SyllabicUnit {
+    },    "ᖅᑫ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut),
         consonant: Some("qq"),
         vowel: Some("ai"),
@@ -1563,8 +1380,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖅᑫ",
             ai_representation: AiRepresentation::Classic
         })
-    },
-    "ᖅᑲᐃ" => &SyllabicUnit {
+    },    "ᖅᑲᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut),
         consonant: Some("qq"),
         vowel: Some("ai"),
@@ -1572,8 +1388,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖅᑲᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᖅᑭ" => &SyllabicUnit {
+    },    "ᖅᑭ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut),
         consonant: Some("qq"),
         vowel: Some("i"),
@@ -1581,8 +1396,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖅᑭ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖅᑮ" => &SyllabicUnit {
+    },    "ᖅᑮ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut),
         consonant: Some("qq"),
         vowel: Some("ii"),
@@ -1590,8 +1404,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖅᑮ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖅᑯ" => &SyllabicUnit {
+    },    "ᖅᑯ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut),
         consonant: Some("qq"),
         vowel: Some("u"),
@@ -1599,8 +1412,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖅᑯ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖅᑰ" => &SyllabicUnit {
+    },    "ᖅᑰ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut),
         consonant: Some("qq"),
         vowel: Some("uu"),
@@ -1608,8 +1420,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖅᑰ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖅᑲ" => &SyllabicUnit {
+    },    "ᖅᑲ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut),
         consonant: Some("qq"),
         vowel: Some("a"),
@@ -1617,8 +1428,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖅᑲ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖅᑳ" => &SyllabicUnit {
+    },    "ᖅᑳ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut),
         consonant: Some("qq"),
         vowel: Some("aa"),
@@ -1626,8 +1436,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖅᑳ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖅᒃ" => &SyllabicUnit {
+    },    "ᖅᒃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut),
         consonant: Some("qq"),
         vowel: None,
@@ -1635,8 +1444,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖅᒃ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕼ" => &SyllabicUnit {
+    },    "ᕼ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavut),
         consonant: Some("h"),
         vowel: None,
@@ -1644,8 +1452,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕼ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖬᐃ" => &SyllabicUnit {
+    },    "ᖬᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ř"),
         vowel: Some("ai"),
@@ -1653,8 +1460,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖬᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᖨ" => &SyllabicUnit {
+    },    "ᖨ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ř"),
         vowel: Some("i"),
@@ -1662,8 +1468,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖨ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖩ" => &SyllabicUnit {
+    },    "ᖩ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ř"),
         vowel: Some("ii"),
@@ -1671,8 +1476,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖩ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖪ" => &SyllabicUnit {
+    },    "ᖪ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ř"),
         vowel: Some("u"),
@@ -1680,8 +1484,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖪ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖫ" => &SyllabicUnit {
+    },    "ᖫ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ř"),
         vowel: Some("uu"),
@@ -1689,8 +1492,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖫ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖬ" => &SyllabicUnit {
+    },    "ᖬ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ř"),
         vowel: Some("a"),
@@ -1698,8 +1500,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖬ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖭ" => &SyllabicUnit {
+    },    "ᖭ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ř"),
         vowel: Some("aa"),
@@ -1707,8 +1508,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖭ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖮ" => &SyllabicUnit {
+    },    "ᖮ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ř"),
         vowel: None,
@@ -1716,8 +1516,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖮ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖤᐃ" => &SyllabicUnit {
+    },    "ᖤᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ł"),
         vowel: Some("ai"),
@@ -1725,8 +1524,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖤᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᖠ" => &SyllabicUnit {
+    },    "ᖠ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ł"),
         vowel: Some("i"),
@@ -1734,8 +1532,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖠ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖡ" => &SyllabicUnit {
+    },    "ᖡ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ł"),
         vowel: Some("ii"),
@@ -1743,8 +1540,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖡ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖢ" => &SyllabicUnit {
+    },    "ᖢ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ł"),
         vowel: Some("u"),
@@ -1752,8 +1548,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖢ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖣ" => &SyllabicUnit {
+    },    "ᖣ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ł"),
         vowel: Some("uu"),
@@ -1761,8 +1556,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖣ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖤ" => &SyllabicUnit {
+    },    "ᖤ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ł"),
         vowel: Some("a"),
@@ -1770,8 +1564,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖤ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖥ" => &SyllabicUnit {
+    },    "ᖥ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ł"),
         vowel: Some("aa"),
@@ -1779,8 +1572,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖥ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖦ" => &SyllabicUnit {
+    },    "ᖦ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ł"),
         vowel: None,
@@ -1788,8 +1580,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖦ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "𑪺ᐃ" => &SyllabicUnit {
+    },    "𑪺ᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("š"),
         vowel: Some("ai"),
@@ -1797,8 +1588,7 @@ pub static MAP: Map = phf_map! {
             representation: "𑪺ᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "𑪶" => &SyllabicUnit {
+    },    "𑪶" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("š"),
         vowel: Some("i"),
@@ -1806,8 +1596,7 @@ pub static MAP: Map = phf_map! {
             representation: "𑪶",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "𑪷" => &SyllabicUnit {
+    },    "𑪷" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("š"),
         vowel: Some("ii"),
@@ -1815,8 +1604,7 @@ pub static MAP: Map = phf_map! {
             representation: "𑪷",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "𑪸" => &SyllabicUnit {
+    },    "𑪸" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("š"),
         vowel: Some("u"),
@@ -1824,8 +1612,7 @@ pub static MAP: Map = phf_map! {
             representation: "𑪸",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "𑪹" => &SyllabicUnit {
+    },    "𑪹" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("š"),
         vowel: Some("uu"),
@@ -1833,8 +1620,7 @@ pub static MAP: Map = phf_map! {
             representation: "𑪹",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "𑪺" => &SyllabicUnit {
+    },    "𑪺" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("š"),
         vowel: Some("a"),
@@ -1842,8 +1628,7 @@ pub static MAP: Map = phf_map! {
             representation: "𑪺",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "𑪻" => &SyllabicUnit {
+    },    "𑪻" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("š"),
         vowel: Some("aa"),
@@ -1851,8 +1636,7 @@ pub static MAP: Map = phf_map! {
             representation: "𑪻",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕦᐃ" => &SyllabicUnit {
+    },    "ᕦᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ch"),
         vowel: Some("ai"),
@@ -1860,8 +1644,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕦᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᕠ" => &SyllabicUnit {
+    },    "ᕠ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ch"),
         vowel: Some("i"),
@@ -1869,8 +1652,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕠ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕢ" => &SyllabicUnit {
+    },    "ᕢ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ch"),
         vowel: Some("ii"),
@@ -1878,8 +1660,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕢ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕤ" => &SyllabicUnit {
+    },    "ᕤ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ch"),
         vowel: Some("u"),
@@ -1887,8 +1668,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕤ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕥ" => &SyllabicUnit {
+    },    "ᕥ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ch"),
         vowel: Some("uu"),
@@ -1896,8 +1676,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕥ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕦ" => &SyllabicUnit {
+    },    "ᕦ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ch"),
         vowel: Some("a"),
@@ -1905,8 +1684,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕦ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕧ" => &SyllabicUnit {
+    },    "ᕧ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ch"),
         vowel: Some("aa"),
@@ -1914,8 +1692,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕧ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕪ" => &SyllabicUnit {
+    },    "ᕪ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("ch"),
         vowel: None,
@@ -1923,8 +1700,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕪ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᖯ" => &SyllabicUnit {
+    },    "ᖯ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Aivilik),
         consonant: Some("b"),
         vowel: None,
@@ -1932,8 +1708,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᖯ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕴ" => &SyllabicUnit {
+    },    "ᕴ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavik),
         consonant: Some("h"),
         vowel: Some("ai"),
@@ -1941,8 +1716,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕴ",
             ai_representation: AiRepresentation::Classic
         })
-    },
-    "ᕹᐃ" => &SyllabicUnit {
+    },    "ᕹᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavik),
         consonant: Some("h"),
         vowel: Some("ai"),
@@ -1950,8 +1724,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕹᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᕵ" => &SyllabicUnit {
+    },    "ᕵ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavik),
         consonant: Some("h"),
         vowel: Some("i"),
@@ -1959,8 +1732,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕵ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕶ" => &SyllabicUnit {
+    },    "ᕶ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavik),
         consonant: Some("h"),
         vowel: Some("ii"),
@@ -1968,8 +1740,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕶ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕷ" => &SyllabicUnit {
+    },    "ᕷ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavik),
         consonant: Some("h"),
         vowel: Some("u"),
@@ -1977,8 +1748,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕷ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕸ" => &SyllabicUnit {
+    },    "ᕸ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavik),
         consonant: Some("h"),
         vowel: Some("uu"),
@@ -1986,8 +1756,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕸ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕹ" => &SyllabicUnit {
+    },    "ᕹ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavik),
         consonant: Some("h"),
         vowel: Some("a"),
@@ -1995,8 +1764,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕹ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕺ" => &SyllabicUnit {
+    },    "ᕺ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavik),
         consonant: Some("h"),
         vowel: Some("aa"),
@@ -2004,8 +1772,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕺ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᕻ" => &SyllabicUnit {
+    },    "ᕻ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nunavik),
         consonant: Some("h"),
         vowel: None,
@@ -2013,8 +1780,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᕻ",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓴ̵ᐃ" => &SyllabicUnit {
+    },    "ᓴ̵ᐃ" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("š"),
         vowel: Some("ai"),
@@ -2022,8 +1788,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓴ̵ᐃ",
             ai_representation: AiRepresentation::Split
         })
-    },
-    "ᓯ̵" => &SyllabicUnit {
+    },    "ᓯ̵" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("š"),
         vowel: Some("i"),
@@ -2031,8 +1796,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓯ̵",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓰ̵" => &SyllabicUnit {
+    },    "ᓰ̵" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("š"),
         vowel: Some("ii"),
@@ -2040,8 +1804,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓰ̵",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓱ̵" => &SyllabicUnit {
+    },    "ᓱ̵" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("š"),
         vowel: Some("u"),
@@ -2049,8 +1812,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓱ̵",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓲ̵" => &SyllabicUnit {
+    },    "ᓲ̵" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("š"),
         vowel: Some("uu"),
@@ -2058,8 +1820,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓲ̵",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓴ̵" => &SyllabicUnit {
+    },    "ᓴ̵" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("š"),
         vowel: Some("a"),
@@ -2067,8 +1828,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓴ̵",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᓵ̵" => &SyllabicUnit {
+    },    "ᓵ̵" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("š"),
         vowel: Some("aa"),
@@ -2076,8 +1836,7 @@ pub static MAP: Map = phf_map! {
             representation: "ᓵ̵",
             ai_representation: AiRepresentation::NotApplicable
         })
-    },
-    "ᔅ̵" => &SyllabicUnit {
+    },    "ᔅ̵" => &SyllabicUnit {
         dialects: enum_set!(Dialect::Nattilik),
         consonant: Some("š"),
         vowel: None,
@@ -2085,5 +1844,5 @@ pub static MAP: Map = phf_map! {
             representation: "ᔅ̵",
             ai_representation: AiRepresentation::NotApplicable
         })
-    }
+    },
 };

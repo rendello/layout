@@ -1,5 +1,6 @@
 
 import csv
+from datetime import datetime
 from dataclasses import dataclass
 
 from typing import Union, List, Literal, Dict
@@ -46,6 +47,7 @@ class SyllabicUnit:
 			f'''        }})\n'''
 			f'''    }},'''
 		)
+
 
 
 class SeriesData:
@@ -142,9 +144,32 @@ class SeriesData:
 
 
 
-if __name__ == "__main__":
+
+def build():
+	WARNING = (
+		f'''// !!! GENERATED FILE, DO NOT EDIT !!!\n'''
+		f'''// See `template.rs` and `new.py`\n//\n'''
+		f'''// {datetime.now().astimezone().strftime("%B %d %H:%M")}'''
+	)
+
+	s = ""
 	series_data = SeriesData("table.tsv")
 
 	for su in series_data.to_syllabic_units():
-		# print(su)
-		print(su.to_entry())
+		s += su.to_entry()
+
+	with open("analyzer/src/template.rs", "r") as template_file:
+		template = template_file.read()
+		contents = template.replace("// [!TABLE]", s).replace("// [!WARNING]", WARNING)
+
+	with open("analyzer/src/main.rs", "w") as main_file:
+		main_file.write(contents)
+
+
+if __name__ == "__main__":
+	# series_data = SeriesData("table.tsv")
+
+	# for su in series_data.to_syllabic_units():
+	# 	# print(su)
+	# 	print(su.to_entry())
+	build()
