@@ -1117,3 +1117,25 @@ ________________
 
 ** NGrams list:
 https://github.com/soldierkam/langid/blob/master/src/main/resources/org/kamionowski/langid/impl/iu-3grams.txt
+
+===
+July 3rd, 2024
+
+Instead of checking a word with SIMD to see if it's 100% a valid Inuktitut word character-wise, I can use SIMD to filter out words with ASCII characters not present in Inuktitut, ie. "e".
+
+next_token could pull in the next word up to space or puncuation, then attempt:
+- email
+- url
+- postal code (perhaps not because of spaces)
+- English words that fit Inuktitut scheme
+- Inuktitut parsing
+
+The Inuktitut parsing would only go to the end of the word. If it doesn't consume the whole thing, backtrack and skip word.
+
+---
+
+New approach: get just the spaces/newlines with SIMD then do parsing on each word for the most part.
+
+The standard case for conversion would likely be syl -> lat, but for analysis, it's certainly latin in most cases. For example, scraping websites to see if they contain Inuktitut, the majority of the text will probably be non-Inuktitut ASCII.
+
+>> [Inuktitut] syllabics ([Inuktitut]: [ᖃᓂᐅᔮᖅᐸᐃᑦ], romanized: [qaniujaaqpait], or [ᑎᑎᕋᐅᓯᖅ] [ᓄᑖᖅ], [titirausiq] [nutaaq]) is an abugida-type writing system used in Canada by the [Inuktitut]-speaking [Inuit] of the territory of [Nunavut] and the [Nunavik] and [Nunatsiavut] regions of Quebec and Labrador, respectively. In 1976, the Language Commission of the [Inuit] Cultural Institute made it the co-official script for the [Inuit] languages, along with the Latin script.

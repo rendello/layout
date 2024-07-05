@@ -45,7 +45,7 @@ class SyllabicUnit:
 			f'''            representation: "{self.original.representation}",\n'''
 			f'''            ai_representation: AiRepresentation::{self.original.ai_representation}\n'''
 			f'''        }})\n'''
-			f'''    }},'''
+			f'''    }},\n'''
 		)
 
 
@@ -142,6 +142,17 @@ class SeriesData:
 				syllabic_units.append(su)
 		return syllabic_units
 
+	def all_valid_inuktitut_latin_letters(self) -> List[str]:
+		alphabet = set("abcdefghijklmnopqrstuvwxyz")
+		letters = set(["aiu"])
+		for series in self.series_list:
+			for letter in series["consonant"]:
+				letters.add(letter)
+
+		alphabet -= letters
+		return sorted(list(alphabet))
+
+
 
 
 
@@ -166,10 +177,14 @@ def build():
 		main_file.write(contents)
 
 
+
+
 if __name__ == "__main__":
-	# series_data = SeriesData("table.tsv")
+	series_data = SeriesData("table.tsv")
+
+	print(series_data.all_valid_inuktitut_latin_letters())
+
 
 	# for su in series_data.to_syllabic_units():
 	# 	# print(su)
 	# 	print(su.to_entry())
-	build()
