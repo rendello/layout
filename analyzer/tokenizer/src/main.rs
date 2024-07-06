@@ -6,27 +6,48 @@ static WHITESPACE: Lazy<Regex> = Lazy::new(|| Regex::new(r"\A\s+").unwrap());
 static SKIP: Lazy<Regex> = Lazy::new(|| Regex::new(r#"\A[!#$%&'()*+,\\/:;<=>?."]+"#).unwrap());
 static ANY: Lazy<Regex> = Lazy::new(|| Regex::new(r"\A\S+").unwrap());
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 struct Token<'a> {
     tag: TokenTag,
     substring: &'a str
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 enum TokenTag {
     NonInukASCII,
     Whitespace,
     Skip,
-    Any
+    Other
 }
 
 struct Tokens<'a> {
-    buffer: &'a str
+    buffer: &'a str,
+    cached_token: Option<Token<'a>>
 }
 
 impl<'a> Tokens<'a> {
     fn new(text: &str) -> Tokens {
-        Tokens { buffer: text }
+        Tokens { buffer: text, cached_token: None }
+    }
+
+    fn advance(&mut self, token: &Token) {
+        self.buffer = &self.buffer[token.substring.len()..];
+    }
+
+    fn try_pattern(&mut self, index: usize) -> Option<Token<'a>> {
+        let patterns = [
+            (TokenTag::NonInukASCII, &NON_INUK_ASCII),
+            (TokenTag::Whitespace, &WHITESPACE),
+            (TokenTag::Skip, &SKIP),
+        ];
+
+        for (tag, pattern) in patterns {
+            println!("=== [{}]\n{:?}\n", index, &self.buffer[index..]);
+            if let Some(result) = pattern.find(&self.buffer[index..]) {
+                return Some(Token { tag: tag, substring: result.as_str() });
+            }
+        }
+        None
     }
 }
 
@@ -34,20 +55,43 @@ impl<'a> Iterator for Tokens<'a> {
     type Item = Token<'a>;
 
     fn next(&mut self) -> Option<Token<'a>> {
-        let patterns = [
-            (TokenTag::NonInukASCII, &NON_INUK_ASCII),
-            (TokenTag::Whitespace, &WHITESPACE),
-            (TokenTag::Skip, &SKIP),
-            (TokenTag::Any, &ANY),
-        ];
-
-        for (tag, pattern) in patterns {
-            if let Some(result) = pattern.find(self.buffer) {
-                self.buffer = &self.buffer[result.len()..];
-                return Some(Token { tag: tag, substring: result.as_str() });
-            }
+        if self.buffer.is_empty() {
+            assert_eq!(self.cached_token, None);
+            return None;
         }
-        None
+
+        if let Some(token) = self.cached_token.take() {
+            self.cached_token = None;
+            self.advance(&token);
+            return Some(token);
+        }
+
+        let mut index = 0;
+        loop {
+            if let Some(token) = self.try_pattern(index) {
+                if index == 0 {
+                    self.advance(&token);
+                    return Some(token);
+                } else {
+                    self.cached_token = Some(token);
+                    let other_token = Token {
+                        tag: TokenTag::Other,
+                        substring: &self.buffer[..index+1]
+                    };
+                    self.advance(&other_token);
+                    return Some(other_token);
+                }
+            }
+            if self.buffer.len() >= index {
+                let token = Token {
+                    tag: TokenTag::Other,
+                    substring: self.buffer
+                };
+                self.advance(&token);
+                return Some(token)
+            }
+            index += 1;
+        }
     }
 }
 
