@@ -144,7 +144,7 @@ class SeriesData:
 
 	def all_valid_inuktitut_latin_letters(self) -> List[str]:
 		alphabet = set("abcdefghijklmnopqrstuvwxyz")
-		letters = set(["aiu"])
+		letters = set("aiu")
 		for series in self.series_list:
 			for letter in series["consonant"]:
 				letters.add(letter)
