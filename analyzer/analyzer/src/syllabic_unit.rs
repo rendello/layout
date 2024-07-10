@@ -1,7 +1,5 @@
 
 pub use enumset::{enum_set, EnumSet, EnumSetType};
-use phf_macros::phf_map;
-
 
 #[derive(Debug, EnumSetType)]
 pub enum Dialect {
