@@ -21,9 +21,7 @@ pub struct SyllabicUnit {
 }
 
 impl SyllabicUnit {
-
-    /// Perhaps join to existing string?
-    fn normalized_string(&self) -> String {
+    pub fn normalized_string(&self) -> String {
         self.consonant.unwrap_or_default().to_owned() 
         + self.vowel.unwrap_or_default()
     }
