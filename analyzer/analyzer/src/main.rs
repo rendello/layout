@@ -8,8 +8,12 @@ use crate::syllabic_unit::{SyllabicUnitMap, SyllabicUnit};
 
 use arrayvec::ArrayVec;
 
+pub enum ParseResult<T> {
+    Failure,
+    Success(T),
+}
 
-fn try_parse_syllabics(text: &str) -> Result<Vec<&SyllabicUnit>, ()> {
+fn try_parse_syllabics(text: &str) -> ParseResult<Vec<&SyllabicUnit>> {
     let tokenizer = &mut SyllabicTokenizer::new(text);
 
     let mut v = Vec::new();
@@ -19,8 +23,8 @@ fn try_parse_syllabics(text: &str) -> Result<Vec<&SyllabicUnit>, ()> {
     }
 
     match tokenizer.is_consumed() {
-        true => Ok(v),
-        false => Err(())
+        true => ParseResult::Success(v),
+        false => ParseResult::Failure
     }
 }
 
@@ -115,7 +119,7 @@ impl<'a> Iterator for CharEndIndices<'a> {
 
 pub fn main() {
     let res = try_parse_syllabics("ᐃᓄᐃᑦ");
-    if let Ok(vec) = res {
+    if let ParseResult::Success(vec) = res {
         for element in vec {
             print!("{}", element.normalized_string());
         }
