@@ -5,11 +5,13 @@ use crate::syllabic_unit::{SyllabicUnitMap, SyllabicUnit};
 
 use arrayvec::ArrayVec;
 
+#[derive(Debug)]
 pub enum Script {
     Latin,
     Syllabic
 }
 
+#[derive(Debug)]
 pub struct InuktitutWord<'a> {
     buffer: Vec<&'a SyllabicUnit>,
     script: Script
