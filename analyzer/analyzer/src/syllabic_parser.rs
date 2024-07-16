@@ -17,7 +17,7 @@ pub struct InuktitutWord<'a> {
 
 impl<'a> InuktitutWord<'a> {
     pub fn as_latin(&self) -> String {
-        self.buffer.iter().map(|su| su.normalized_string()).collect::<String>()
+        self.buffer.iter().map(|su| su.normalized_string()).collect()
     }
 }
 
@@ -26,7 +26,7 @@ pub enum ParseResult<T> {
     Success(T),
 }
 
-pub fn try_parse_inuktitut_syllabics<'a>(text: &'a str) -> ParseResult<InuktitutWord<'a>> {
+pub fn try_parse_inuktitut_syllabics(text: &str) -> ParseResult<InuktitutWord<'_>> {
     try_parse(text, &SYLLABIC_MAP, Script::Syllabic)
 }
 
@@ -64,7 +64,7 @@ impl<'a> Iterator for SyllabicTokenizer<'a> {
     type Item = &'a SyllabicUnit;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let r = pop_syllabic_unit(&self.buffer, &SYLLABIC_MAP);
+        let r = pop_syllabic_unit(self.buffer, self.map);
         match r {
             Some((syllabic_unit, new_buffer)) => {
                 self.buffer = new_buffer;
@@ -100,7 +100,7 @@ struct CharEndIndices<'a> {
 
 impl<'a> CharEndIndices<'a> {
     fn new(text: &'a str, max: usize) -> CharEndIndices<'a> {
-        CharEndIndices { buffer: text.as_bytes(), index: 0, max: max }
+        CharEndIndices { buffer: text.as_bytes(), index: 0, max }
     }
 
     fn next_jump(byte: u8) -> usize {

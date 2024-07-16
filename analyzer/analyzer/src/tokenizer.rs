@@ -36,7 +36,7 @@ impl<'a> Iterator for Tokenizer<'a> {
         for (tag, pattern) in patterns {
             if let Some(result) = pattern.find(self.buffer) {
                 self.buffer = &self.buffer[result.len()..];
-                return Some(Token { tag: tag, substring: result.as_str() });
+                return Some(Token { tag, substring: result.as_str() });
             }
         }
         None
