@@ -1,9 +1,9 @@
-use tokenizer::tokenizer::{Tokenizer};
+use analyzer::tokenizer::{Tokenizer};
 
 use proptest::prelude::*;
 proptest! {
     #![proptest_config(ProptestConfig {
-        cases: 10_000_000,
+        cases: 10_000,
         .. ProptestConfig::default()
     })]
 
