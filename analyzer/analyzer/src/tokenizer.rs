@@ -54,8 +54,8 @@ impl<'a> Iterator for Tokenizer<'a> {
 
 #[derive(Debug)]
 pub struct Token<'a> {
-    tag: TokenTag<'a>,
-    substring: &'a str
+    pub tag: TokenTag<'a>,
+    pub substring: &'a str
 }
 
 #[derive(Debug)]

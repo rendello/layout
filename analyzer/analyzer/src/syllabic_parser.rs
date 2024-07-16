@@ -81,7 +81,7 @@ impl<'a> Iterator for SyllabicTokenizer<'a> {
 fn pop_syllabic_unit<'a>(text: &'a str, map: &SyllabicUnitMap) -> Option<(&'a SyllabicUnit, &'a str)> {
     const MAX: usize = 16;
 
-    let mut char_end_indices = ArrayVec::<usize, MAX>::new();
+    let mut char_end_indices = ArrayVec::<usize, {MAX+1}>::new();
     for char_end_index in CharEndIndices::new(text, MAX) {
         char_end_indices.push(char_end_index);
     }
