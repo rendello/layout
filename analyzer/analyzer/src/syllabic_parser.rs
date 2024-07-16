@@ -5,17 +5,32 @@ use crate::syllabic_unit::{SyllabicUnitMap, SyllabicUnit};
 
 use arrayvec::ArrayVec;
 
+pub enum Script {
+    Latin,
+    Syllabic
+}
+
+pub struct InuktitutWord<'a> {
+    buffer: Vec<&'a SyllabicUnit>,
+    script: Script
+}
+
+impl<'a> InuktitutWord<'a> {
+    pub fn as_latin(&self) -> String {
+        self.buffer.iter().map(|su| su.normalized_string()).collect::<String>()
+    }
+}
 
 pub enum ParseResult<T> {
     Failure,
     Success(T),
 }
 
-pub fn try_parse_inuktitut_syllabics<'a>(text: &'a str) -> ParseResult<Vec<&'a SyllabicUnit>> {
-    try_parse(text, &SYLLABIC_MAP)
+pub fn try_parse_inuktitut_syllabics<'a>(text: &'a str) -> ParseResult<InuktitutWord<'a>> {
+    try_parse(text, &SYLLABIC_MAP, Script::Syllabic)
 }
 
-fn try_parse<'a>(text: &'a str, map: &'a SyllabicUnitMap) -> ParseResult<Vec<&'a SyllabicUnit>> {
+fn try_parse<'a>(text: &'a str, map: &'a SyllabicUnitMap, script: Script) -> ParseResult<InuktitutWord<'a>> {
     let tokenizer = &mut SyllabicTokenizer::new(text, map);
 
     let mut v = Vec::new();
@@ -25,7 +40,7 @@ fn try_parse<'a>(text: &'a str, map: &'a SyllabicUnitMap) -> ParseResult<Vec<&'a
     }
 
     match tokenizer.is_consumed() {
-        true => ParseResult::Success(v),
+        true => ParseResult::Success(InuktitutWord { buffer: v, script }),
         false => ParseResult::Failure
     }
 }

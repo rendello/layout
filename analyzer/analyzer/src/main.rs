@@ -8,9 +8,9 @@ use crate::syllabic_parser::ParseResult;
 
 pub fn main() {
     let res = syllabic_parser::try_parse_inuktitut_syllabics("ᐃᓄᐃᑦ");
-    if let ParseResult::Success(vec) = res {
-        for element in vec {
-            print!("{}", element.normalized_string());
-        }
+    if let ParseResult::Success(inuktitut_word) = res {
+        println!("{:?}", inuktitut_word.as_latin());
+    } else {
+        println!("AHHHHH");
     }
 }
