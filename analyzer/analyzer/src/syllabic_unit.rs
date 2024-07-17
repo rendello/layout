@@ -25,6 +25,13 @@ impl SyllabicUnit {
         self.consonant.unwrap_or_default().to_owned() 
         + self.vowel.unwrap_or_default()
     }
+
+    pub fn original_representation(&self) -> String {
+        match &self.original {
+            SyllabicUnitRepresentation::Syllabic(ssu) => ssu.representation.to_owned(),
+            _ => unreachable!()
+        }
+    }
 }
 
 #[derive(Debug, Clone)]

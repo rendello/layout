@@ -1139,3 +1139,14 @@ New approach: get just the spaces/newlines with SIMD then do parsing on each wor
 The standard case for conversion would likely be syl -> lat, but for analysis, it's certainly latin in most cases. For example, scraping websites to see if they contain Inuktitut, the majority of the text will probably be non-Inuktitut ASCII.
 
 >> [Inuktitut] syllabics ([Inuktitut]: [ᖃᓂᐅᔮᖅᐸᐃᑦ], romanized: [qaniujaaqpait], or [ᑎᑎᕋᐅᓯᖅ] [ᓄᑖᖅ], [titirausiq] [nutaaq]) is an abugida-type writing system used in Canada by the [Inuktitut]-speaking [Inuit] of the territory of [Nunavut] and the [Nunavik] and [Nunatsiavut] regions of Quebec and Labrador, respectively. In 1976, the Language Commission of the [Inuit] Cultural Institute made it the co-official script for the [Inuit] languages, along with the Latin script.
+
+===
+July 17th, 2024
+
+I have a decently-working parser that can detect Inuktitut words written in syllabics and convert them to latin text. There are many potential avenues from here, like converting lat -> syl, etc. but I think I'd like to focus on having a web version to easily visualize things. So, what do I want?
+
+It would be nice to have the web visualizer have different coloured blocks for different tags, and have varied shades for different syllabic units à la regex101.com when having multiple matches. That can be done with CSS, I just have to worry about the HTML here.
+
+So, this will need to work with not just the converted stuff, but also the base stuff. So it can colourize the original ᐃᓄᐃᑦ as well as the converted "inuit".
+
+This is just popping through the tokens and adding spans, so I think I'll just convert everything to latin to start.

@@ -21,6 +21,14 @@ impl<'a> InuktitutWord<'a> {
     pub fn as_latin(&self) -> String {
         self.buffer.iter().map(|su| su.normalized_string()).collect()
     }
+
+    pub fn as_html(&self) -> String {
+        let mut v = Vec::new();
+        for syllabic_unit in &self.buffer {
+            v.push(format!(r#"<span class="syllabic-unit">{}</span>"#, syllabic_unit.original_representation()));
+        }
+        v.join("")
+    }
 }
 
 pub enum ParseResult<T> {

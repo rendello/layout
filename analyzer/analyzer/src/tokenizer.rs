@@ -64,3 +64,28 @@ pub enum TokenTag<'a> {
     NonInuktitutWord,
     Skip,
 }
+
+impl<'a> Token<'a> {
+    pub fn tag_as_html_class_name(&self) -> String {
+        match &self.tag {
+            TokenTag::NonInuktitutWord => "non-inuktitut-word",
+            TokenTag::Skip => "skip",
+            TokenTag::InuktitutWord(_) => "inuktitut-word"
+        }.to_owned()
+    }
+
+    pub fn as_latin(&self) -> String {
+        match &self.tag {
+            TokenTag::NonInuktitutWord | TokenTag::Skip => self.substring.to_owned(),
+            TokenTag::InuktitutWord(iw) => iw.as_latin(),
+        }
+    }
+
+    pub fn as_html(&self) -> String {
+        let body_text = match &self.tag {
+            TokenTag::NonInuktitutWord | TokenTag::Skip => self.substring.to_owned(),
+            TokenTag::InuktitutWord(iw) => iw.as_html()
+        };
+        format!(r#"<span class="{}">{}</span>"#, &self.tag_as_html_class_name(), body_text)
+    }
+}
