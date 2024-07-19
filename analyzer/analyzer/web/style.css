@@ -1,0 +1,59 @@
+
+* {
+    font-family: "Noto Sans Canadian Aboriginal";
+    font-size: 10pt;
+}
+
+.output {
+
+}
+
+#box {
+    display: grid;
+    grid-template-areas:
+        "input"
+        "output";
+    grid-gap: 10px;
+
+    box-sizing: border-box;
+    padding: 10px;
+    width: 80%;
+    margin: 10px auto;
+    background: #f2f2f2;
+}
+
+#form {
+    grid-area: input;
+}
+
+#form textarea {
+    width: 100%;
+    height: 25vh;
+    box-sizing: border-box;
+    resize: vertical;
+} 
+
+#panel {
+    grid-area: panel;
+    background: #e6e6e6;
+}
+
+#output {
+    white-space: pre-wrap;
+}
+
+
+.non-inuktitut-word {
+    background: rgb(228, 237, 255);
+}
+.skip {
+    background: #fff2e6;
+}
+
+.syllabic-unit:nth-of-type(even) {
+    background: #ffc6c6;
+}
+
+.syllabic-unit:nth-of-type(odd) {
+    background: #ffdada;
+}
