@@ -5,8 +5,8 @@ use crate::syllabic_parser;
 use syllabic_parser::{InuktitutWord, ParseResult};
 
 static NON_INUK_ASCII: Lazy<Regex> = Lazy::new(|| Regex::new(r"(?i)\A[a-z]*[defowxyz][a-z]*").unwrap());
-static SKIP: Lazy<Regex> = Lazy::new(|| Regex::new(r#"\A[!#$%&'()*+,\\/:;<=>?."\s\[\]0-9]+"#).unwrap());
-static OTHER: Lazy<Regex> = Lazy::new(|| Regex::new(r#"\A[^!#$%&'()*+,\\/:;<=>?."\s\[\]0-9]+"#).unwrap());
+static SKIP: Lazy<Regex> = Lazy::new(|| Regex::new(r#"\A\W+"#).unwrap());
+static OTHER: Lazy<Regex> = Lazy::new(|| Regex::new(r#"\A\w+"#).unwrap());
 
 
 pub struct Tokenizer<'a> {
