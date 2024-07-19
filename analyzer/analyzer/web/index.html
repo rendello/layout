@@ -19,6 +19,15 @@
         }
 
     </style>
+    <script type="module">
+        import init, { tokenize } from './analyzer.js';
+
+        async function run() {
+            await init();
+            window.tokenize = tokenize;
+        }
+        run();
+    </script>
 </head>
 <body>
 
