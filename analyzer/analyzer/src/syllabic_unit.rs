@@ -41,6 +41,7 @@ pub enum SyllabicUnitRepresentation {
 
 #[derive(Debug, Clone)]
 pub struct LatinSyllabicUnit {
+    pub representation: &'static str,
     pub consonant: Option<&'static str>,
 }
 
