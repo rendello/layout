@@ -1,6 +1,6 @@
 //! Parsing functions for Inuktitut syllabics and latin scripts.
 
-use crate::data::SYLLABIC_MAP;
+use crate::data::{SYLLABIC_MAP, LATIN_MAP};
 use crate::syllabic_unit::{SyllabicUnitMap, SyllabicUnit};
 
 use arrayvec::ArrayVec;
@@ -34,6 +34,10 @@ impl<'a> InuktitutWord<'a> {
 pub enum ParseResult<T> {
     Failure,
     Success(T),
+}
+
+pub fn try_parse_inuktitut_latin(text: &str) -> ParseResult<InuktitutWord<'_>> {
+    try_parse(text, &LATIN_MAP, Script::Latin)
 }
 
 pub fn try_parse_inuktitut_syllabics(text: &str) -> ParseResult<InuktitutWord<'_>> {

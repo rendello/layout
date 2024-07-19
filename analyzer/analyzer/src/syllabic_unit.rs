@@ -28,7 +28,7 @@ impl SyllabicUnit {
     pub fn original_representation(&self) -> String {
         match &self.original {
             SyllabicUnitRepresentation::Syllabic(ssu) => ssu.representation.to_owned(),
-            _ => unreachable!()
+            SyllabicUnitRepresentation::Latin(lsu) => lsu.representation.to_owned()
         }
     }
 }

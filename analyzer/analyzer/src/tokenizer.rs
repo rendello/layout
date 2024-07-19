@@ -42,7 +42,12 @@ impl<'a> Iterator for Tokenizer<'a> {
         if let Some(result) = &OTHER.find(self.buffer) {
             let tag = match syllabic_parser::try_parse_inuktitut_syllabics(result.as_str()) {
                 ParseResult::Success(inuktitut_word) => TokenTag::InuktitutWord(inuktitut_word),
-                ParseResult::Failure => TokenTag::NonInuktitutWord
+                ParseResult::Failure => {
+                    match syllabic_parser::try_parse_inuktitut_latin(result.as_str()) {
+                        ParseResult::Success(inuktitut_word) => TokenTag::InuktitutWord(inuktitut_word),
+                        ParseResult::Failure => TokenTag::NonInuktitutWord
+                    }
+                }
             };
             self.buffer = &self.buffer[result.len()..];
             return Some(Token { tag, substring: result.as_str() });
