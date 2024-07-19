@@ -1,4 +1,3 @@
-
 pub use enumset::{enum_set, EnumSet, EnumSetType};
 
 #[derive(Debug, EnumSetType)]

@@ -1,4 +1,3 @@
-
 import csv
 from datetime import datetime
 from dataclasses import dataclass
@@ -58,8 +57,7 @@ class SeriesData:
 	generated Rust code.
 
 	Its methods generate the `SyllabicUnit`s for the analysis and
-	transliteration tool, as well as the enums required for the
-	code to work.
+	transliteration tool.
 	"""
 
 	series_list: List[Dict]
@@ -120,7 +118,6 @@ class SeriesData:
 				ai = "Split"
 			else:
 				ai = "NotApplicable"
-			# Add implicit ai split
 
 			dialect = series["dialect"]
 			if dialect == "":
