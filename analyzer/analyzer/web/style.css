@@ -50,10 +50,20 @@
     background: #fff2e6;
 }
 
-.syllabic-unit:nth-of-type(even) {
+
+
+.syllabic .syllabic-unit:nth-of-type(even) {
+    background: #cbffbd;
+}
+
+.syllabic .syllabic-unit:nth-of-type(odd) {
+    background: #95ff97;
+}
+
+.latin .syllabic-unit:nth-of-type(even) {
     background: #ffc6c6;
 }
 
-.syllabic-unit:nth-of-type(odd) {
+.latin .syllabic-unit:nth-of-type(odd) {
     background: #ffdada;
 }

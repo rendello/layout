@@ -14,7 +14,7 @@ pub enum Script {
 #[derive(Debug)]
 pub struct InuktitutWord {
     buffer: Vec<SyllabicUnit>,
-    script: Script
+    pub script: Script
 }
 
 impl InuktitutWord {

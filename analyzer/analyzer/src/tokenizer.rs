@@ -1,8 +1,10 @@
 use once_cell::sync::Lazy;
 use regex::{Regex};
 
-use crate::syllabic_parser;
 use syllabic_parser::{InuktitutWord, ParseResult};
+
+use crate::syllabic_parser;
+use crate::syllabic_parser::Script;
 
 static NON_INUK_ASCII: Lazy<Regex> = Lazy::new(|| Regex::new(r"(?i)\A[a-z]*[defowxyz][a-z]*").unwrap());
 static SKIP: Lazy<Regex> = Lazy::new(|| Regex::new(r#"\A\W+"#).unwrap());
@@ -75,7 +77,8 @@ impl<'a> Token<'a> {
         match &self.tag {
             TokenTag::NonInuktitutWord => "non-inuktitut-word",
             TokenTag::Skip => "skip",
-            TokenTag::InuktitutWord(_) => "inuktitut-word"
+            TokenTag::InuktitutWord(InuktitutWord { script: Script::Latin, .. }) => "inuktitut-word latin",
+            TokenTag::InuktitutWord(InuktitutWord { script: Script::Syllabic, .. }) => "inuktitut-word syllabic"
         }.to_owned()
     }
 
