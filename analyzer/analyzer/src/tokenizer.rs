@@ -59,13 +59,13 @@ impl<'a> Iterator for Tokenizer<'a> {
 
 #[derive(Debug)]
 pub struct Token<'a> {
-    pub tag: TokenTag<'a>,
+    pub tag: TokenTag,
     pub substring: &'a str
 }
 
 #[derive(Debug)]
-pub enum TokenTag<'a> {
-    InuktitutWord(InuktitutWord<'a>),
+pub enum TokenTag {
+    InuktitutWord(InuktitutWord),
     NonInuktitutWord,
     Skip,
 }

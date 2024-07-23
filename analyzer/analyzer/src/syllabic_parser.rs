@@ -12,12 +12,12 @@ pub enum Script {
 }
 
 #[derive(Debug)]
-pub struct InuktitutWord<'a> {
-    buffer: Vec<&'a SyllabicUnit>,
+pub struct InuktitutWord {
+    buffer: Vec<SyllabicUnit>,
     script: Script
 }
 
-impl<'a> InuktitutWord<'a> {
+impl InuktitutWord {
     pub fn as_latin(&self) -> String {
         self.buffer.iter().map(|su| su.normalized_string()).collect()
     }
@@ -36,21 +36,22 @@ pub enum ParseResult<T> {
     Success(T),
 }
 
-pub fn try_parse_inuktitut_latin(text: &str) -> ParseResult<InuktitutWord<'_>> {
-    try_parse(text, &LATIN_MAP, Script::Latin)
+pub fn try_parse_inuktitut_latin(text: &str) -> ParseResult<InuktitutWord> {
+    let lower = text.to_lowercase();
+    try_parse(&lower, &LATIN_MAP, Script::Latin)
 }
 
-pub fn try_parse_inuktitut_syllabics(text: &str) -> ParseResult<InuktitutWord<'_>> {
+pub fn try_parse_inuktitut_syllabics(text: &str) -> ParseResult<InuktitutWord> {
     try_parse(text, &SYLLABIC_MAP, Script::Syllabic)
 }
 
-fn try_parse<'a>(text: &'a str, map: &'a SyllabicUnitMap, script: Script) -> ParseResult<InuktitutWord<'a>> {
-    let tokenizer = &mut SyllabicTokenizer::new(text, map);
+fn try_parse(text: &str, map: &SyllabicUnitMap, script: Script) -> ParseResult<InuktitutWord> {
+    let mut tokenizer = SyllabicTokenizer::new(text, map);
 
     let mut v = Vec::new();
 
     while let Some(syllabic_unit) = tokenizer.next() {
-        v.push(syllabic_unit);
+        v.push(syllabic_unit.clone());
     }
 
     match tokenizer.is_consumed() {
