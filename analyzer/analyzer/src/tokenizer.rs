@@ -54,20 +54,19 @@ impl<'a> Iterator for Tokenizer<'a> {
             self.buffer = &self.buffer[result.len()..];
             return Some(Token { tag, substring: result.as_str() });
         }
-
         None
     }
 }
 
 #[derive(Debug)]
 pub struct Token<'a> {
-    pub tag: TokenTag,
+    pub tag: TokenTag<'a>,
     pub substring: &'a str
 }
 
 #[derive(Debug)]
-pub enum TokenTag {
-    InuktitutWord(InuktitutWord),
+pub enum TokenTag<'a> {
+    InuktitutWord(InuktitutWord<'a>),
     NonInuktitutWord,
     Skip,
 }

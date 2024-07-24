@@ -10,6 +10,11 @@ pub enum Dialect {
 
 pub type DialectSet = EnumSet<Dialect>;
 
+#[derive(Debug)]
+pub struct SUToken<'a> {
+    pub syllabic_unit: &'a SyllabicUnit,
+    pub text: &'a str
+}
 
 #[derive(Debug, Clone)]
 pub struct SyllabicUnit {

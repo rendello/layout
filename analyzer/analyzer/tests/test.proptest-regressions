@@ -8,3 +8,5 @@ cc 8efa4f09cf43f37a8a16c96aa64db959c2990c6a10220d10f97014629d2cf495 # shrinks to
 cc 7b46a9c9e8eb04b5f6833c5f8adaa13f24abe67ea7d9c3642f4cc591cbe05ceb # shrinks to s = "\""
 cc 1bacc82b05149e8a30f194b85fa116e3f00f527a3c11386106943f12740debbd # shrinks to s = ""
 cc 1cbdf8f1d0bb47d72a569c591ee55164be5b63c2c87284350a72987443a54444 # shrinks to s = "{aaaAAAaaAaaAaaaA"
+cc 4c789e4d61841129053d3e832f7e94c7cf28093fd464c3ed4aaea7cbb4fca442 # shrinks to s = "Ⱥ"
+cc 906de24aa578b1489287735bed36d5ffffe8d7d2ac502be306edb4a294169f4f # shrinks to s = "Ⱥaᐁ𑪰ᢰᢰᐁ"
