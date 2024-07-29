@@ -43,7 +43,7 @@ fn target_path(s: &str) -> PathBuf {
 }
 
 
-fn build_wasm_artifacts(out_dir: &Path) {
+fn build_wasm_artifacts(out_dir: &Path) -> Result<()> {
     Command::new("cargo")
         .current_dir(".")
         .args([
@@ -61,20 +61,20 @@ fn build_wasm_artifacts(out_dir: &Path) {
         out_dir.join("inuklib.wasm")
     ).expect("");
 
-    println!("{}", "Generating WASM bindings");
+    println!("Generating WASM bindings");
     Bindgen::new()
         .input_path(out_dir.join("inuklib.wasm"))
-        .web(true)
-        .expect("???")
+        .web(true)?
         .generate(out_dir)
         .expect("Failed to run wasm-bindgen");
 
     let bind_gen_wasm = out_dir.join("inuklib_bg.wasm");
 
-    println!("{}", "Optimizing WASM");
+    println!("Optimizing WASM");
     OptimizationOptions::new_optimize_for_size()
-        .run(&bind_gen_wasm, &bind_gen_wasm)
-        .expect("opatronus");
+        .run(&bind_gen_wasm, &bind_gen_wasm)?;
+
+    Ok(())
 }
 
 
@@ -83,8 +83,8 @@ fn build_all(clean: bool) -> Result<()> {
         fs::remove_dir_all(project_root().join("inuklib/dist"))?;
     }
 
-    let artifact_dir = TempDir::with_prefix("inuklib-").expect("");
-    build_wasm_artifacts(artifact_dir.path());
+    let artifact_dir = TempDir::with_prefix("inuklib-")?;
+    build_wasm_artifacts(artifact_dir.path())?;
 
     let firefox_dirs = ["common", "extension/common", "extension/firefox"];
     let chrome_dirs  = ["common", "extension/common", "extension/chrome"];
@@ -97,9 +97,9 @@ fn build_all(clean: bool) -> Result<()> {
     ];
 
     for (target_rel_path, static_rel_paths) in targets_and_static_rel_paths {
-        copy_dir_all(artifact_dir.path(), &target_path(target_rel_path)).expect("");
+        copy_dir_all(artifact_dir.path(), &target_path(target_rel_path))?;
         for static_rel_path in static_rel_paths {
-            copy_dir_all(static_path(static_rel_path), target_path(target_rel_path)).expect("");
+            copy_dir_all(static_path(static_rel_path), target_path(target_rel_path))?;
         }
     }
     Ok(())

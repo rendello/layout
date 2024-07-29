@@ -9,5 +9,4 @@ wasm-opt = "0.116.1"
 tempfile = "3.10.1"
 cargo_metadata = "0.18.1"
 clap = { version = "4.5", features = ["derive"]}
-walkdir = "2"
 anyhow = "1.0.86"
