@@ -44,8 +44,8 @@ fn target_path(s: &str) -> PathBuf {
 
 
 fn build_wasm_artifacts(out_dir: &Path) -> Result<()> {
-    Command::new("cargo")
-        .current_dir(".")
+    println!("Building WASM");
+    let cargo_status = Command::new("cargo")
         .args([
             "build",
             "--lib",
@@ -53,8 +53,11 @@ fn build_wasm_artifacts(out_dir: &Path) -> Result<()> {
             "--target", "wasm32-unknown-unknown",
             "--release"
         ])
-        .output()
-        .unwrap();
+        .status()?;
+
+    if !cargo_status.success() {
+        panic!("Failed to compile WASM artifact");
+    }
 
     fs::copy(
         project_root().join("target/wasm32-unknown-unknown/release/inuklib.wasm"),
