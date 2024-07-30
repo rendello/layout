@@ -5,6 +5,7 @@ use syllabic_parser::{InuktitutWord, ParseResult};
 
 use crate::syllabic_parser;
 use crate::syllabic_parser::Script;
+use crate::data::ENGLISH_WORDS;
 
 static NON_INUK_ASCII: Lazy<Regex> = Lazy::new(|| Regex::new(r"(?i)\A[a-z]*[defowxyz][a-z]*").unwrap());
 static SKIP: Lazy<Regex> = Lazy::new(|| Regex::new(r#"\A\W+"#).unwrap());
@@ -45,9 +46,13 @@ impl<'a> Iterator for Tokenizer<'a> {
             let tag = match syllabic_parser::try_parse_inuktitut_syllabics(result.as_str()) {
                 ParseResult::Success(inuktitut_word) => TokenTag::InuktitutWord(inuktitut_word),
                 ParseResult::Failure => {
-                    match syllabic_parser::try_parse_inuktitut_latin(result.as_str()) {
-                        ParseResult::Success(inuktitut_word) => TokenTag::InuktitutWord(inuktitut_word),
-                        ParseResult::Failure => TokenTag::NonInuktitutWord
+                    if ENGLISH_WORDS.contains(&result.as_str().to_lowercase()) {
+                        TokenTag::NonInuktitutWord
+                    } else {
+                        match syllabic_parser::try_parse_inuktitut_latin(result.as_str()) {
+                            ParseResult::Success(inuktitut_word) => TokenTag::InuktitutWord(inuktitut_word),
+                            ParseResult::Failure => TokenTag::NonInuktitutWord
+                        }
                     }
                 }
             };
