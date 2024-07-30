@@ -8,6 +8,7 @@ use crate::syllabic_parser::Script;
 use crate::data::ENGLISH_WORDS;
 
 static NON_INUK_ASCII: Lazy<Regex> = Lazy::new(|| Regex::new(r"(?i)\A[a-z]*[defowxyz][a-z]*").unwrap());
+static NUMERIC: Lazy<Regex> = Lazy::new(|| Regex::new(r#"\A(?:\d+\.?)+"#).unwrap());
 static SKIP: Lazy<Regex> = Lazy::new(|| Regex::new(r#"\A\W+"#).unwrap());
 static OTHER: Lazy<Regex> = Lazy::new(|| Regex::new(r#"\A\w+"#).unwrap());
 
@@ -33,6 +34,7 @@ impl<'a> Iterator for Tokenizer<'a> {
         let bare_patterns = [
             (TokenTag::NonInuktitutWord, &NON_INUK_ASCII),
             (TokenTag::Skip, &SKIP),
+            (TokenTag::Skip, &NUMERIC),
         ];
 
         for (tag, pattern) in bare_patterns {
