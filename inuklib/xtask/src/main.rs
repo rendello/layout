@@ -65,13 +65,15 @@ fn build_wasm_artifacts(out_dir: &Path) -> Result<()> {
     Bindgen::new()
         .input_path(out_dir.join("inuklib.wasm"))
         .web(true)?
+        .bundler(false)?
+        .omit_default_module_path(false)
         .generate(out_dir)
         .expect("Failed to run wasm-bindgen");
 
     let bind_gen_wasm = out_dir.join("inuklib_bg.wasm");
 
     println!("Optimizing WASM");
-    OptimizationOptions::new_optimize_for_size()
+    OptimizationOptions::new_opt_level_1()
         .run(&bind_gen_wasm, &bind_gen_wasm)?;
 
     Ok(())
