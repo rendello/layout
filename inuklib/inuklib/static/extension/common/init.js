@@ -1,4 +1,4 @@
-import init, { tokenize } from './analyzer.js';
+import init, { tokenize } from './inuklib.js';
 
 async function run() {
     await init();

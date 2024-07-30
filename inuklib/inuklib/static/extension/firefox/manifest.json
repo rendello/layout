@@ -15,8 +15,8 @@
   ],
   "web_accessible_resources": [
     "init.js",
-    "analyzer.js",
-    "analyzer_bg.wasm",
+    "inuklib.js",
+    "inuklib_bg.wasm",
     "inuktitut_style.css"
   ]
 }
