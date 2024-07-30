@@ -33,7 +33,7 @@ impl<'a> InuktitutWord<'a> {
 
 pub enum ParseResult<T> {
     Failure,
-    Success(T),
+    Success(T)
 }
 
 pub fn try_parse_inuktitut_latin(text: &str) -> ParseResult<InuktitutWord> {

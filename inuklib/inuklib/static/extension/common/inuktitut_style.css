@@ -1,0 +1,22 @@
+.non-inuktitut-word {
+    background: rgb(228, 237, 255);
+}
+.skip {
+    background: #fff2e6;
+}
+
+.syllabic .syllabic-unit:nth-of-type(even) {
+    background: #cbffbd;
+}
+
+.syllabic .syllabic-unit:nth-of-type(odd) {
+    background: #95ff97;
+}
+
+.latin .syllabic-unit:nth-of-type(even) {
+    background: #ffc6c6;
+}
+
+.latin .syllabic-unit:nth-of-type(odd) {
+    background: #ffdada;
+}

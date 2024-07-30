@@ -1,5 +1,6 @@
 webscrapes
 
+.mypy_cache 
 __pycache__/
 *.py[cod]
 *.so
@@ -10,4 +11,5 @@ census/
 .DS_Store
 target/
 dist/
+dist.old/
 98-401-X2021006_eng_TAB 
