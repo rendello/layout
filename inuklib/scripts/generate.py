@@ -1,5 +1,3 @@
-
-import re
 import csv
 from datetime import datetime
 from dataclasses import dataclass
@@ -200,27 +198,28 @@ class SeriesData:
 		return syllabic_units
 
 	def all_valid_inuktitut_latin_letters(self) -> List[str]:
-		alphabet = set("abcdefghijklmnopqrstuvwxyz")
 		letters = set("aiu")
 		for series in self.series_list:
 			for letter in series["consonant"]:
 				letters.add(letter)
 
-		alphabet -= letters
-		return sorted(list(alphabet))
+		return sorted(letters)
 
+	def generate_english_word_entries(self, wordlist):
+		""" English words that are ambiguous with Inuktitut based on their letters. """
 
-def generate_english_word_entries(wordlist):
-	""" English words that are ambiguous with Inuktitut based on their letters. """
+		allowed_letters = self.all_valid_inuktitut_latin_letters()
 
-	p = re.compile(r"[a-z]*[defowxyz][a-z]*")
+		accepted_words = []
+		with open(wordlist) as f:
+			for word in sorted(f.read().splitlines()):
+				for letter in word:
+					if letter not in allowed_letters:
+						break
+				else:
+					accepted_words.append(word)
 
-	with open(wordlist) as f:
-		return ",\n".join(
-			[f'    "{word}"'
-			for word in sorted(f.read().splitlines())
-			if not p.fullmatch(word)]
-		)
+		return ",\n".join([f'    "{word}"' for word in accepted_words])
 
 
 def generate():
@@ -234,7 +233,7 @@ def generate():
 	all_dialects = ", ".join(series_data.all_dialects())
 
 	# English word set
-	english_word_entries = generate_english_word_entries("wordlist")
+	english_word_entries = series_data.generate_english_word_entries("wordlist")
 
 	return (
 		f'''// ==============================================\n'''
