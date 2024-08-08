@@ -2,6 +2,7 @@
 name = "inuklib"
 version = "0.1.0"
 edition = "2021"
+publish = false
 
 [features]
 wasm = ["dep:wasm-bindgen"]
