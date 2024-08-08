@@ -1,15 +1,14 @@
+from typing import Dict, List
 
-from zoneinfo import ZoneInfo
 from datetime import datetime
-from sys import stderr, exit
-
-from typing import List, Dict
+from os import chdir, mkdir
 from pathlib import Path
 from shutil import copy, copytree, rmtree
 from subprocess import run
-
+from sys import exit, stderr
 from tempfile import TemporaryDirectory
-from os import chdir, mkdir
+from zoneinfo import ZoneInfo
+
 
 def build_print(s: str, is_error=False) -> str:
 	time = datetime.now(ZoneInfo("Canada/Eastern")).astimezone().strftime("%H:%M")
@@ -56,7 +55,6 @@ def build_wasm_artifacts(artifact_dir: Path):
 		"-O"
 	], check=True)
 
-
 def build_all():
 	static_dir = Path("inuklib/static")
 
@@ -73,21 +71,19 @@ def build_all():
 			("web",               ["common", "web"]),
 		]
 
-		for relative_target_path, static_paths in targets_and_static_paths:
+		for relative_target_path, relative_static_paths in targets_and_static_paths:
 			target_path = staging_dir / relative_target_path
 			copytree(artifact_dir, target_path)
 
-			for static_path in static_paths:
-				copytree(static_dir / static_path, target_path, dirs_exist_ok=True)
+			for relative_static_path in relative_static_paths:
+				copytree(static_dir / relative_static_path, target_path, dirs_exist_ok=True)
 
 		rmtree("inuklib/dist")
 		copytree(staging_dir, "inuklib/dist")
 
 
-import os
 if __name__ == "__main__":
 	chdir("../..")
-	print(os.getcwd())
 	ensure_binaries_installed()
 
 	build_all()
