@@ -1,16 +1,7 @@
+<!DOCTYPE html>
 <html>
-
 <head>
     <style>
-        @media (prefers-color-scheme: dark) {
-            body {
-                background: #333;
-                color: white;
-            }
-            a {
-                color: skyblue;
-            }
-        }
         .container {
             font-family: sans-serif;
             max-width: 800px;
@@ -24,12 +15,13 @@
             margin: 0;
             padding: 0;
         }
-        .license-used-by {
-            margin-top: -10px;
+        .license {
+            padding: 7px 0px;
+        }
+        .license:not(:last-child) {
+            border-bottom: 1px solid grey;
         }
         .license-text {
-            max-height: 200px;
-            overflow-y: scroll;
             white-space: pre-wrap;
         }
     </style>
@@ -39,7 +31,7 @@
     <main class="container">
         <div class="intro">
             <h1>Third Party Licenses</h1>
-            <p>This page lists the licenses of the projects used in cargo-about.</p>
+            <p>Libraries used in inuklib, click a license to read its text.</p>
         </div>
     
         <h2>Overview of licenses:</h2>
@@ -49,18 +41,19 @@
             {{/each}}
         </ul>
 
-        <h2>All license text:</h2>
+        <hr>
         <ul class="licenses-list">
             {{#each licenses}}
             <li class="license">
-                <h3 id="{{id}}">{{name}}</h3>
-                <h4>Used by:</h4>
+                <details>
+                    <summary id="{{id}}">{{name}}</summary>
+                    <pre class="license-text">{{text}}</pre>
+                </details>
                 <ul class="license-used-by">
                     {{#each used_by}}
                     <li><a href="{{#if crate.repository}} {{crate.repository}} {{else}} https://crates.io/crates/{{crate.name}} {{/if}}">{{crate.name}} {{crate.version}}</a></li>
                     {{/each}}
                 </ul>
-                <pre class="license-text">{{text}}</pre>
             </li>
             {{/each}}
         </ul>
