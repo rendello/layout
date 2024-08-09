@@ -80,8 +80,10 @@ def build_all():
 			for relative_static_path in relative_static_paths:
 				copytree(static_dir / relative_static_path, target_path, dirs_exist_ok=True)
 
-		rmtree("inuklib/dist")
-		copytree(staging_dir, "inuklib/dist")
+		if Path("dist").is_dir():
+			rmtree("dist")
+
+		copytree(staging_dir, "dist")
 
 
 if __name__ == "__main__":
