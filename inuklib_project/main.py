@@ -1,3 +1,5 @@
+#!/opt/local/bin/python3.11
+
 from typing import Dict, List
 
 from datetime import datetime
@@ -83,7 +85,6 @@ def build_all():
 
 
 if __name__ == "__main__":
-	chdir("../..")
 	ensure_binaries_installed()
 
 	build_all()
