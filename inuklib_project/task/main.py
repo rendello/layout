@@ -22,7 +22,7 @@ def build_print(s: str, is_error=False) -> str:
 
 def ensure_binaries_installed():
 	not_installed_binaries = []
-	for b in ["wasm-opt", "wasm-bindgen", "cargo"]:
+	for b in ["wasm-opt", "wasm-bindgen", "cargo", "cargo-about"]:
 		try:
 			run([b, "--version"], check=True, capture_output=True)
 		except FileNotFoundError:
