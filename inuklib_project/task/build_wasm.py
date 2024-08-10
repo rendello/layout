@@ -1,6 +1,6 @@
-from typing import Dict, List, Optional
+from typing import Optional
 
-from os import chdir, mkdir
+from os import mkdir
 from pathlib import Path
 from shutil import copy, copytree, rmtree
 
@@ -20,8 +20,8 @@ def build_all(project_dir: Path, build_license_page: bool, opt_level: Optional[i
 
     static_dir = Path(project_dir, "static")
 
-    with TemporaryDirectory(prefix="inuklib--") as temp_dir:
-        temp_dir = Path(temp_dir)
+    with TemporaryDirectory(prefix="inuklib--") as temp_dir_:
+        temp_dir = Path(temp_dir_)
         artifact_dir = temp_dir / "artifact"
         staging_dir = temp_dir / "dist"
 

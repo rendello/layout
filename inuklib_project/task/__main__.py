@@ -1,9 +1,6 @@
 #!/opt/local/bin/python3.11
 
 import argparse
-import os
-import pathlib
-from pathlib import Path
 from subprocess import run
 
 import build_wasm
