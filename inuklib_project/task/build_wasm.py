@@ -7,7 +7,7 @@ from shutil import copy, copytree, rmtree
 from tempfile import TemporaryDirectory
 from subprocess import run
 
-from common import build_print, build_exit, asset_path
+from common import build_print, build_exit, ASSET_PATH
 
 
 def build_all(project_dir: Path, build_license_page: bool):
@@ -29,7 +29,7 @@ def build_all(project_dir: Path, build_license_page: bool):
 
 		if build_license_page:
 			build_print("Building license acknowledgements page")
-			res = run(["cargo-about", "generate", str(asset_path("about.hbs"))
+			res = run(["cargo-about", "generate", str(ASSET_PATH / "about.hbs")
 			], capture_output=True, text=True)
 
 			if res.returncode != 0:

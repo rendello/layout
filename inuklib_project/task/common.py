@@ -29,7 +29,7 @@ def _get_project_root(parts):
 
 
 PROJECT_ROOT = get_project_root()
-
+ASSET_PATH = PROJECT_ROOT / "task/assets"
 
 def build_time():
 	return datetime.now(ZoneInfo("Canada/Eastern")).astimezone().strftime("%H:%M")
@@ -41,7 +41,3 @@ def build_print(s: str):
 
 def build_exit(s: str):
 	exit(f"Inuklib [error] {build_time()}\t{s}")
-
-
-def asset_path(file_name):
-    return PROJECT_ROOT / "task/assets" / file_name

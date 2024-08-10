@@ -8,7 +8,7 @@ from subprocess import run
 
 import build_wasm
 
-from common import asset_path, build_print, build_exit, PROJECT_ROOT
+from common import build_print, build_exit, PROJECT_ROOT, ASSET_PATH
 from generate import generate
 
 
@@ -27,7 +27,7 @@ def ensure_binaries_installed():
 def update_data_file(assume_yes: bool):
 	data_file_path = PROJECT_ROOT / "inuklib/src/data.rs"
 
-	generated = generate(asset_path("table.tsv"), asset_path("wordlist.txt"))
+	generated = generate(ASSET_PATH / "table.tsv", ASSET_PATH / "wordlist.txt")
 
 	if not assume_yes:
 		if input(f"Overwrite `{data_file_path}`? [Y/n]: ").upper() != "Y":
