@@ -1,5 +1,4 @@
 import csv
-from datetime import datetime
 from dataclasses import dataclass
 from zoneinfo import ZoneInfo
 
@@ -223,8 +222,6 @@ class SeriesData:
 
 
 def generate(table_path, word_list_path):
-    date = datetime.now(ZoneInfo("Canada/Eastern")).astimezone().strftime("on %B %d at %H:%M EST")
-
     # SyllabicUnit maps
     series_data = SeriesData(table_path)
     syllabic_entries = ",\n".join([su.to_syllabic_entry() for su in series_data.to_syllabic_syllabic_units()])
@@ -236,10 +233,9 @@ def generate(table_path, word_list_path):
     english_word_entries = series_data.generate_english_word_entries(word_list_path)
 
     return (
-        f'''// ====================================================================\n'''
-        f'''//! Automatically generated data file; see `../../scripts/generate.py`.\n'''
-        f'''//  Generated on {date}.\n'''
-        f'''// ====================================================================\n\n'''
+        f'''// =======================================================================\n'''
+        f'''//! Automatically generated using `task generate-data`. See `generate.py`.\n'''
+        f'''// =======================================================================\n\n'''
         f'''use phf_macros::{{phf_map, phf_set}};\n'''
         f'''use crate::syllabic_unit::Dialect::{{{all_dialects}}};\n'''
         f'''use crate::syllabic_unit::SyllabicUnitRepresentation::{{Latin, Syllabic}};\n'''

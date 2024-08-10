@@ -29,6 +29,11 @@ def update_data_file(assume_yes: bool):
 
     generated = generate(ASSET_PATH / "table.tsv", ASSET_PATH / "wordlist.txt")
 
+    with open(data_file_path, 'r') as file:
+        if generated == file.read():
+            build_print(f"`{data_file_path}` is identical to generated code, not updating.")
+            return
+
     if not assume_yes:
         if input(f"Overwrite `{data_file_path}`? [Y/n]: ").upper() != "Y":
             build_exit("Aborting.")
@@ -60,7 +65,6 @@ parser_generate_data = subparsers.add_parser("generate-data", help="regenerate `
 parser_generate_data.add_argument("-y", "--assume-yes", action="store_true", help="no prompt on overwrite")
 
 # ----------
-
 
 if __name__ == "__main__":
     ensure_binaries_installed()

@@ -1,7 +1,6 @@
-// ====================================================================
-//! Automatically generated data file; see `../../scripts/generate.py`.
-//  Generated on on August 10 at 14:20 EST.
-// ====================================================================
+// =======================================================================
+//! Automatically generated using `task generate-data`. See `generate.py`.
+// =======================================================================
 
 use phf_macros::{phf_map, phf_set};
 use crate::syllabic_unit::Dialect::{Nunavut, Nattilik, Aivilik, Nunavik};
