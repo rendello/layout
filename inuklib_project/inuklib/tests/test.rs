@@ -1,4 +1,4 @@
-use analyzer::tokenizer::{Tokenizer};
+use inuklib::tokenizer::{Tokenizer};
 
 use proptest::char::CharStrategy;
 

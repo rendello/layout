@@ -50,6 +50,7 @@ fn try_parse<'a>(text: &'a str, map: &'a SyllabicUnitMap, script: Script) -> Par
 
     let mut v = Vec::new();
 
+    #[allow(clippy::while_let_on_iterator)]
     while let Some(su_token) = tokenizer.next() {
         v.push(su_token);
     }
