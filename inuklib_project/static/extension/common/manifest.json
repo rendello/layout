@@ -17,6 +17,7 @@
     "init.js",
     "inuklib.js",
     "inuklib_bg.wasm",
-    "inuktitut_style.css"
+    "inuktitut_style.css",
+    "acknowledgements.html"
   ]
 }
