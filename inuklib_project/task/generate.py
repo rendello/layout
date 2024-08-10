@@ -222,18 +222,18 @@ class SeriesData:
 		return ",\n".join([f'    "{word}"' for word in accepted_words])
 
 
-def generate():
+def generate(table_path, word_list_path):
 	date = datetime.now(ZoneInfo("Canada/Eastern")).astimezone().strftime("on %B %d at %H:%M EST")
 
 	# SyllabicUnit maps
-	series_data = SeriesData("table.tsv")
+	series_data = SeriesData(table_path)
 	syllabic_entries = ",\n".join([su.to_syllabic_entry() for su in series_data.to_syllabic_syllabic_units()])
 	latin_entries = ",\n".join([su.to_latin_entry() for su in series_data.to_latin_syllabic_units()])
 
 	all_dialects = ", ".join(series_data.all_dialects())
 
 	# English word set
-	english_word_entries = series_data.generate_english_word_entries("wordlist")
+	english_word_entries = series_data.generate_english_word_entries(word_list_path)
 
 	return (
 		f'''// ====================================================================\n'''
@@ -257,19 +257,3 @@ def generate():
 		f'''{english_word_entries}\n'''
 		f'''}};'''
 	)
-
-
-def update_data_file(data_file_path):
-	generated = generate()
-
-	if input(f"Overwrite `{data_file_path}`? [Y/n]: ").upper() != "Y":
-		print("Aborting.")
-		return
-
-	with open(data_file_path, "w") as file:
-		file.write(generated)
-		print(f"`{data_file_path}` updated")
-
-
-if __name__ == "__main__":
-	update_data_file("../inuklib/src/data.rs")

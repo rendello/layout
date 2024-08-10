@@ -1,6 +1,6 @@
 // ====================================================================
 //! Automatically generated data file; see `../../scripts/generate.py`.
-//  Generated on on August 04 at 11:20 EST.
+//  Generated on on August 10 at 14:20 EST.
 // ====================================================================
 
 use phf_macros::{phf_map, phf_set};
