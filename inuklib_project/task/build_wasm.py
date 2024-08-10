@@ -7,7 +7,7 @@ from shutil import copy, copytree, rmtree
 from tempfile import TemporaryDirectory
 from subprocess import run
 
-from common import build_print, asset_path
+from common import build_print, build_exit, asset_path
 
 
 def build_all(project_dir: Path, build_license_page: bool):
@@ -30,7 +30,10 @@ def build_all(project_dir: Path, build_license_page: bool):
 		if build_license_page:
 			build_print("Building license acknowledgements page")
 			res = run(["cargo-about", "generate", str(asset_path("about.hbs"))
-			], check=True, capture_output=True, text=True)
+			], capture_output=True, text=True)
+
+			if res.returncode != 0:
+				build_exit(f"`cargo-about` failed with the following stderr:\n{res.stderr}")
 
 			with open(artifact_dir / "acknowledgements.html", "w") as ack_file:
 				ack_file.write(res.stdout)
