@@ -46,12 +46,15 @@ BUILD_WASM_HELP = \
 NO_LICENCE_HELP = \
 	"build without generating acknowledgements webpage (which requires Internet)"
 
+OPT_HELP = \
+	"level of WASM optimization. `-O` is default, `-O0` is none; see `wasm-opt -h`"
 
 parser = argparse.ArgumentParser(prog="inuklib")
 subparsers = parser.add_subparsers(dest="command")
 
 parser_build_wasm = subparsers.add_parser("build-wasm", help=BUILD_WASM_HELP)
 parser_build_wasm.add_argument("--no-license", action="store_true", help=NO_LICENCE_HELP)
+parser_build_wasm.add_argument('-O', nargs="?", choices="01234sz", help=OPT_HELP)
 
 parser_generate_data = subparsers.add_parser("generate-data", help="regenerate `data.rs`")
 parser_generate_data.add_argument("-y", "--assume-yes", action="store_true", help="no prompt on overwrite")
@@ -66,6 +69,6 @@ if __name__ == "__main__":
 
 	match args.command:
 		case "build-wasm":
-			build_wasm.build_all(PROJECT_ROOT, not args.no_license)
+			build_wasm.build_all(PROJECT_ROOT, not args.no_license, opt_level=args.O)
 		case "generate-data":
 			update_data_file(args.assume_yes)

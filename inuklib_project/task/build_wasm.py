@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from os import chdir, mkdir
 from pathlib import Path
@@ -10,7 +10,7 @@ from subprocess import run
 from common import build_print, build_exit, ASSET_PATH
 
 
-def build_all(project_dir: Path, build_license_page: bool):
+def build_all(project_dir: Path, build_license_page: bool, opt_level: Optional[int]):
 	""" Build Firefox and Chrome extensions and the website.
 
 	Builds WASM artifacts from Rust project and binds them with JS.
@@ -59,10 +59,12 @@ def build_all(project_dir: Path, build_license_page: bool):
 			"--no-typescript"
 		], check=True)
 
-		build_print("Optimizing WASM")
+
+		opt_flag = f"-O{opt_level if opt_level is not None else ''}"
+		build_print(f"Optimizing WASM (level {opt_flag})")
 		run(["wasm-opt", wasm_out,
 			"--output", wasm_out,
-			"-O"
+			opt_flag
 		], check=True)
 
 		build_print("Copying assets to staging directory")
