@@ -1,13 +1,38 @@
-from typing import Optional
+from typing import Optional, List
 
 from os import mkdir
 from pathlib import Path
 from shutil import copy, copytree, rmtree
-
+from dataclasses import dataclass
 from tempfile import TemporaryDirectory
 from subprocess import run
 
 from common import build_print, build_exit, ASSET_PATH
+
+
+@dataclass(frozen=True)
+class Target:
+    relative_static_paths: List[str]
+    relative_target_path: str
+
+FIREFOX = Target(["common", "extension/common", "extension/firefox"], "extension/firefox")
+CHROME =  Target(["common", "extension/common", "extension/chrome"],  "extension/chrome")
+WEB =     Target(["common", "web"], "web")
+
+
+def copy_static_assets(target: Target, static_base_dir: Path, target_base_dir: Path):
+    target_path = target_base_dir / target.relative_target_path
+    for relative_static_path in target.relative_static_paths:
+        static_path = static_base_dir / relative_static_path
+
+        # Git doesn't track empty folders, so they may not exist.
+        if static_path.is_dir():
+            copytree(static_path, target_path, dirs_exist_ok=True)
+
+
+def copy_static_assets_all(project_dir):
+    for target in [WEB, FIREFOX, CHROME]:
+        copy_static_assets(target, project_dir / "static", project_dir / "dist")
 
 
 def build_all(project_dir: Path, build_license_page: bool, opt_level: Optional[int]):
@@ -67,26 +92,12 @@ def build_all(project_dir: Path, build_license_page: bool, opt_level: Optional[i
             opt_flag
         ], check=True)
 
-        build_print("Copying assets to staging directory")
-        statics_and_targets = [
-            (["common", "extension/common", "extension/firefox"], "extension/firefox", ),
-            (["common", "extension/common", "extension/chrome"],  "extension/chrome"),
-            (["common", "web"],                                   "web")
-        ]
-
-        for relative_static_paths, relative_target_path in statics_and_targets:
-            target_path = staging_dir / relative_target_path
-            copytree(artifact_dir, target_path)
-
-            for relative_static_path in relative_static_paths:
-                static_path = static_dir / relative_static_path
-
-                # Git doesn't track empty folders, so they may not exist.
-                if static_path.is_dir():
-                    copytree(static_path, target_path, dirs_exist_ok=True)
+        for target in [WEB, FIREFOX, CHROME]:
+            copytree(artifact_dir, staging_dir / target.relative_target_path)
+            copy_static_assets(target, static_dir, staging_dir)
 
         build_print("Copying staging directory to `dist/`")
-        dist_path = Path(project_dir, "dist")
+        dist_path = project_dir / "dist"
         if dist_path.is_dir():
             rmtree(dist_path)
 
