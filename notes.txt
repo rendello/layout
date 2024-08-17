@@ -1150,3 +1150,50 @@ It would be nice to have the web visualizer have different coloured blocks for d
 So, this will need to work with not just the converted stuff, but also the base stuff. So it can colourize the original ᐃᓄᐃᑦ as well as the converted "inuit".
 
 This is just popping through the tokens and adding spans, so I think I'll just convert everything to latin to start.
+
+===
+August 16th, 2024
+
+I've created a web extension that can find Inuktitut words pretty accurately, and highlight them on a page with the separate syllabic units differentiated. There's work to do on the Inuktitut detection. Right now it's all based on filtering English words, but I'd like to use ngrams to filter too, especially English and French. Maybe throw some Arabic words in the filter as sometimes they get caught as Inuktitut words.
+
+But for now, I'd like a better web extension. It's visual and that's very nice, and the fact that I can see thousands of words st once visually provides an awesome testing platform.
+
+I've been stuck since I started trying to improve the web extension though, mainly on the UI of the thing. I have some ideas. My main concept is this:
+
+[SVG Map of Canadian north with highlightable Inuit communities / dialect areas]
+[Stats on percentages of Inuit dialects found on the page]
+[ --- divider --- ]
+[Text box for transliterating in the pop-up]
+
+I must iterate on it. For some reason, iterating on UI is stressful to me, I think because the concepts I see in my head end up not mapping well to what I create in HTML and CSS. It's like playing the guitar, I can think of beautiful songs, and I can create beautiful songs on guitar, but they bare no relation to each other.
+
+I believe the main stress right now comes not from the UI itself, but that the things I want to do with it are not fully implemented on the backend. Namely, I'd like to have percentages of the Inuktitut dialects on the page, but the backend does not return percentages nor any dialectal info. I think most of this should be in Rust, with very little in Javascript.
+
+The HTML returning from Rust is very ad-hoc, and it will have to change. Really, I want to return more info. The Javascript should replace the Inuktitut with the new HTML, but it should also have some sort of wider tracking of the percentages and whatnot. I would like the Javascript backend to hold some state. What state?
+
+Let's think. What is the HTML structure currently missing? I don't think the HTML really needs to store every single syllabic unit separately by default. If need be, on user interaction, that can be done on the clicking of an Inuktitut word. I would like to have the individual chunks of text together in spans. That way, if there's multiple dialects on a page, a user could click the [Nattilik 9%] and jump to all the instances on the Nattilik found, for example.
+
+It is useful to have a lot of information in the DOM for debugging, but of course most of it isn't needed generally. Highlighting spaces and every English word is not necessary in the general case. I need to figure out a good API to enable and disable different HTML outputs.
+
+Actually the chunking might be sort of difficult, because the structure of the HTML itself. I have to know the structure of the `TEXT_NODE`s. Consider this:
+
+<p>ᒥᔅᑐ ᒋᓕᐊᓐ <a href="example.com">ᒪᑲᓚᐃᓐ</a>, ᒥᔅᑐ ᑕᐃᕕᒃ</p>
+
+Here, the anchor tag clearly would belong to the same Inuktitut chunk.
+
+---
+
+Right now, the very basic tokenization code looks like:
+
+#[wasm_bindgen]
+pub fn tokenize(s: String) -> String {
+    let tokens = Tokenizer::new(&s);
+    let mut v = Vec::new();
+
+    for t in tokens.collect::<Vec<_>>() {
+        v.push(t.as_html());
+    }
+    v.join("")
+}
+
+With some basic JS to traverse the entire DOM and tokenize all the `TEXT_NODE`s. If I want to be able to do chunking that handles recursive tags, I either have to push all that into Rust, or do some work in JS. I suppose instead of the Rust returning HTML, it can return a basic "chunk" data structure and the JS can handle the HTML creation.
