@@ -1197,3 +1197,56 @@ pub fn tokenize(s: String) -> String {
 }
 
 With some basic JS to traverse the entire DOM and tokenize all the `TEXT_NODE`s. If I want to be able to do chunking that handles recursive tags, I either have to push all that into Rust, or do some work in JS. I suppose instead of the Rust returning HTML, it can return a basic "chunk" data structure and the JS can handle the HTML creation.
+
+---
+August 17th, 2024
+
+So. The chunk model will not be able to match the DOM completely. The example from above maps pretty well:
+
+<p>ᒥᔅᑐ ᒋᓕᐊᓐ <a href="example.com">ᒪᑲᓚᐃᓐ</a>, ᒥᔅᑐ ᑕᐃᕕᒃ</p>
+
+But consider this:
+
+<p>ᒥᔅᑐ ᒋᓕᐊᓐ <b>ᑕᐃᕙᑦ (This means "David")</b>, ᒥᔅᑐ ᑕᐃᕕᒃ</p>
+
+Here, the chunk starts in the parent, then ends in the child. Putting spans around the chunk would break the docuement. I think this could still work if we have chunk IDs or something, like:
+
+<p><span class="chunk chunk-1">ᒥᔅᑐ ᒋᓕᐊᓐ </span><b><span class="chunk chunk-1">ᑕᐃᕙᑦ</span> (This means "David")</b>, <span class="chunk chunk-2>ᒥᔅᑐ ᑕᐃᕕᒃ</span></p>
+
+Here, there's two (or 𝑛) elements in the DOM, but logically they are part of a whole and can be, for example, highlighted as one.
+
+
+-- Aside
+A limitation that will always exist in the DOM context is this:
+
+<p>inu<b>uk</b></p>
+
+If I wish to keep the <b> tag, I'm always going to be separating the word, at least in terms of syllabic conversion. So ᐃᐆᒃ will be ᐃᐅᐅᒃ, because the bold is there in the middle. I've already seen places online where this has been an issue. Of course, there could be certain tags that could be simply removed (perhaps optionally), but we'll see about that later.
+--
+
+Perhaps the <span> tags for the chunks should be <a> tags, with the first one of a logical chunk having the name, and both having the class for styling, so:
+
+<p>
+   <a name="chunk-1" class="chunk chunk-1">
+      ᒥᔅᑐ ᒋᓕᐊᓐ 
+   </a>
+   <b>
+      <a class="chunk chunk-1">
+         ᑕᐃᕙᑦ
+      </a>
+      (This means "David")
+   </b>,
+   <a name="chunk-2" class="chunk chunk-2>
+      ᒥᔅᑐ ᑕᐃᕕᒃ
+   </a>
+</p>
+
+That way they can be jumped to more logically. We'll see.
+
+So how is this implemented in the JS? Am I creating a model of the DOM?
+
+I think to start, I can just create the elements for every TEXT_NODE as I do now. Later on, I can check if the TEXT_NODE is a child of a chunk, and after that, I can make sure that the properties are the same and modify the inner values if needed (as in, if a user decides to change the mode from "transliterate to syllabics" to "transliterate to latin", the previously analyzed sections will be redone).
+
+I think I have to have some sort of shadowing of the DOM. Realistically, I should be able to keep the original text somehere in case to re-analyzation as mentioned above. I don't want to rely on re-scanning the DOM as my source of truth anyway. How then do I lay things out?
+
+Apparently the "shadow DOM" is a real thing, maybe something to look at.
