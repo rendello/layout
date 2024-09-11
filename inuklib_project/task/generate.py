@@ -220,11 +220,25 @@ class SeriesData:
         return ",\n".join([f'    "{word}"' for word in accepted_words])
 
 
+def syllabic_unit_byte_lengths(syllabic_units: List[SyllabicUnit]):
+    lengths = set()
+    for su in syllabic_units:
+        lengths.add(len(su.original.representation.encode("utf-8")))
+    return sorted(list(lengths), reverse=True)
+
+
 def generate(table_path, word_list_path):
     # SyllabicUnit maps
     series_data = SeriesData(table_path)
-    syllabic_entries = ",\n".join([su.to_syllabic_entry() for su in series_data.to_syllabic_syllabic_units()])
-    latin_entries = ",\n".join([su.to_latin_entry() for su in series_data.to_latin_syllabic_units()])
+
+    syllabic_syllabic_units = series_data.to_syllabic_syllabic_units()
+    latin_syllabic_units = series_data.to_latin_syllabic_units()
+    all_syllabic_units = syllabic_syllabic_units + latin_syllabic_units
+
+    max_byte_length = syllabic_unit_byte_lengths(all_syllabic_units)[0]
+
+    syllabic_entries = ",\n".join([su.to_syllabic_entry() for su in syllabic_syllabic_units])
+    latin_entries = ",\n".join([su.to_latin_entry() for su in latin_syllabic_units])
 
     all_dialects = ", ".join(series_data.all_dialects())
 
@@ -239,7 +253,10 @@ def generate(table_path, word_list_path):
         f'''use crate::syllabic_unit::Dialect::{{{all_dialects}}};\n'''
         f'''use crate::syllabic_unit::SyllabicUnitRepresentation::{{Latin, Syllabic}};\n'''
         f'''use crate::syllabic_unit::AiRepresentation::{{Split, Classic, Ring, NotApplicable}};\n'''
-        f'''use crate::syllabic_unit::*;\n\n'''
+        f'''use crate::syllabic_unit::*;\n\n\n'''
+        f'''/// The maximum byte length of a string that can map into a `SyllabicUnit`,\n'''
+        f'''/// be it latin or syllabic. Automatically derived.\n'''
+        f'''pub const MAX_BYTE_LENGTH: usize = {max_byte_length};\n\n'''
         f'''pub static LATIN_MAP: SyllabicUnitMap = phf_map! {{\n'''
         f'''{latin_entries}\n'''
         f'''}};\n\n'''

@@ -1,6 +1,6 @@
 //! Parsing functions for Inuktitut syllabics and latin scripts.
 
-use crate::data::{SYLLABIC_MAP, LATIN_MAP};
+use crate::data::{SYLLABIC_MAP, LATIN_MAP, MAX_BYTE_LENGTH};
 use crate::syllabic_unit::{SyllabicUnitMap, SyllabicUnit, SUToken};
 
 use arrayvec::ArrayVec;
@@ -100,12 +100,11 @@ impl<'a> Iterator for SyllabicTokenizer<'a> {
 // A lowercased character can have a different byte length than its counterpart.
 pub fn pop_syllabic_unit<'a>(text: &'a str, map: &SyllabicUnitMap)
     -> Option<(&'a SyllabicUnit, &'a str, &'a str)>{
-    const MAX: usize = 16;
 
     let lowercase = &text.to_lowercase();
 
-    let mut lowercase_indices = ArrayVec::<usize, {MAX+1}>::new();
-    for lowercase_index in CharEndIndices::new(lowercase, MAX) {
+    let mut lowercase_indices = ArrayVec::<usize, {MAX_BYTE_LENGTH+1}>::new();
+    for lowercase_index in CharEndIndices::new(lowercase, MAX_BYTE_LENGTH) {
         lowercase_indices.push(lowercase_index);
     }
 
@@ -114,8 +113,8 @@ pub fn pop_syllabic_unit<'a>(text: &'a str, map: &SyllabicUnitMap)
         if let Some(&su) = map.get(&lowercase[..lowercase_character_index]) {
 
             // Match found, find real character indices
-            let mut text_indices = ArrayVec::<usize, {MAX+1}>::new();
-            for text_index in CharEndIndices::new(text, MAX) {
+            let mut text_indices = ArrayVec::<usize, {MAX_BYTE_LENGTH+1}>::new();
+            for text_index in CharEndIndices::new(text, MAX_BYTE_LENGTH) {
                 text_indices.push(text_index);
             }
 

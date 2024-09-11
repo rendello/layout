@@ -8,6 +8,11 @@ use crate::syllabic_unit::SyllabicUnitRepresentation::{Latin, Syllabic};
 use crate::syllabic_unit::AiRepresentation::{Split, Classic, Ring, NotApplicable};
 use crate::syllabic_unit::*;
 
+
+/// The maximum byte length of a string that can map into a `SyllabicUnit`,
+/// be it latin or syllabic. Automatically derived.
+pub const MAX_BYTE_LENGTH: usize = 9;
+
 pub static LATIN_MAP: SyllabicUnitMap = phf_map! {
     "ai" => &SyllabicUnit {
         dialects: enum_set!(Nunavut | Nattilik | Aivilik | Nunavik),
