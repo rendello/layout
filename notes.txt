@@ -1250,3 +1250,10 @@ I think to start, I can just create the elements for every TEXT_NODE as I do now
 I think I have to have some sort of shadowing of the DOM. Realistically, I should be able to keep the original text somehere in case to re-analyzation as mentioned above. I don't want to rely on re-scanning the DOM as my source of truth anyway. How then do I lay things out?
 
 Apparently the "shadow DOM" is a real thing, maybe something to look at.
+
+===
+August 26th, 2024
+
+The syllabic typography in this CBC article is amazing, a model:
+
+https://www.cbc.ca/news/canada/thunder-bay/%E1%90%8A%E1%90%A3%E1%91%95%E1%94%9A%E1%90%A3%E1%90%A6%E1%90%83-%E1%90%81%E1%90%8F%E1%92%8B%E1%91%AD%E1%90%8D-%E1%90%85%E1%91%95%E1%90%B1%E1%93%87%E1%92%AA%E1%90%A3-%E1%93%82%E1%92%AA%E1%92%AA-%E1%90%85%E1%91%8E%E1%94%91%E1%91%AD%E1%94%91%E1%90%8D%E1%90%8F%E1%90%A3-%E1%92%B7%E1%94%A6-%E1%90%83%E1%90%A1%E1%91%BF%E1%93%AD%E1%90%A0-1.6385526
