@@ -1,15 +1,10 @@
 //! Parsing functions for Inuktitut syllabics and latin scripts.
 
-use crate::data::{SYLLABIC_MAP, LATIN_MAP, MAX_BYTE_LENGTH};
-use crate::syllabic_unit::{SyllabicUnitMap, SyllabicUnit, SUToken};
+use crate::data::{LOOKUP_LATIN, LOOKUP_SYLLABIC};
+use crate::syllabic_unit::{SyllabicUnitLookup, SyllabicUnit, SUToken, Script};
 
 use arrayvec::ArrayVec;
 
-#[derive(Debug)]
-pub enum Script {
-    Latin,
-    Syllabic
-}
 
 #[derive(Debug)]
 pub struct InuktitutWord<'a> {
@@ -31,44 +26,38 @@ impl<'a> InuktitutWord<'a> {
     }
 }
 
-pub enum ParseResult<T> {
-    Failure,
-    Success(T)
+pub fn try_parse_inuktitut_latin(text: &str) -> Option<InuktitutWord> {
+    try_parse(text, &LOOKUP_LATIN)
 }
 
-pub fn try_parse_inuktitut_latin(text: &str) -> ParseResult<InuktitutWord> {
-    try_parse(text, &LATIN_MAP, Script::Latin)
-}
-
-pub fn try_parse_inuktitut_syllabics(text: &str) -> ParseResult<InuktitutWord> {
-    try_parse(text, &SYLLABIC_MAP, Script::Syllabic)
+pub fn try_parse_inuktitut_syllabics(text: &str) -> Option<InuktitutWord> {
+    try_parse(text, &LOOKUP_SYLLABIC)
 }
 
 
-fn try_parse<'a>(text: &'a str, map: &'a SyllabicUnitMap, script: Script) -> ParseResult<InuktitutWord<'a>> {
-    let mut tokenizer = SyllabicTokenizer::new(text, map);
-
-    let mut v = Vec::new();
+fn try_parse<'a>(text: &'a str, lookup: &'a SyllabicUnitLookup) -> Option<InuktitutWord<'a>> {
+    let mut tokenizer = SyllabicTokenizer::new(text, lookup);
+    let mut tokens = Vec::new();
 
     #[allow(clippy::while_let_on_iterator)]
-    while let Some(su_token) = tokenizer.next() {
-        v.push(su_token);
+    while let Some(token) = tokenizer.next() {
+        tokens.push(token);
     }
 
     match tokenizer.is_consumed() {
-        true => ParseResult::Success(InuktitutWord { buffer: v, script }),
-        false => ParseResult::Failure
+        true => Some(InuktitutWord { buffer: tokens, script: lookup.script.clone() }),
+        false => None
     }
 }
 
 struct SyllabicTokenizer<'a> {
     buffer: &'a str,
-    map: &'a SyllabicUnitMap
+    lookup: &'a SyllabicUnitLookup
 }
 
 impl<'a> SyllabicTokenizer<'a> {
-    fn new(text: &'a str, map: &'a SyllabicUnitMap) -> SyllabicTokenizer<'a> {
-        SyllabicTokenizer { buffer: text, map }
+    fn new(text: &'a str, lookup: &'a SyllabicUnitLookup) -> SyllabicTokenizer<'a> {
+        SyllabicTokenizer { buffer: text, lookup }
     }
 
     fn is_consumed(&self) -> bool {
@@ -80,7 +69,7 @@ impl<'a> Iterator for SyllabicTokenizer<'a> {
     type Item = SUToken<'a>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let r = pop_syllabic_unit(self.buffer, self.map);
+        let r = pop_syllabic_unit(self.buffer, self.lookup);
         match r {
             Some((syllabic_unit, text, new_buffer)) => {
                 self.buffer = new_buffer;
@@ -95,32 +84,51 @@ impl<'a> Iterator for SyllabicTokenizer<'a> {
 /// Given `text` and a map of `strs` to `SyllabicUnit`s, return the longest
 /// match at the beginning of `text`, along with two string slices:
 /// the consumed text (corresponding to the `SyllabicUnit`), and the unconsumed text.
+fn pop_syllabic_unit<'a>(text: &'a str, lookup: &'a SyllabicUnitLookup)
+    -> Option<(&'a SyllabicUnit, &'a str, &'a str)> {
 
-// [nunavik] [nunavi]k [nunav]ik [nuna]vik [nun]avik [nu]avik --> Match: "nu"
-// A lowercased character can have a different byte length than its counterpart.
-pub fn pop_syllabic_unit<'a>(text: &'a str, map: &SyllabicUnitMap)
-    -> Option<(&'a SyllabicUnit, &'a str, &'a str)>{
+    const VEC_SIZE: usize = 100;
 
-    let lowercase = &text.to_lowercase();
+    // Find and store the character offsets of the normalized text `n_text`.
+    // `n_text` is either a lowercased copy of the original text, or simply
+    // the original text itself is no normalization is required.
+    let n_text = if lookup.must_normalize {
+        &text.to_lowercase()
+    } else {
+        text
+    };
 
-    let mut lowercase_indices = ArrayVec::<usize, {MAX_BYTE_LENGTH+1}>::new();
-    for lowercase_index in CharEndIndices::new(lowercase, MAX_BYTE_LENGTH) {
-        lowercase_indices.push(lowercase_index);
+    let max_key_length = lookup.key_lengths[0];
+    let mut n_offsets = ArrayVec::<(usize, usize), VEC_SIZE>::new();
+    for (char_number, offset) in CharEndIndices::new(n_text).enumerate() {
+        if offset > max_key_length {
+            break;
+        } else if lookup.key_lengths.contains(&offset) {
+            n_offsets.push((char_number, offset));
+        }
     }
 
-    // Seek match using lowercased text
-    for (i, &lowercase_character_index) in lowercase_indices.iter().enumerate().rev() {
-        if let Some(&su) = map.get(&lowercase[..lowercase_character_index]) {
+    // Look for a match at the beginning of `n_text`, from the largest
+    // potential key to the smallest, eg:
+    // [nunavik] [nunavi]k [nunav]ik [nuna]vik [nun]avik [nu]avik --> Match from "nu"; or
+    // [ᐃᓅᒃ] [ᐃᓅ]ᒃ [ᐃ]ᓅᒃ --> Match from "ᐃ"
+    for (n_char_number, n_offset) in n_offsets.into_iter().rev() {
 
-            // Match found, find real character indices
-            let mut text_indices = ArrayVec::<usize, {MAX_BYTE_LENGTH+1}>::new();
-            for text_index in CharEndIndices::new(text, MAX_BYTE_LENGTH) {
-                text_indices.push(text_index);
-            }
-
-            let text_index = text_indices[i];
-
-            return Some((su, &text[..text_index], &text[text_index..]))
+        if let Some(&syllabic_unit) = lookup.map.get(&n_text[..n_offset]) {
+            // A match has been found. If the text has been normalized, we have to
+            // find the corresponding indices in the original string, as
+            // the size of upper- and lowercase letters may differ in UTF-8.
+            let offset = match lookup.must_normalize {
+                true => {
+                    CharEndIndices::new(text)
+                        .enumerate()
+                        .find(|(o_char_number, _)| *o_char_number == n_char_number)
+                        .map(|(_, o_offset)| o_offset)
+                        .expect("Corresponding indices not found for original string.")
+                },
+                false => n_offset
+            };
+            return Some((syllabic_unit, &text[..offset], &text[offset..]))
         }
     }
     None
@@ -129,13 +137,12 @@ pub fn pop_syllabic_unit<'a>(text: &'a str, map: &SyllabicUnitMap)
 
 struct CharEndIndices<'a> {
     buffer: &'a [u8],
-    index: usize,
-    max: usize
+    index: usize
 }
 
 impl<'a> CharEndIndices<'a> {
-    fn new(text: &'a str, max: usize) -> CharEndIndices<'a> {
-        CharEndIndices { buffer: text.as_bytes(), index: 0, max }
+    fn new(text: &'a str) -> CharEndIndices<'a> {
+        CharEndIndices { buffer: text.as_bytes(), index: 0 }
     }
 
     fn next_jump(byte: u8) -> usize {
@@ -158,7 +165,7 @@ impl<'a> Iterator for CharEndIndices<'a> {
 
     fn next(&mut self) -> Option<Self::Item> {
         let index = self.index;
-        if index == self.buffer.len() || index > self.max {
+        if index == self.buffer.len() {
             None
         } else {
             let jump = Self::next_jump(self.buffer[self.index]);

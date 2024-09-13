@@ -8,12 +8,24 @@ use crate::syllabic_unit::SyllabicUnitRepresentation::{Latin, Syllabic};
 use crate::syllabic_unit::AiRepresentation::{Split, Classic, Ring, NotApplicable};
 use crate::syllabic_unit::*;
 
+pub static LOOKUP_LATIN: SyllabicUnitLookup = SyllabicUnitLookup {
+    map: &MAP_LATIN,
+    key_lengths: &KEY_LENGTHS_LATIN,
+    must_normalize: true,
+    script: Script::Latin
+};
 
-/// The maximum byte length of a string that can map into a `SyllabicUnit`,
-/// be it latin or syllabic. Automatically derived.
-pub const MAX_BYTE_LENGTH: usize = 9;
+pub static LOOKUP_SYLLABIC: SyllabicUnitLookup = SyllabicUnitLookup {
+    map: &MAP_SYLLABIC,
+    key_lengths: &KEY_LENGTHS_SYLLABIC,
+    must_normalize: false,
+    script: Script::Syllabic
+};
 
-pub static LATIN_MAP: SyllabicUnitMap = phf_map! {
+
+const KEY_LENGTHS_LATIN: [usize; 5] = [5, 4, 3, 2, 1];
+
+static MAP_LATIN: SyllabicUnitMap = phf_map! {
     "ai" => &SyllabicUnit {
         dialects: enum_set!(Nunavut | Nattilik | Aivilik | Nunavik),
         consonant: None,
@@ -1609,7 +1621,9 @@ pub static LATIN_MAP: SyllabicUnitMap = phf_map! {
     }
 };
 
-pub static SYLLABIC_MAP: SyllabicUnitMap = phf_map! {
+const KEY_LENGTHS_SYLLABIC: [usize; 7] = [9, 8, 7, 6, 5, 4, 3];
+
+static MAP_SYLLABIC: SyllabicUnitMap = phf_map! {
     "ᐂ" => &SyllabicUnit {
         dialects: enum_set!(Nunavut | Nattilik | Aivilik | Nunavik),
         consonant: None,

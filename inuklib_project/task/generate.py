@@ -228,17 +228,16 @@ def syllabic_unit_byte_lengths(syllabic_units: List[SyllabicUnit]):
 
 
 def generate(table_path, word_list_path):
-    # SyllabicUnit maps
     series_data = SeriesData(table_path)
 
-    syllabic_syllabic_units = series_data.to_syllabic_syllabic_units()
-    latin_syllabic_units = series_data.to_latin_syllabic_units()
-    all_syllabic_units = syllabic_syllabic_units + latin_syllabic_units
+    syllabic_units_syllabic = series_data.to_syllabic_syllabic_units()
+    syllabic_units_latin = series_data.to_latin_syllabic_units()
 
-    max_byte_length = syllabic_unit_byte_lengths(all_syllabic_units)[0]
+    byte_lengths_syllabic = syllabic_unit_byte_lengths(syllabic_units_syllabic)
+    byte_lengths_latin = syllabic_unit_byte_lengths(syllabic_units_latin)
 
-    syllabic_entries = ",\n".join([su.to_syllabic_entry() for su in syllabic_syllabic_units])
-    latin_entries = ",\n".join([su.to_latin_entry() for su in latin_syllabic_units])
+    syllabic_entries = ",\n".join([su.to_syllabic_entry() for su in syllabic_units_syllabic])
+    latin_entries = ",\n".join([su.to_latin_entry() for su in syllabic_units_latin])
 
     all_dialects = ", ".join(series_data.all_dialects())
 
@@ -253,14 +252,25 @@ def generate(table_path, word_list_path):
         f'''use crate::syllabic_unit::Dialect::{{{all_dialects}}};\n'''
         f'''use crate::syllabic_unit::SyllabicUnitRepresentation::{{Latin, Syllabic}};\n'''
         f'''use crate::syllabic_unit::AiRepresentation::{{Split, Classic, Ring, NotApplicable}};\n'''
-        f'''use crate::syllabic_unit::*;\n\n\n'''
-        f'''/// The maximum byte length of a string that can map into a `SyllabicUnit`,\n'''
-        f'''/// be it latin or syllabic. Automatically derived.\n'''
-        f'''pub const MAX_BYTE_LENGTH: usize = {max_byte_length};\n\n'''
-        f'''pub static LATIN_MAP: SyllabicUnitMap = phf_map! {{\n'''
+        f'''use crate::syllabic_unit::*;\n\n'''
+        f'''pub static LOOKUP_LATIN: SyllabicUnitLookup = SyllabicUnitLookup {{\n'''
+        f'''    map: &MAP_LATIN,\n'''
+        f'''    key_lengths: &KEY_LENGTHS_LATIN,\n'''
+        f'''    must_normalize: true,\n'''
+        f'''    script: Script::Latin\n'''
+        f'''}};\n\n'''
+        f'''pub static LOOKUP_SYLLABIC: SyllabicUnitLookup = SyllabicUnitLookup {{\n'''
+        f'''    map: &MAP_SYLLABIC,\n'''
+        f'''    key_lengths: &KEY_LENGTHS_SYLLABIC,\n'''
+        f'''    must_normalize: false,\n'''
+        f'''    script: Script::Syllabic\n'''
+        f'''}};\n\n\n'''
+        f'''const KEY_LENGTHS_LATIN: [usize; {len(byte_lengths_latin)}] = {byte_lengths_latin};\n\n'''
+        f'''static MAP_LATIN: SyllabicUnitMap = phf_map! {{\n'''
         f'''{latin_entries}\n'''
         f'''}};\n\n'''
-        f'''pub static SYLLABIC_MAP: SyllabicUnitMap = phf_map! {{\n'''
+        f'''const KEY_LENGTHS_SYLLABIC: [usize; {len(byte_lengths_syllabic)}] = {byte_lengths_syllabic};\n\n'''
+        f'''static MAP_SYLLABIC: SyllabicUnitMap = phf_map! {{\n'''
         f'''{syllabic_entries}\n'''
         f'''}};\n\n'''
         f'''/// English words that contain only letters found in Inuktitut. To be used to\n'''

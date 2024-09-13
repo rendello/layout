@@ -1,11 +1,12 @@
 use once_cell::sync::Lazy;
 use regex::{Regex};
 
-use syllabic_parser::{InuktitutWord, ParseResult};
+use crate::syllabic_unit::Script::{Latin, Syllabic};
+use syllabic_parser::{InuktitutWord};
 
 use crate::syllabic_parser;
-use crate::syllabic_parser::Script;
 use crate::data::ENGLISH_WORDS;
+
 
 static NON_INUK_ASCII: Lazy<Regex> = Lazy::new(|| Regex::new(r"(?i)\A[a-z]*[defowxyz][a-z]*").unwrap());
 static NUMERIC: Lazy<Regex> = Lazy::new(|| Regex::new(r#"\A(?:\d+\.?)+"#).unwrap());
@@ -46,14 +47,14 @@ impl<'a> Iterator for Tokenizer<'a> {
 
         if let Some(result) = &OTHER.find(self.buffer) {
             let tag = match syllabic_parser::try_parse_inuktitut_syllabics(result.as_str()) {
-                ParseResult::Success(inuktitut_word) => TokenTag::InuktitutWord(inuktitut_word),
-                ParseResult::Failure => {
+                Some(inuktitut_word) => TokenTag::InuktitutWord(inuktitut_word),
+                None => {
                     if ENGLISH_WORDS.contains(&result.as_str().to_lowercase()) {
                         TokenTag::NonInuktitutWord
                     } else {
                         match syllabic_parser::try_parse_inuktitut_latin(result.as_str()) {
-                            ParseResult::Success(inuktitut_word) => TokenTag::InuktitutWord(inuktitut_word),
-                            ParseResult::Failure => TokenTag::NonInuktitutWord
+                            Some(inuktitut_word) => TokenTag::InuktitutWord(inuktitut_word),
+                            None => TokenTag::NonInuktitutWord
                         }
                     }
                 }
@@ -83,8 +84,8 @@ impl<'a> Token<'a> {
         match &self.tag {
             TokenTag::NonInuktitutWord => "non-inuktitut-word",
             TokenTag::Skip => "skip",
-            TokenTag::InuktitutWord(InuktitutWord { script: Script::Latin, .. }) => "inuktitut-word latin",
-            TokenTag::InuktitutWord(InuktitutWord { script: Script::Syllabic, .. }) => "inuktitut-word syllabic"
+            TokenTag::InuktitutWord(InuktitutWord { script: Latin, .. }) => "inuktitut-word latin",
+            TokenTag::InuktitutWord(InuktitutWord { script: Syllabic, .. }) => "inuktitut-word syllabic"
         }.to_owned()
     }
 

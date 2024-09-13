@@ -64,4 +64,17 @@ pub enum AiRepresentation {
     NotApplicable
 }
 
+#[derive(Debug, Clone)]
+pub enum Script {
+    Latin,
+    Syllabic
+}
+
 pub type SyllabicUnitMap = phf::Map<&'static str, &'static SyllabicUnit>;
+
+pub struct SyllabicUnitLookup {
+    pub map: &'static SyllabicUnitMap,
+    pub key_lengths: &'static [usize],
+    pub must_normalize: bool,
+    pub script: Script
+}
