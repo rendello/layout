@@ -5,7 +5,7 @@ use crate::syllabic_unit::Script::{Latin, Syllabic};
 use syllabic_parser::{InuktitutWord};
 
 use crate::syllabic_parser;
-use crate::data::ENGLISH_WORDS;
+use crate::data::lookups::ENGLISH_WORDS;
 
 
 static NON_INUK_ASCII: Lazy<Regex> = Lazy::new(|| Regex::new(r"(?i)\A[a-z]*[defowxyz][a-z]*").unwrap());

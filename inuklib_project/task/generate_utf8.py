@@ -65,7 +65,7 @@ def create_entry_map() -> dict[str, list[Entry]]:
 def entry_map_to_string(entry_map: Dict[str, List[Entry]]) -> str:
     buffer = (
         f'''// =======================================================================\n'''
-        f'''//! Automatically generated using `task generate-utf8-data`.\n//!\n'''
+        f'''//! Automatically generated using `task generate-utf8-case-data`.\n//!\n'''
         f'''//! Unicode characters that behave oddly when the case is changed, for use\n'''
         f'''//! with property tests.\n'''
         f'''// =======================================================================\n\n'''
@@ -73,7 +73,7 @@ def entry_map_to_string(entry_map: Dict[str, List[Entry]]) -> str:
     for key, unsorted_entries in sorted(list(entry_map.items())):
         entries = sort_entries(unsorted_entries)
 
-        buffer += f'{key.upper()}: [&str, {len(entries)}] = {{\n'
+        buffer += f'pub const {key.upper()}: [&str; {len(entries)}] = [\n'
         for e in entries:
 
             ds = ""
@@ -81,11 +81,9 @@ def entry_map_to_string(entry_map: Dict[str, List[Entry]]) -> str:
                 ds = f", {e.delta_char_count:+} chars"
 
             buffer += f'    "{e.a}",\t/* {e.b}\t({e.a_len}->{e.b_len}), {e.delta:+} bytes{ds} */\n'
-        buffer += "};\n\n"
+        buffer += "];\n\n"
     return buffer.strip()
 
 
-def generate_utf8_data():
+def generate_utf8_case_data():
     return entry_map_to_string(create_entry_map())
-
-print(generate_utf8_data())

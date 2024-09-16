@@ -1,6 +1,6 @@
 //! Parsing functions for Inuktitut syllabics and latin scripts.
 
-use crate::data::{LOOKUP_LATIN, LOOKUP_SYLLABIC};
+use crate::data::lookups::{LOOKUP_LATIN, LOOKUP_SYLLABIC};
 use crate::syllabic_unit::{SyllabicUnitLookup, SyllabicUnit, SUToken, Script};
 
 use arrayvec::ArrayVec;
@@ -174,3 +174,4 @@ impl<'a> Iterator for CharEndIndices<'a> {
         }
     }
 }
+
