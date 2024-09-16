@@ -11,3 +11,4 @@ cc 1cbdf8f1d0bb47d72a569c591ee55164be5b63c2c87284350a72987443a54444 # shrinks to
 cc 4c789e4d61841129053d3e832f7e94c7cf28093fd464c3ed4aaea7cbb4fca442 # shrinks to s = "Ⱥ"
 cc 906de24aa578b1489287735bed36d5ffffe8d7d2ac502be306edb4a294169f4f # shrinks to s = "Ⱥaᐁ𑪰ᢰᢰᐁ"
 cc 4ad3bd71d684f182cc380b206d025dc941c0c3478c90e9560674e555c8134f0a # shrinks to s = "gGGgggGGGg "
+cc 84ac2ab89688c8252abcb647de3b62351fcb5dd1b6f65f3b467df8916d617496 # shrinks to s = "İ"

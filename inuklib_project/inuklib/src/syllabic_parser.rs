@@ -6,7 +6,7 @@ use crate::syllabic_unit::{SyllabicUnitLookup, SyllabicUnit, SUToken, Script};
 use arrayvec::ArrayVec;
 
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct InuktitutWord<'a> {
     buffer: Vec<SUToken<'a>>,
     pub script: Script

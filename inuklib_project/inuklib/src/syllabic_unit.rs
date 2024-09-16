@@ -10,13 +10,13 @@ pub enum Dialect {
 
 pub type DialectSet = EnumSet<Dialect>;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct SUToken<'a> {
     pub syllabic_unit: &'a SyllabicUnit,
     pub text: &'a str
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct SyllabicUnit {
     pub dialects: DialectSet,
     pub consonant: Option<&'static str>,
@@ -38,25 +38,25 @@ impl SyllabicUnit {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum SyllabicUnitRepresentation {
     Latin(LatinSyllabicUnit),
     Syllabic(SyllabicSyllabicUnit)
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct LatinSyllabicUnit {
     pub representation: &'static str,
     pub consonant: Option<&'static str>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct SyllabicSyllabicUnit {
     pub representation: &'static str,
     pub ai_representation: AiRepresentation
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum AiRepresentation {
     Split,
     Classic,
@@ -64,7 +64,7 @@ pub enum AiRepresentation {
     NotApplicable
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Script {
     Latin,
     Syllabic
