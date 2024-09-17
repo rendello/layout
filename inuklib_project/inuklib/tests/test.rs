@@ -48,6 +48,15 @@ fn syllabic_fuzz() -> impl Strategy<Value = String> {
 }
 
 
+/// This specific character is troublesome, see:
+/// https://github.com/rendello/layout/issues/8
+/// It's the sole member of the `LOWERCASING_EXPANDS_MULTI_CHAR` array.
+#[test]
+fn odd_character_not_recognized_as_inuktitut() {
+    assert_eq!(None, try_parse_inuktitut_latin("İ"))
+}
+
+
 use proptest::prelude::*;
 proptest! {
     #![proptest_config(ProptestConfig {
